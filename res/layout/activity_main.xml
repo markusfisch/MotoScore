@@ -45,8 +45,23 @@
 				android:layout_height="wrap_content"
 				android:layout_weight="0"
 				android:layout_gravity="center"
+				android:paddingBottom="8dp"
 				android:gravity="center"
 				android:textSize="96dp"/>
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="0"
+				android:paddingBottom="8dp"
+				android:text="@string/average_heading"/>
+			<TextView
+				android:id="@+id/average"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="0"
+				android:layout_gravity="center"
+				android:gravity="center"
+				android:textSize="24dp"/>
 			<View
 				android:layout_width="fill_parent"
 				android:layout_height="0dp"

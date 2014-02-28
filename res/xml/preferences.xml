@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="@string/preferences"
+	android:key="preferences">
+	<PreferenceCategory
+		android:title="@string/recognition"
+		android:key="recognition_preferences">
+		<CheckBoxPreference
+			android:key="use_media_button"
+			android:title="@string/use_media_button"
+			android:summary="@string/use_media_button_summary"
+			android:checked="true"
+			android:defaultValue="true"/>
+		<CheckBoxPreference
+			android:key="use_knock_detection"
+			android:title="@string/use_knock_detection"
+			android:summary="@string/use_knock_detection_summary"
+			android:checked="true"
+			android:defaultValue="true"/>
+	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="@string/tracking"
+		android:key="tracking_preferences">
+		<CheckBoxPreference
+			android:key="auto_detect_driving"
+			android:title="@string/auto_detect_driving"
+			android:summary="@string/auto_detect_driving_summary"
+			android:checked="true"
+			android:defaultValue="true"/>
+	</PreferenceCategory>
+</PreferenceScreen>

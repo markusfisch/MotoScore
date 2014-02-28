@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">ErrorCounter</string>
+	<string name="app_name">Error Counter</string>
 	<string name="error_service">Cannot start service</string>
+	<string name="restart_service">Restarting service</string>
+	<string name="counting">Counting</string>
 	<string name="instructions">Put your phone in your jacket and knock three times on its back to log an error. The phone will vibrate to confirm.</string>
 	<string name="distance_heading">Distance driven:</string>
 	<string name="errors_heading">Errors recorded:</string>
+	<string name="average_heading">Errors per km:</string>
 	<string name="reset">Reset</string>
 	<string name="reset_successful">Data reset</string>
+	<string name="history">History</string>
+	<string name="preferences">Preferences</string>
+	<string name="recognition">How to count</string>
+	<string name="use_media_button">Use headset button</string>
+	<string name="use_media_button_summary">Use the button on your headset to count errors</string>
+	<string name="use_knock_detection">Detect knocks</string>
+	<string name="use_knock_detection_summary">Count by knocking two times on the backside of your phone</string>
+	<string name="tracking">Tracking</string>
+	<string name="auto_detect_driving">Auto start when driving</string>
+	<string name="auto_detect_driving_summary">Automatically track position to determine driven distance</string>
 </resources>

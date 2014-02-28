@@ -1,4 +1,4 @@
-package de.markusfisch.android.errorcounter;
+package de.markusfisch.android.counter;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -7,13 +7,16 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity
 	extends Activity
-	implements ErrorCounterService.ErrorCounterServiceListener
+	implements CounterService.CounterServiceListener
 {
 	private final ServiceConnection connection = new ServiceConnection()
 	{
@@ -22,7 +25,7 @@ public class MainActivity
 			ComponentName className,
 			IBinder binder )
 		{
-			service = ((ErrorCounterService.Binder)binder).getService();
+			service = ((CounterService.Binder)binder).getService();
 			service.listener = MainActivity.this;
 			refresh();
 		}
@@ -35,61 +38,47 @@ public class MainActivity
 		}
 	};
 	private boolean serviceBound = false;
-	private ErrorCounterService service = null;
+	private CounterService service = null;
 	private TextView errorsTextView;
 	private TextView distanceTextView;
+	private TextView averageTextView;
 
 	@Override
 	public void onCreate( Bundle state )
 	{
 		super.onCreate( state );
 
-		// start & bind service
-		{
-			final Intent i = new Intent(
-				this,
-				ErrorCounterService.class );
-
-			// start the service to keep it running without activities
-			startService( i );
-
-			// bind the service to get notified when it's up
-			serviceBound = bindService(
-				i,
-				connection,
-				Context.BIND_AUTO_CREATE );
-		}
-
-		if( !serviceBound )
-		{
-			Toast.makeText(
-				this,
-				R.string.error_service,
-				Toast.LENGTH_LONG ).show();
-
-			finish();
-			return;
-		}
+		// start the service to keep it running without activities
+		startService( new Intent(
+			this,
+			CounterService.class ) );
 
 		setContentView( R.layout.activity_main );
 
 		errorsTextView = (TextView)findViewById( R.id.errors );
 		distanceTextView = (TextView)findViewById( R.id.distance );
-	}
-
-	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-
-		if( serviceBound )
-			unbindService( connection );
+		averageTextView = (TextView)findViewById( R.id.average );
 	}
 
 	@Override
 	public void onResume()
 	{
 		super.onResume();
+
+		// bind the service to be notified of new countings while visible
+		serviceBound = bindService(
+			new Intent(
+				this,
+				CounterService.class ),
+			connection,
+			Context.BIND_AUTO_CREATE );
+
+		if( !serviceBound )
+			Toast.makeText(
+				this,
+				R.string.error_service,
+				Toast.LENGTH_LONG ).show();
+
 		refresh();
 	}
 
@@ -97,10 +86,38 @@ public class MainActivity
 	public void onPause()
 	{
 		super.onPause();
+
+		if( serviceBound )
+			unbindService( connection );
 	}
 
 	@Override
-	public void update()
+	public boolean onCreateOptionsMenu( Menu menu )
+	{
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate( R.menu.counter_options, menu );
+
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected( MenuItem item )
+	{
+		switch( item.getItemId() )
+		{
+			case R.id.history:
+				showHistory();
+				return true;
+			case R.id.preferences:
+				showPreferences();
+				return true;
+		}
+
+		return super.onOptionsItemSelected( item );
+	}
+
+	@Override
+	public void onCount()
 	{
 		MainActivity.this.runOnUiThread( new Runnable()
 		{
@@ -141,5 +158,21 @@ public class MainActivity
 			String.format( "%d", errors ) );
 		distanceTextView.setText(
 			String.format( "%.2f km", distance ) );
+		averageTextView.setText(
+			String.format( "%.1f", errors/Math.max( 1, distance ) ) );
+	}
+
+	private void showHistory()
+	{
+		startActivity( new Intent(
+			this,
+			HistoryActivity.class ) );
+	}
+
+	private void showPreferences()
+	{
+		startActivity( new Intent(
+			this,
+			CounterPreferenceActivity.class ) );
 	}
 }
