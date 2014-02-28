@@ -1,27 +1,53 @@
-Automatic Error Counter For Motocyclists
-========================================
+Mistake Counter For Motocyclists
+================================
 
-This app records errors/mistakes/things you wouldn't do again while you're riding. After the ride, you see how far you have driven and the number of errors you made.
+Easily record mistakes (i.e. everything you wouldn't do again) while riding
+and have a full history of your performance.
 
-Why?
-----
+Limitations
+-----------
 
-Counting errors is a well-known technique in behaviour science to bring errors to mind and to remember them. By doing this, you're learning to drive better because you can (much better) remember the things you have done wrong/not quite right.
+You'll need some Android device and a __headset with a button__ on it.
 
-What is an error?
------------------
+Press the button to log a mistake. The Android will vibrate to confirm.
 
-An error is defined as "something you wouldn't do again" and can be anything from picking the wrong gear to catching yourself looking not far enough ahead. Just everything.
+Of course, you should prepare the headset button in a way that makes it
+very easy for you to press it __while__ riding.
 
-The number itself isn't so important. It's all about setting a stimulus to learn. The number is only a way to compare rides and see yourself improving over time.
+Features
+--------
 
-How to record?
---------------
+* Very easy to use. Just plug in a headset, press the button for a second
+  and start riding.
+* Whenever you do something you wouldn't do again, press the button
+  shortly.
+* The app will automatically track how far you've ridden and show you
+  gives you a rough idea of your performance that day by dividing
+  the number of mistakes you made by the distance you drove.
+* You'll have a full history of all your rides.
 
-There can be serveral ways to record an error. For now, you're supposed to carry the phone in your jacket while riding and knock three times on its backside. The phone will vibrate and confirm thereby the error is counted. Unfortunately, as I discovered using multiple devices, some devices will slow down acceleration reporting when sleeping so this method isn't very reliable (or completely unavailable) then.
+Background
+----------
 
-Another, probably more robust way could be using the button on your head phones.
+Years ago, when I started riding a motorcycle, I read
+[The Upper Half of the Motorcycle][1] in which the author suggests
+to record your mistakes to get aware of them.
 
-Of course, using (special) buttons on the handle bars on bikes that support sending data to a smartphone would be preferable (but is yet not included in the first prototype).
+A mistake, he said, is everything you wouldn't do again that way.
+Picked the wrong gear? Mistake.
+Catched yourself not looking far ahead? Mistake.
+Overtook where you shouldn't have? Mistake.
+You get the idea.
 
-This prototype does record only one ride and needs to be reset (by pressing a button in the app) for the next ride. In future versions there should be statistics to show all recorded rides to have a better overview of how (and maybe when) you improve (or degrade) over time (say at the start/end of the season, etc.).
+The thinking is, that the action of counting helps you to remember a
+mistake which prevents you from doing it again.
+
+So I got myself a small little counter that I could wear on my glove
+and started counting. And while that worked for me a very long time,
+I finally wanted to record my mistakes with my cellphone so I wouldn't
+have to keep track manually.
+
+I did this app for [Hack The Ride][2] 2014 in Barcelona.
+
+[1]:http://www.amazon.com/The-Upper-Half-Motorcycle-Machine/dp/1884313752
+[2]:http://www.hacktheride.org

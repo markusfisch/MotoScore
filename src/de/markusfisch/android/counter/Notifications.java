@@ -45,11 +45,6 @@ public class Notifications
 			NOTIFY_COUNTING );
 	}
 
-	public void hide()
-	{
-		counting.hide();
-	}
-
 	private abstract class AbstractNotification
 	{
 		protected Notification notification;

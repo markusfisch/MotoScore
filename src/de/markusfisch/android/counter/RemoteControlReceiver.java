@@ -11,22 +11,50 @@ public class RemoteControlReceiver
 	@Override
 	public void onReceive( Context context, Intent intent )
 	{
-		if( !Intent.ACTION_MEDIA_BUTTON.equals( intent.getAction() ) )
-			return;
-
-		final KeyEvent event = (KeyEvent)
-			intent.getParcelableExtra( Intent.EXTRA_KEY_EVENT );
-
-		switch( event.getAction() )
+		if( Intent.ACTION_MEDIA_BUTTON.equals( intent.getAction() ) )
 		{
-			case KeyEvent.ACTION_UP:
-				final Intent count = new Intent(
-					context,
-					CounterService.class );
+			final KeyEvent event = (KeyEvent)
+				intent.getParcelableExtra( Intent.EXTRA_KEY_EVENT );
 
-				count.putExtra( CounterService.COUNT, true );
-				context.startService( count );
-				break;
+			sendAction(
+				context,
+				event.getAction(),
+				event.getEventTime() );
 		}
+	}
+
+	private void sendState(
+		final Context context,
+		final int state )
+	{
+		final Intent count = new Intent(
+			context,
+			CounterService.class );
+
+		count.putExtra(
+			CounterService.STATE,
+			state );
+
+		context.startService( count );
+	}
+
+	private void sendAction(
+		final Context context,
+		final int action,
+		final long time )
+	{
+		final Intent count = new Intent(
+			context,
+			CounterService.class );
+
+		count.putExtra(
+			CounterService.ACTION,
+			action );
+
+		count.putExtra(
+			CounterService.TIME,
+			time );
+
+		context.startService( count );
 	}
 }

@@ -13,8 +13,7 @@ public class CounterPreferenceActivity
 {
 	public static final String SHARED_PREFERENCES_NAME = "CounterSettings";
 	public static final String USE_MEDIA_BUTTON = "use_media_button";
-	public static final String USE_KNOCK_DETECTION = "use_knock_detection";
-	public static final String AUTO_DETECT_DRIVING = "auto_detect_driving";
+	public static final String SHOW_NOTIFICATION = "show_notification";
 
 	private boolean dirty;
 

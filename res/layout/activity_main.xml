@@ -17,12 +17,6 @@
 				android:layout_height="wrap_content"
 				android:layout_weight="0"
 				android:paddingBottom="8dp"
-				android:text="@string/instructions"/>
-			<TextView
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="0"
-				android:paddingBottom="8dp"
 				android:text="@string/distance_heading"/>
 			<TextView
 				android:id="@+id/distance"

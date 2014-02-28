@@ -38,7 +38,7 @@ public class MainActivity
 		}
 	};
 	private boolean serviceBound = false;
-	private CounterService service = null;
+	public static CounterService service = null;
 	private TextView errorsTextView;
 	private TextView distanceTextView;
 	private TextView averageTextView;
@@ -78,6 +78,10 @@ public class MainActivity
 				this,
 				R.string.error_service,
 				Toast.LENGTH_LONG ).show();
+
+		// re-register media button in case some other app had registered
+		if( service != null )
+			service.registerMediaButton();
 
 		refresh();
 	}
@@ -130,7 +134,14 @@ public class MainActivity
 
 	public void onReset( View v )
 	{
-		service.reset();
+		if( service.started )
+		{
+			service.stop();
+			service.start();
+		}
+		else
+			service.start();
+
 		refresh();
 
 		Toast.makeText(
@@ -146,20 +157,21 @@ public class MainActivity
 			return;
 
 		int errors = 0;
-		float distance = 0;
+		int distance = 0;
 
 		if( service != null )
 		{
 			errors = service.errors;
-			distance = service.distance/1000;
+			distance = (int)Math.ceil( service.distance/1000 );
 		}
 
 		errorsTextView.setText(
 			String.format( "%d", errors ) );
 		distanceTextView.setText(
-			String.format( "%.2f km", distance ) );
+			String.format( "%d km", distance ) );
 		averageTextView.setText(
-			String.format( "%.1f", errors/Math.max( 1, distance ) ) );
+			String.format( "%.1f",
+				(float)errors/Math.max( 1, distance ) ) );
 	}
 
 	private void showHistory()

@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,15 +17,12 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.os.Vibrator;
+
+import java.util.Date;
 
 public class CounterService
 	extends Service
-	implements
-		SensorEventListener,
-		LocationListener,
-		Runnable
 {
 	public interface CounterServiceListener
 	{
@@ -39,63 +37,44 @@ public class CounterService
 		}
 	};
 
-	public static final String COUNT = "count";
+	public static final String STATE = "state";
+	public static final String ACTION = "action";
+	public static final String TIME = "time";
 
+	public CounterDataSource dataSource;
 	public CounterServiceListener listener = null;
 	public int errors = 0;
 	public float distance = 0;
-	public boolean driving = false;
-
-	private class AccelerationEvent
-	{
-		public float z;
-		public long time;
-	};
+	public boolean started = false;
+	public Date rideStart = new Date();
 
 	private final IBinder binder = new Binder();
-	private final Handler countHandler = new Handler();
-	private final Runnable countRunnable = new Runnable()
-	{
-		@Override
-		public void run()
-		{
-			count();
-		}
-	};
-	private long lastCountAt = 0;
 
 	private Notifications notifications = null;
 
 	private LocationManager locationManager = null;
 	private Location lastLocation = null;
+	private LocationRecorder locationRecorder = new LocationRecorder();
 
+	private HeadsetReceiver headsetReceiver = null;
 	private AudioManager audioManager = null;
 	private ComponentName remoteControlReceiver = null;
-
-	private PowerManager powerManager = null;
-	private PowerManager.WakeLock wakeLock = null;
-	private SensorManager sensorManager = null;
-	private Sensor accelerationSensor = null;
-	private boolean accelerationListening = false;
-	private long lastAccelerationEvent = 0;
-	private int accelerationMark = 0;
-	private int accelerationMax = 1000;
-	private boolean accelerationHistoryComplete = false;
-	private AccelerationEvent accelerationHistory[] =
-		new AccelerationEvent[accelerationMax];
-
-	private boolean running = false;
-	private Thread thread = null;
-	private long hit = 0;
-	private long firstTap = 0;
-	private long secondTap = 0;
-	private boolean tripleTap = false;
+	private long buttonDown = 0;
 	private Vibrator vibrator;
-	private long blindFor = 0;
 
 	@Override
 	public void onCreate()
 	{
+		dataSource = new CounterDataSource( getApplicationContext() );
+		dataSource.open( new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				dataSource.queryAll();
+			}
+		} );
+
 		notifications = new Notifications( getApplicationContext() );
 
 		locationManager = (LocationManager)
@@ -104,55 +83,40 @@ public class CounterService
 		audioManager = (AudioManager)
 			getSystemService( Context.AUDIO_SERVICE );
 
-		powerManager = (PowerManager)
-			getSystemService( Context.POWER_SERVICE );
-
-		sensorManager = (SensorManager)
-			getSystemService( Context.SENSOR_SERVICE );
-
 		vibrator = (Vibrator)
 			getSystemService( Context.VIBRATOR_SERVICE );
 
 		if( (lastLocation = locationManager.getLastKnownLocation(
-			LocationManager.NETWORK_PROVIDER )) == null )
+				LocationManager.GPS_PROVIDER )) == null &&
+			(lastLocation = locationManager.getLastKnownLocation(
+				LocationManager.NETWORK_PROVIDER )) == null )
 			lastLocation = locationManager.getLastKnownLocation(
-				LocationManager.GPS_PROVIDER );
+				LocationManager.PASSIVE_PROVIDER );
 
-		for( int n = accelerationMax; n-- > 0; )
-			accelerationHistory[n] = new AccelerationEvent();
+		headsetReceiver = new HeadsetReceiver();
+		registerReceiver(
+			headsetReceiver,
+			new IntentFilter( Intent.ACTION_HEADSET_PLUG ) );
 
-		registerSensors();
+		registerMediaButton();
 	}
 
 	@Override
 	public void onDestroy()
 	{
-		unregisterSensors();
+		unregisterReceiver( headsetReceiver );
+
+		unregisterMediaButton();
+		stop();
+
+		dataSource.close();
 	}
 
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
-		if( intent != null &&
-			intent.getBooleanExtra( COUNT, false ) )
-		{
-			final long now = java.lang.System.currentTimeMillis();
-
-			if( now-lastCountAt < 500 )
-			{
-				countHandler.removeCallbacks( countRunnable );
-
-android.util.Log.d( "mf:dbg", "mf:dbg: double click!" );
-				/*if( started )
-					stop();
-				else
-					start();*/
-			}
-			else
-				countHandler.postDelayed( countRunnable, 500 );
-
-			lastCountAt = now;
-		}
+		if( intent != null )
+			handleCommands( intent );
 
 		return START_STICKY;
 	}
@@ -163,74 +127,33 @@ android.util.Log.d( "mf:dbg", "mf:dbg: double click!" );
 		return binder;
 	}
 
-	@Override
-	public void onSensorChanged( SensorEvent event )
+	public void unregisterMediaButton()
 	{
-		switch( event.sensor.getType() )
-		{
-			case Sensor.TYPE_LINEAR_ACCELERATION:
-				accelerationEvent( event );
-				break;
-		}
+		if( remoteControlReceiver == null )
+			return;
+
+		audioManager.unregisterMediaButtonEventReceiver(
+			remoteControlReceiver );
+
+		remoteControlReceiver = null;
 	}
 
-	@Override
-	public void onAccuracyChanged( Sensor accelerationSensor, int accuracy )
+	public void registerMediaButton()
 	{
-	}
+		if( audioManager == null ||
+			!getSharedPreferences().getBoolean(
+				CounterPreferenceActivity.USE_MEDIA_BUTTON,
+				true ) )
+			return;
 
-	@Override
-	public void onLocationChanged( Location location )
-	{
-		if( lastLocation != null &&
-			lastLocation.getTime() != location.getTime() )
-		{
-			float d = location.distanceTo(
-				lastLocation );
+		unregisterMediaButton();
 
-			if( lastLocation.getAccuracy() < d &&
-				location.getAccuracy() < d )
-				distance += d;
-		}
+		remoteControlReceiver = new ComponentName(
+			getPackageName(),
+			RemoteControlReceiver.class.getName() );
 
-		if( location != null )
-			lastLocation = location;
-	}
-
-	@Override
-	public void onStatusChanged( String provider, int status, Bundle extras )
-	{
-	}
-
-	@Override
-	public void onProviderEnabled( String provider )
-	{
-	}
-
-	@Override
-	public void onProviderDisabled( String provider )
-	{
-	}
-
-	@Override
-	public void run()
-	{
-		while( running )
-		{
-			if( tripleTap )
-			{
-				count();
-				tripleTap = false;
-			}
-
-			try
-			{
-				thread.yield();
-			}
-			catch( Exception e )
-			{
-			}
-		}
+		audioManager.registerMediaButtonEventReceiver(
+			remoteControlReceiver );
 	}
 
 	public void count()
@@ -246,117 +169,24 @@ android.util.Log.d( "mf:dbg", "mf:dbg: double click!" );
 		}
 	}
 
-	public void reset()
+	public void stop()
 	{
-		errors = 0;
-		distance = 0;
-		driving = false;
-
-		hit = 0;
-		firstTap = 0;
-		secondTap = 0;
-		tripleTap = false;
-		blindFor = 0;
-	}
-
-	private void accelerationEvent( SensorEvent event )
-	{
-		/*final float z = event.values[2];
-		final long t = event.timestamp;
-
-		if( t < blindFor )
-			break;
-
-		if( z < -6 )
-			hit = event.timestamp;
-		else if( secondTap > 0 &&
-			t-secondTap > 1000000000 )
-		{
-			firstTap = 0;
-			secondTap = 0;
-		}
-		else if( firstTap > 0 &&
-			t-firstTap > 1000000000 )
-		{
-			firstTap = 0;
-			secondTap = 0;
-		}
-
-		if( hit > 0 &&
-			t-hit > 100000000 )
-		{
-			if( firstTap == 0 )
-				firstTap = hit;
-			else if( secondTap == 0 )
-				secondTap = hit;
-			else
-			{
-				firstTap = 0;
-				secondTap = 0;
-				tripleTap = true;
-
-				// some vibration motors actually point
-				// in Z direction and will trigger
-				// it all again so be blind for the
-				// time of vibration
-				blindFor = hit+1100000000l;
-			}
-
-			hit = 0;
-		}*/
-
-		final long t = event.timestamp;
-		final float z = event.values[2];
-
-		if( lastAccelerationEvent > 0 )
-		{
-			final AccelerationEvent ae =
-				accelerationHistory[accelerationMark];
-
-			ae.z = z;
-			ae.time = t;
-
-			if( ++accelerationMark >= accelerationMax )
-			{
-				accelerationMark = 0;
-				accelerationHistoryComplete = true;
-			}
-		}
-
-		lastAccelerationEvent = t;
-	}
-
-	private void unregisterSensors()
-	{
-		if( wakeLock != null )
-		{
-			wakeLock.release();
-		}
-
-		if( accelerationListening )
-		{
-			stopThread();
-			sensorManager.unregisterListener( this );
-			accelerationListening = false;
-		}
-
-		if( remoteControlReceiver != null )
-		{
-			audioManager.unregisterMediaButtonEventReceiver(
-				remoteControlReceiver );
-		}
+		if( !started )
+			return;
 
 		if( locationManager != null )
-		{
-			locationManager.removeUpdates( this );
-		}
+			locationManager.removeUpdates( locationRecorder );
+
+		notifications.counting.hide();
+		started = false;
 	}
 
-	private void registerSensors()
+	public void start()
 	{
-		SharedPreferences p = getSharedPreferences(
-			CounterPreferenceActivity.SHARED_PREFERENCES_NAME,
-			0 );
+		if( started )
+			return;
+
+		save();
 
 		if( locationManager != null )
 		{
@@ -368,81 +198,166 @@ android.util.Log.d( "mf:dbg", "mf:dbg: double click!" );
 				LocationManager.PASSIVE_PROVIDER,
 				1000,
 				metersBetweenUpdates,
-				this );
+				locationRecorder );
 
 			locationManager.requestLocationUpdates(
 				LocationManager.NETWORK_PROVIDER,
 				5000,
 				metersBetweenUpdates,
-				this );
+				locationRecorder );
 
 			locationManager.requestLocationUpdates(
 				LocationManager.GPS_PROVIDER,
 				5000,
 				metersBetweenUpdates,
-				this );
+				locationRecorder );
 		}
 
-		if( audioManager != null &&
-			p.getBoolean(
-				CounterPreferenceActivity.USE_MEDIA_BUTTON,
+		if( getSharedPreferences().getBoolean(
+				CounterPreferenceActivity.SHOW_NOTIFICATION,
 				true ) )
-		{
-			remoteControlReceiver = new ComponentName(
-				getPackageName(),
-				RemoteControlReceiver.class.getName() );
+			notifications.counting.show();
 
-			audioManager.registerMediaButtonEventReceiver(
-				remoteControlReceiver );
+		started = true;
+	}
+
+	private void save()
+	{
+		dataSource.insert(
+			rideStart,
+			new Date(),
+			errors,
+			distance );
+
+		rideStart = new Date();
+		errors = 0;
+		distance = 0;
+	}
+
+	private void handleCommands( Intent intent )
+	{
+		int state = intent.getIntExtra( STATE, -1 );
+
+		if( state > -1 )
+		{
+			switch( state )
+			{
+				case 0:
+					unregisterMediaButton();
+					break;
+				case 1:
+					registerMediaButton();
+					break;
+			}
 		}
-
-		if( sensorManager != null &&
-			p.getBoolean(
-				CounterPreferenceActivity.USE_KNOCK_DETECTION,
-				true ) )
+		else
 		{
-			/*if( powerManager != null &&
-				(wakeLock = powerManager.newWakeLock(
-					PowerManager.SCREEN_DIM_WAKE_LOCK,
-					"Counter" )) != null )
-				wakeLock.acquire();*/
+			long time = intent.getLongExtra( TIME, 1 );
 
-			if( !accelerationListening &&
-				(accelerationSensor != null ||
-					(accelerationSensor = sensorManager.getDefaultSensor(
-						Sensor.TYPE_LINEAR_ACCELERATION )) != null) &&
-				(accelerationListening = sensorManager.registerListener(
-					this,
-					accelerationSensor,
-					SensorManager.SENSOR_DELAY_GAME )) )
-				startThread();
+			switch( intent.getIntExtra( ACTION, -1 ) )
+			{
+				case android.view.KeyEvent.ACTION_DOWN:
+					// there may come multiple ACTION_DOWNs
+					// before there's a ACTION_UP but only
+					// the very first one is interesting
+					if( buttonDown == 0 )
+						buttonDown = time;
+					break;
+				case android.view.KeyEvent.ACTION_UP:
+					if( time-buttonDown < 900 )
+					{
+						count();
+					}
+					else
+					{
+						vibrator.vibrate( 3000 );
+
+						if( started )
+							stop();
+						else
+							start();
+					}
+					buttonDown = 0;
+					break;
+			}
 		}
 	}
 
-	private void startThread()
+	private SharedPreferences getSharedPreferences()
 	{
-		if( running )
-			return;
-
-		running = true;
-
-		thread = new Thread( this );
-		thread.start();
+		return getSharedPreferences(
+			CounterPreferenceActivity.SHARED_PREFERENCES_NAME,
+			0 );
 	}
 
-	private void stopThread()
+	private class LocationRecorder implements LocationListener
 	{
-		if( !running )
-			return;
-
-		running = false;
-
-		try
+		@Override
+		public void onLocationChanged( Location location )
 		{
-			thread.join();
+			if( lastLocation != null &&
+				lastLocation.getTime() != location.getTime() )
+			{
+				float d = location.distanceTo( lastLocation );
+
+				// if location has no bearing and speed and its
+				// accuracy is bigger than the last one then
+				// consolidate positions because it's likely
+				// the device isn't really moving at all
+				if( !location.hasBearing() &&
+					!location.hasSpeed() &&
+					location.getAccuracy() > lastLocation.getAccuracy() )
+					average( lastLocation, location );
+				else
+					distance += d;
+			}
+
+			if( location != null )
+				lastLocation = location;
 		}
-		catch( Exception e )
+
+		@Override
+		public void onStatusChanged(
+			String provider,
+			int status,
+			Bundle extras )
 		{
+		}
+
+		@Override
+		public void onProviderEnabled( String provider )
+		{
+		}
+
+		@Override
+		public void onProviderDisabled( String provider )
+		{
+		}
+
+		private void average( Location a, Location b )
+		{
+			a.setLatitude( average(
+				a.getLatitude(),
+				b.getLatitude() ) );
+
+			a.setLongitude( average(
+				a.getLongitude(),
+				b.getLongitude() ) );
+		}
+
+		private double average( double a, double b )
+		{
+			double diff = ((a-b)+360.0) % 360.0;
+
+			if( diff > 180.0 )
+				diff -= 360.0;
+
+			double average = (b+diff/2.0) % 360.0;
+
+			if( average < .0 )
+				average += 360.0;
+
+			return average;
 		}
 	}
 }

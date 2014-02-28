@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Handler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,9 +20,10 @@ public class CounterDataSource
 	public static final String COLUMN_ERRORS = "errors";
 	public static final String COLUMN_DISTANCE = "distance";
 
-	private SQLiteDatabase db;
+	private SQLiteDatabase db = null;
 	private OpenHelper helper;
 	private Context context;
+	private Handler handler = new Handler();
 
 	public CounterDataSource( Context c )
 	{
@@ -29,18 +31,37 @@ public class CounterDataSource
 		context = c;
 	}
 
-	public void open() throws SQLException
+	public void open( final Runnable runnable ) throws SQLException
 	{
-		db = helper.getWritableDatabase();
+		if( db != null )
+			return;
+
+		new Thread( new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				db = helper.getWritableDatabase();
+
+				handler.post( runnable );
+			}
+		} ).start();
 	}
 
 	public void close()
 	{
+		if( db == null )
+			return;
+
 		helper.close();
+		db = null;
 	}
 
 	public Cursor queryAll()
 	{
+		if( db == null )
+			return null;
+
 		return db.rawQuery(
 			"SELECT "+
 				COLUMN_ID+","+
@@ -60,6 +81,9 @@ public class CounterDataSource
 		int errors,
 		float distance )
 	{
+		if( db == null )
+			return 0;
+
 		ContentValues cv = new ContentValues();
 		cv.put( COLUMN_START, dateToString( start ) );
 		cv.put( COLUMN_STOP, dateToString( stop ) );
@@ -80,6 +104,9 @@ public class CounterDataSource
 
 	public void remove( long id )
 	{
+		if( db == null )
+			return;
+
 		db.delete(
 			TABLE,
 			COLUMN_ID+"="+id,

@@ -11,20 +11,14 @@
 			android:summary="@string/use_media_button_summary"
 			android:checked="true"
 			android:defaultValue="true"/>
-		<CheckBoxPreference
-			android:key="use_knock_detection"
-			android:title="@string/use_knock_detection"
-			android:summary="@string/use_knock_detection_summary"
-			android:checked="true"
-			android:defaultValue="true"/>
 	</PreferenceCategory>
 	<PreferenceCategory
-		android:title="@string/tracking"
-		android:key="tracking_preferences">
+		android:title="@string/notification"
+		android:key="recognition_preferences">
 		<CheckBoxPreference
-			android:key="auto_detect_driving"
-			android:title="@string/auto_detect_driving"
-			android:summary="@string/auto_detect_driving_summary"
+			android:key="show_notification"
+			android:title="@string/show_notification"
+			android:summary="@string/show_notification_summary"
 			android:checked="true"
 			android:defaultValue="true"/>
 	</PreferenceCategory>
