@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">ErrorCounter</string>
+	<string name="error_service">Cannot start service</string>
+	<string name="instructions">Put your phone in your jacket and knock three times on its back to log an error. The phone will vibrate to confirm.</string>
+	<string name="distance_heading">Distance driven:</string>
+	<string name="errors_heading">Errors recorded:</string>
+	<string name="reset">Reset</string>
+	<string name="reset_successful">Data reset</string>
+</resources>
