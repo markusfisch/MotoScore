@@ -6,18 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.widget.Toast;
 
 import java.util.Date;
 
@@ -37,11 +33,15 @@ public class CounterService
 		}
 	};
 
+	public static final String COMMAND = "command";
 	public static final String STATE = "state";
 	public static final String ACTION = "action";
 	public static final String TIME = "time";
 
-	public CounterDataSource dataSource;
+	public static final int COMMAND_STATE = 0;
+	public static final int COMMAND_ACTION = 1;
+
+	public CounterDataSource dataSource = null;
 	public CounterServiceListener listener = null;
 	public int errors = 0;
 	public float distance = 0;
@@ -66,14 +66,7 @@ public class CounterService
 	public void onCreate()
 	{
 		dataSource = new CounterDataSource( getApplicationContext() );
-		dataSource.open( new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				dataSource.queryAll();
-			}
-		} );
+		dataSource.open();
 
 		notifications = new Notifications( getApplicationContext() );
 
@@ -116,7 +109,15 @@ public class CounterService
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
 		if( intent != null )
-			handleCommands( intent );
+			switch( intent.getIntExtra( COMMAND, -1 ) )
+			{
+				case COMMAND_STATE:
+					handleStateCommand( intent );
+					break;
+				case COMMAND_ACTION:
+					handleActionCommand( intent );
+					break;
+			}
 
 		return START_STICKY;
 	}
@@ -165,7 +166,7 @@ public class CounterService
 			if( listener != null )
 				listener.onCount();
 
-			vibrator.vibrate( 1000 );
+			vibrate( 1000 );
 		}
 	}
 
@@ -190,25 +191,24 @@ public class CounterService
 
 		if( locationManager != null )
 		{
-			// don't permanently request position updates
-			// because that would drain the battery
+			int milliSecondsBetweenUpdates = 10000;
 			int metersBetweenUpdates = 10;
 
 			locationManager.requestLocationUpdates(
 				LocationManager.PASSIVE_PROVIDER,
-				1000,
+				milliSecondsBetweenUpdates,
 				metersBetweenUpdates,
 				locationRecorder );
 
 			locationManager.requestLocationUpdates(
 				LocationManager.NETWORK_PROVIDER,
-				5000,
+				milliSecondsBetweenUpdates,
 				metersBetweenUpdates,
 				locationRecorder );
 
 			locationManager.requestLocationUpdates(
 				LocationManager.GPS_PROVIDER,
-				5000,
+				milliSecondsBetweenUpdates,
 				metersBetweenUpdates,
 				locationRecorder );
 		}
@@ -223,63 +223,75 @@ public class CounterService
 
 	private void save()
 	{
-		dataSource.insert(
-			rideStart,
-			new Date(),
-			errors,
-			distance );
+		if( !dataSource.ready() )
+			Toast.makeText(
+				getApplicationContext(),
+				R.string.error_data_source,
+				Toast.LENGTH_LONG ).show();
+		else
+			dataSource.insert(
+				rideStart,
+				new Date(),
+				errors,
+				distance );
 
 		rideStart = new Date();
 		errors = 0;
 		distance = 0;
 	}
 
-	private void handleCommands( Intent intent )
+	private void vibrate( int milliseconds )
 	{
-		int state = intent.getIntExtra( STATE, -1 );
+		if( !getSharedPreferences().getBoolean(
+				CounterPreferenceActivity.HAPTIC_FEEDBACK,
+				true ) )
+			return;
 
-		if( state > -1 )
+		vibrator.vibrate( milliseconds );
+	}
+
+	private void handleStateCommand( Intent intent )
+	{
+		switch( intent.getIntExtra( STATE, -1 ) )
 		{
-			switch( state )
-			{
-				case 0:
-					unregisterMediaButton();
-					break;
-				case 1:
-					registerMediaButton();
-					break;
-			}
+			case 0:
+				unregisterMediaButton();
+				break;
+			case 1:
+				registerMediaButton();
+				break;
 		}
-		else
+	}
+
+	private void handleActionCommand( Intent intent )
+	{
+		long time = intent.getLongExtra( TIME, 1 );
+
+		switch( intent.getIntExtra( ACTION, -1 ) )
 		{
-			long time = intent.getLongExtra( TIME, 1 );
+			case android.view.KeyEvent.ACTION_DOWN:
+				// there may come multiple ACTION_DOWNs
+				// before there's a ACTION_UP but only
+				// the very first one is interesting
+				if( buttonDown == 0 )
+					buttonDown = time;
+				break;
+			case android.view.KeyEvent.ACTION_UP:
+				if( time-buttonDown < 900 )
+				{
+					count();
+				}
+				else
+				{
+					vibrate( 3000 );
 
-			switch( intent.getIntExtra( ACTION, -1 ) )
-			{
-				case android.view.KeyEvent.ACTION_DOWN:
-					// there may come multiple ACTION_DOWNs
-					// before there's a ACTION_UP but only
-					// the very first one is interesting
-					if( buttonDown == 0 )
-						buttonDown = time;
-					break;
-				case android.view.KeyEvent.ACTION_UP:
-					if( time-buttonDown < 900 )
-					{
-						count();
-					}
+					if( started )
+						stop();
 					else
-					{
-						vibrator.vibrate( 3000 );
-
-						if( started )
-							stop();
-						else
-							start();
-					}
-					buttonDown = 0;
-					break;
-			}
+						start();
+				}
+				buttonDown = 0;
+				break;
 		}
 	}
 
@@ -295,25 +307,17 @@ public class CounterService
 		@Override
 		public void onLocationChanged( Location location )
 		{
-			if( lastLocation != null &&
-				lastLocation.getTime() != location.getTime() )
+			if( lastLocation != null )
 			{
-				float d = location.distanceTo( lastLocation );
+				float d = lastLocation.distanceTo( location );
 
-				// if location has no bearing and speed and its
-				// accuracy is bigger than the last one then
-				// consolidate positions because it's likely
-				// the device isn't really moving at all
-				if( !location.hasBearing() &&
-					!location.hasSpeed() &&
-					location.getAccuracy() > lastLocation.getAccuracy() )
-					average( lastLocation, location );
-				else
+				// we haven't moved at least 100 meters in 10 seconds
+				// we're probably not riding
+				if( d > 100 )
 					distance += d;
 			}
 
-			if( location != null )
-				lastLocation = location;
+			lastLocation = location;
 		}
 
 		@Override
@@ -332,32 +336,6 @@ public class CounterService
 		@Override
 		public void onProviderDisabled( String provider )
 		{
-		}
-
-		private void average( Location a, Location b )
-		{
-			a.setLatitude( average(
-				a.getLatitude(),
-				b.getLatitude() ) );
-
-			a.setLongitude( average(
-				a.getLongitude(),
-				b.getLongitude() ) );
-		}
-
-		private double average( double a, double b )
-		{
-			double diff = ((a-b)+360.0) % 360.0;
-
-			if( diff > 180.0 )
-				diff -= 360.0;
-
-			double average = (b+diff/2.0) % 360.0;
-
-			if( average < .0 )
-				average += 360.0;
-
-			return average;
 		}
 	}
 }

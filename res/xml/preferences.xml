@@ -11,6 +11,12 @@
 			android:summary="@string/use_media_button_summary"
 			android:checked="true"
 			android:defaultValue="true"/>
+		<CheckBoxPreference
+			android:key="haptic_feedback"
+			android:title="@string/haptic_feedback"
+			android:summary="@string/haptic_feedback_summary"
+			android:checked="true"
+			android:defaultValue="true"/>
 	</PreferenceCategory>
 	<PreferenceCategory
 		android:title="@string/notification"

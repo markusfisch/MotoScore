@@ -6,13 +6,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Date;
 
 public class MainActivity
 	extends Activity
@@ -27,6 +36,7 @@ public class MainActivity
 		{
 			service = ((CounterService.Binder)binder).getService();
 			service.listener = MainActivity.this;
+			query();
 			refresh();
 		}
 
@@ -38,10 +48,15 @@ public class MainActivity
 		}
 	};
 	private boolean serviceBound = false;
-	public static CounterService service = null;
+	private CounterService service = null;
+	private CounterAdapter adapter = null;
+	private Handler handler = new Handler();
+	private ListView listView;
+	private ImageButton startButton;
+	private View counterView;
+	private TextView dateTextView;
 	private TextView errorsTextView;
 	private TextView distanceTextView;
-	private TextView averageTextView;
 
 	@Override
 	public void onCreate( Bundle state )
@@ -53,11 +68,17 @@ public class MainActivity
 			this,
 			CounterService.class ) );
 
+		requestWindowFeature( Window.FEATURE_NO_TITLE );
 		setContentView( R.layout.activity_main );
 
+		listView = (ListView)findViewById( R.id.rides );
+		startButton = (ImageButton)findViewById( R.id.start );
+		counterView = (View)findViewById( R.id.counter );
+		dateTextView = (TextView)findViewById( R.id.date );
 		errorsTextView = (TextView)findViewById( R.id.errors );
 		distanceTextView = (TextView)findViewById( R.id.distance );
-		averageTextView = (TextView)findViewById( R.id.average );
+
+		registerForContextMenu( listView );
 	}
 
 	@Override
@@ -65,7 +86,8 @@ public class MainActivity
 	{
 		super.onResume();
 
-		// bind the service to be notified of new countings while visible
+		// bind the service to be notified of new countings
+		// while visible
 		serviceBound = bindService(
 			new Intent(
 				this,
@@ -79,7 +101,8 @@ public class MainActivity
 				R.string.error_service,
 				Toast.LENGTH_LONG ).show();
 
-		// re-register media button in case some other app had registered
+		// re-register media button in case some other app
+		// stepped in between
 		if( service != null )
 			service.registerMediaButton();
 
@@ -109,11 +132,10 @@ public class MainActivity
 	{
 		switch( item.getItemId() )
 		{
-			case R.id.history:
-				showHistory();
-				return true;
 			case R.id.preferences:
-				showPreferences();
+				startActivity( new Intent(
+					this,
+					CounterPreferenceActivity.class ) );
 				return true;
 		}
 
@@ -121,70 +143,94 @@ public class MainActivity
 	}
 
 	@Override
-	public void onCount()
+	public void onCreateContextMenu(
+		ContextMenu menu,
+		View v,
+		ContextMenuInfo menuInfo )
 	{
-		MainActivity.this.runOnUiThread( new Runnable()
-		{
-			public void run()
-			{
-				refresh();
-			}
-		} );
+		super.onCreateContextMenu( menu, v, menuInfo );
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate( R.menu.ride_options, menu );
 	}
 
-	public void onReset( View v )
+	@Override
+	public boolean onContextItemSelected( MenuItem item )
+	{
+		AdapterView.AdapterContextMenuInfo info =
+			(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+
+		switch( item.getItemId() )
+		{
+			case R.id.remove_ride:
+				service.dataSource.remove( info.id );
+				refresh();
+				return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public void onCount()
+	{
+		refresh();
+	}
+
+	public void onStart( View v )
 	{
 		if( service.started )
-		{
 			service.stop();
-			service.start();
-		}
 		else
+		{
 			service.start();
+
+			dateTextView.setText( new Date().toString() );
+		}
+
+		counterView.setVisibility( service.started ?
+			View.VISIBLE :
+			View.GONE );
 
 		refresh();
 
-		Toast.makeText(
+		startButton.setImageResource( service.started ?
+			R.drawable.ic_stop :
+			R.drawable.ic_start );
+	}
+
+	private void query()
+	{
+		if( !service.dataSource.ready() )
+			handler.postDelayed( new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					query();
+				}
+			}, 500 );
+
+		adapter = new CounterAdapter(
 			this,
-			R.string.reset_successful,
-			Toast.LENGTH_LONG ).show();
+			service.dataSource.queryAll() );
+
+		listView.setAdapter( adapter );
 	}
 
 	private void refresh()
 	{
-		if( errorsTextView == null ||
-			distanceTextView == null )
-			return;
+		if( adapter != null )
+			adapter.changeCursor( service.dataSource.queryAll() );
 
-		int errors = 0;
-		int distance = 0;
-
-		if( service != null )
+		if( service != null &&
+			service.started )
 		{
-			errors = service.errors;
-			distance = (int)Math.ceil( service.distance/1000 );
+			errorsTextView.setText(
+				String.format( "%d", service.errors ) );
+			distanceTextView.setText(
+				String.format( "%d km",
+					(int)Math.ceil( service.distance/1000 ) ) );
 		}
-
-		errorsTextView.setText(
-			String.format( "%d", errors ) );
-		distanceTextView.setText(
-			String.format( "%d km", distance ) );
-		averageTextView.setText(
-			String.format( "%.1f",
-				(float)errors/Math.max( 1, distance ) ) );
-	}
-
-	private void showHistory()
-	{
-		startActivity( new Intent(
-			this,
-			HistoryActivity.class ) );
-	}
-
-	private void showPreferences()
-	{
-		startActivity( new Intent(
-			this,
-			CounterPreferenceActivity.class ) );
 	}
 }

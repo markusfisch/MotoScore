@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Handler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,7 +22,6 @@ public class CounterDataSource
 	private SQLiteDatabase db = null;
 	private OpenHelper helper;
 	private Context context;
-	private Handler handler = new Handler();
 
 	public CounterDataSource( Context c )
 	{
@@ -31,7 +29,12 @@ public class CounterDataSource
 		context = c;
 	}
 
-	public void open( final Runnable runnable ) throws SQLException
+	public boolean ready()
+	{
+		return db != null;
+	}
+
+	public void open() throws SQLException
 	{
 		if( db != null )
 			return;
@@ -42,17 +45,12 @@ public class CounterDataSource
 			public void run()
 			{
 				db = helper.getWritableDatabase();
-
-				handler.post( runnable );
 			}
 		} ).start();
 	}
 
 	public void close()
 	{
-		if( db == null )
-			return;
-
 		helper.close();
 		db = null;
 	}
@@ -74,8 +72,7 @@ public class CounterDataSource
 			null );
 	}
 
-	public static long insert(
-		SQLiteDatabase db,
+	public long insert(
 		Date start,
 		Date stop,
 		int errors,
@@ -84,21 +81,6 @@ public class CounterDataSource
 		if( db == null )
 			return 0;
 
-		ContentValues cv = new ContentValues();
-		cv.put( COLUMN_START, dateToString( start ) );
-		cv.put( COLUMN_STOP, dateToString( stop ) );
-		cv.put( COLUMN_ERRORS, errors );
-		cv.put( COLUMN_DISTANCE, distance );
-
-		return db.insert( TABLE, null, cv );
-	}
-
-	public long insert(
-		Date start,
-		Date stop,
-		int errors,
-		float distance )
-	{
 		return insert( db, start, stop, errors, distance );
 	}
 
@@ -111,6 +93,22 @@ public class CounterDataSource
 			TABLE,
 			COLUMN_ID+"="+id,
 			null );
+	}
+
+	private static long insert(
+		SQLiteDatabase db,
+		Date start,
+		Date stop,
+		int errors,
+		float distance )
+	{
+		ContentValues cv = new ContentValues();
+		cv.put( COLUMN_START, dateToString( start ) );
+		cv.put( COLUMN_STOP, dateToString( stop ) );
+		cv.put( COLUMN_ERRORS, errors );
+		cv.put( COLUMN_DISTANCE, distance );
+
+		return db.insert( TABLE, null, cv );
 	}
 
 	private static String dateToString( Date date )

@@ -10,12 +10,12 @@ public class HeadsetReceiver
 	@Override
 	public void onReceive( Context context, Intent intent )
 	{
-		if( Intent.ACTION_HEADSET_PLUG.equals( intent.getAction() ) )
-		{
+		final String action = intent.getAction();
+
+		if( action.equals( Intent.ACTION_HEADSET_PLUG ) )
 			sendState(
 				context,
 				intent.getIntExtra( "state", 0 ) );
-		}
 	}
 
 	private void sendState(
@@ -25,6 +25,10 @@ public class HeadsetReceiver
 		final Intent count = new Intent(
 			context,
 			CounterService.class );
+
+		count.putExtra(
+			CounterService.COMMAND,
+			CounterService.COMMAND_STATE );
 
 		count.putExtra(
 			CounterService.STATE,

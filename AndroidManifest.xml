@@ -40,11 +40,6 @@
 		</activity>
 		<activity
 			android:theme="@style/Theme.CounterTheme"
-			android:name="HistoryActivity"
-			android:label="@string/history">
-		</activity>
-		<activity
-			android:theme="@style/Theme.CounterTheme"
 			android:name="CounterPreferenceActivity"
 			android:label="@string/preferences"
 			android:exported="true">

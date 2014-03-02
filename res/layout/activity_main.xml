@@ -1,38 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:orientation="vertical">
-	<ScrollView
+	android:background="@color/background">
+	<LinearLayout
 		android:layout_width="fill_parent"
-		android:layout_height="0dp"
-		android:layout_weight="1">
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
 		<LinearLayout
+			android:orientation="horizontal"
 			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
+			android:layout_height="48dp"
+			android:layout_gravity="left|center_vertical"
+			android:background="@color/action_bar_background">
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_weight="1"
+				android:layout_width="0dp"
+				android:layout_height="fill_parent">
+				<ImageView
+					android:layout_margin="8dp"
+					android:layout_width="32dp"
+					android:layout_height="32dp"
+					android:gravity="center"
+					android:src="@drawable/ic_launcher"/>
+				<TextView
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					android:gravity="center_vertical"
+					android:text="@string/app_name"
+					android:textColor="@color/foreground"
+					android:textSize="16dp"
+					android:lines="1"
+					android:ellipsize="end"/>
+			</LinearLayout>
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_weight="0"
+				android:layout_width="48dp"
+				android:layout_height="48dp">
+				<ImageButton
+					android:id="@+id/start"
+					android:layout_width="48dp"
+					android:layout_height="48dp"
+					android:padding="12dp"
+					android:gravity="center"
+					android:scaleType="fitXY"
+					android:src="@drawable/ic_start"
+					android:background="@drawable/button"
+					android:onClick="onStart"/>
+			</LinearLayout>
+		</LinearLayout>
+		<LinearLayout
+			android:id="@+id/counter"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:padding="8dp">
+			android:visibility="gone">
 			<TextView
+				android:id="@+id/date"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:layout_weight="0"
-				android:paddingBottom="8dp"
-				android:text="@string/distance_heading"/>
+				android:paddingBottom="8dp"/>
 			<TextView
 				android:id="@+id/distance"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:layout_weight="0"
-				android:layout_gravity="center"
-				android:gravity="center"
-				android:textSize="24dp"
 				android:paddingBottom="8dp"/>
-			<TextView
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="0"
-				android:paddingBottom="8dp"
-				android:text="@string/errors_heading"/>
 			<TextView
 				android:id="@+id/errors"
 				android:layout_width="fill_parent"
@@ -42,31 +78,11 @@
 				android:paddingBottom="8dp"
 				android:gravity="center"
 				android:textSize="96dp"/>
-			<TextView
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="0"
-				android:paddingBottom="8dp"
-				android:text="@string/average_heading"/>
-			<TextView
-				android:id="@+id/average"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="0"
-				android:layout_gravity="center"
-				android:gravity="center"
-				android:textSize="24dp"/>
-			<View
-				android:layout_width="fill_parent"
-				android:layout_height="0dp"
-				android:layout_weight="1"/>
 		</LinearLayout>
-	</ScrollView>
-	<Button
-		android:id="@+id/reset"
-		android:layout_width="fill_parent"
-		android:layout_height="48dp"
-		android:layout_weight="0"
-		android:text="@string/reset"
-		android:onClick="onReset"/>
-</LinearLayout>
+		<ListView
+			android:id="@+id/rides"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+		</ListView>
+	</LinearLayout>
+</RelativeLayout>

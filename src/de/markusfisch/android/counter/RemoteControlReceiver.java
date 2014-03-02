@@ -11,7 +11,9 @@ public class RemoteControlReceiver
 	@Override
 	public void onReceive( Context context, Intent intent )
 	{
-		if( Intent.ACTION_MEDIA_BUTTON.equals( intent.getAction() ) )
+		final String action = intent.getAction();
+
+		if( action.equals( Intent.ACTION_MEDIA_BUTTON ) )
 		{
 			final KeyEvent event = (KeyEvent)
 				intent.getParcelableExtra( Intent.EXTRA_KEY_EVENT );
@@ -23,21 +25,6 @@ public class RemoteControlReceiver
 		}
 	}
 
-	private void sendState(
-		final Context context,
-		final int state )
-	{
-		final Intent count = new Intent(
-			context,
-			CounterService.class );
-
-		count.putExtra(
-			CounterService.STATE,
-			state );
-
-		context.startService( count );
-	}
-
 	private void sendAction(
 		final Context context,
 		final int action,
@@ -46,6 +33,10 @@ public class RemoteControlReceiver
 		final Intent count = new Intent(
 			context,
 			CounterService.class );
+
+		count.putExtra(
+			CounterService.COMMAND,
+			CounterService.COMMAND_ACTION );
 
 		count.putExtra(
 			CounterService.ACTION,
