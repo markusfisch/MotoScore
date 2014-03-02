@@ -68,7 +68,7 @@ public class CounterAdapter
 
 		setTextView(
 			(TextView)view.findViewById( R.id.distance ),
-			String.format( "%d", distance ) );
+			String.format( "%d km", distance ) );
 
 		setTextView(
 			(TextView)view.findViewById( R.id.errors ),

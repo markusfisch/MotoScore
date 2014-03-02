@@ -36,6 +36,12 @@ public class MainActivity
 		{
 			service = ((CounterService.Binder)binder).getService();
 			service.listener = MainActivity.this;
+
+			// re-register media button in case some other app
+			// stepped in between
+			service.registerMediaButton();
+
+			setState();
 			query();
 			refresh();
 		}
@@ -100,11 +106,6 @@ public class MainActivity
 				this,
 				R.string.error_service,
 				Toast.LENGTH_LONG ).show();
-
-		// re-register media button in case some other app
-		// stepped in between
-		if( service != null )
-			service.registerMediaButton();
 
 		refresh();
 	}
@@ -182,17 +183,17 @@ public class MainActivity
 		if( service.started )
 			service.stop();
 		else
-		{
 			service.start();
 
-			dateTextView.setText( new Date().toString() );
-		}
+		setState();
+		refresh();
+	}
 
+	private void setState()
+	{
 		counterView.setVisibility( service.started ?
 			View.VISIBLE :
 			View.GONE );
-
-		refresh();
 
 		startButton.setImageResource( service.started ?
 			R.drawable.ic_stop :
@@ -221,11 +222,14 @@ public class MainActivity
 	private void refresh()
 	{
 		if( adapter != null )
-			adapter.changeCursor( service.dataSource.queryAll() );
+			adapter.changeCursor(
+				service.dataSource.queryAll() );
 
 		if( service != null &&
 			service.started )
 		{
+			dateTextView.setText(
+				service.rideStart.toString() );
 			errorsTextView.setText(
 				String.format( "%d", service.errors ) );
 			distanceTextView.setText(

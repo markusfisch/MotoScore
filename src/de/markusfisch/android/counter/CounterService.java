@@ -180,6 +180,8 @@ public class CounterService
 
 		notifications.counting.hide();
 		started = false;
+
+		save();
 	}
 
 	public void start()
@@ -187,24 +189,14 @@ public class CounterService
 		if( started )
 			return;
 
-		save();
+		rideStart = new Date();
+		errors = 0;
+		distance = 0;
 
 		if( locationManager != null )
 		{
 			int milliSecondsBetweenUpdates = 10000;
 			int metersBetweenUpdates = 10;
-
-			locationManager.requestLocationUpdates(
-				LocationManager.PASSIVE_PROVIDER,
-				milliSecondsBetweenUpdates,
-				metersBetweenUpdates,
-				locationRecorder );
-
-			locationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER,
-				milliSecondsBetweenUpdates,
-				metersBetweenUpdates,
-				locationRecorder );
 
 			locationManager.requestLocationUpdates(
 				LocationManager.GPS_PROVIDER,
@@ -224,20 +216,20 @@ public class CounterService
 	private void save()
 	{
 		if( !dataSource.ready() )
+		{
 			Toast.makeText(
 				getApplicationContext(),
 				R.string.error_data_source,
 				Toast.LENGTH_LONG ).show();
-		else
-			dataSource.insert(
-				rideStart,
-				new Date(),
-				errors,
-				distance );
 
-		rideStart = new Date();
-		errors = 0;
-		distance = 0;
+			return;
+		}
+
+		dataSource.insert(
+			rideStart,
+			new Date(),
+			errors,
+			distance );
 	}
 
 	private void vibrate( int milliseconds )
