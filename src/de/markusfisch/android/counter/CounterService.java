@@ -22,7 +22,7 @@ public class CounterService
 {
 	public interface CounterServiceListener
 	{
-		public void onCount();
+		public void onCounterUpdate();
 	}
 
 	public class Binder extends android.os.Binder
@@ -48,6 +48,8 @@ public class CounterService
 	public boolean started = false;
 	public Date rideStart = new Date();
 
+	private static final int MILLISECONDS_BETWEEN_UPDATES = 10000;
+	private static final int METERS_BETWEEN_UPDATES = 20;
 	private final IBinder binder = new Binder();
 
 	private Notifications notifications = null;
@@ -61,6 +63,7 @@ public class CounterService
 	private ComponentName remoteControlReceiver = null;
 	private long buttonDown = 0;
 	private Vibrator vibrator;
+	private long lastLocationUpdate;
 
 	@Override
 	public void onCreate()
@@ -164,7 +167,7 @@ public class CounterService
 			++errors;
 
 			if( listener != null )
-				listener.onCount();
+				listener.onCounterUpdate();
 
 			vibrate( 1000 );
 		}
@@ -182,6 +185,9 @@ public class CounterService
 		started = false;
 
 		save();
+
+		if( listener != null )
+			listener.onCounterUpdate();
 	}
 
 	public void start()
@@ -195,13 +201,10 @@ public class CounterService
 
 		if( locationManager != null )
 		{
-			int milliSecondsBetweenUpdates = 10000;
-			int metersBetweenUpdates = 10;
-
 			locationManager.requestLocationUpdates(
 				LocationManager.GPS_PROVIDER,
-				milliSecondsBetweenUpdates,
-				metersBetweenUpdates,
+				MILLISECONDS_BETWEEN_UPDATES,
+				METERS_BETWEEN_UPDATES,
 				locationRecorder );
 		}
 
@@ -211,6 +214,9 @@ public class CounterService
 			notifications.counting.show();
 
 		started = true;
+
+		if( listener != null )
+			listener.onCounterUpdate();
 	}
 
 	private void save()
@@ -271,6 +277,9 @@ public class CounterService
 			case android.view.KeyEvent.ACTION_UP:
 				if( time-buttonDown < 900 )
 				{
+					if( !started )
+						start();
+
 					count();
 				}
 				else
@@ -299,17 +308,21 @@ public class CounterService
 		@Override
 		public void onLocationChanged( Location location )
 		{
-			if( lastLocation != null )
+			if( location.getAccuracy() < METERS_BETWEEN_UPDATES &&
+				lastLocationUpdate+MILLISECONDS_BETWEEN_UPDATES <=
+					location.getTime() )
 			{
-				float d = lastLocation.distanceTo( location );
+				if( lastLocation != null )
+				{
+					float d = lastLocation.distanceTo( location );
 
-				// we haven't moved at least 100 meters in 10 seconds
-				// we're probably not riding
-				if( d > 100 )
 					distance += d;
+				}
+
+				lastLocation = location;
 			}
 
-			lastLocation = location;
+			lastLocationUpdate = location.getTime();
 		}
 
 		@Override

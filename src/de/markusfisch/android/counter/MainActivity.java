@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -57,6 +58,7 @@ public class MainActivity
 	private CounterService service = null;
 	private CounterAdapter adapter = null;
 	private Handler handler = new Handler();
+	private StatsView statsView;
 	private ListView listView;
 	private ImageButton startButton;
 	private View counterView;
@@ -77,6 +79,7 @@ public class MainActivity
 		requestWindowFeature( Window.FEATURE_NO_TITLE );
 		setContentView( R.layout.activity_main );
 
+		statsView = (StatsView)findViewById( R.id.stats );
 		listView = (ListView)findViewById( R.id.rides );
 		startButton = (ImageButton)findViewById( R.id.start );
 		counterView = (View)findViewById( R.id.counter );
@@ -173,8 +176,9 @@ public class MainActivity
 	}
 
 	@Override
-	public void onCount()
+	public void onCounterUpdate()
 	{
+		setState();
 		refresh();
 	}
 
@@ -196,8 +200,8 @@ public class MainActivity
 			View.GONE );
 
 		startButton.setImageResource( service.started ?
-			R.drawable.ic_stop :
-			R.drawable.ic_start );
+			R.drawable.ic_menu_stop :
+			R.drawable.ic_menu_start );
 	}
 
 	private void query()
@@ -212,9 +216,9 @@ public class MainActivity
 				}
 			}, 500 );
 
-		adapter = new CounterAdapter(
-			this,
-			service.dataSource.queryAll() );
+		Cursor c = service.dataSource.queryAll();
+		statsView.setCursor( c );
+		adapter = new CounterAdapter( this, c );
 
 		listView.setAdapter( adapter );
 	}
@@ -222,8 +226,11 @@ public class MainActivity
 	private void refresh()
 	{
 		if( adapter != null )
-			adapter.changeCursor(
-				service.dataSource.queryAll() );
+		{
+			Cursor c = service.dataSource.queryAll();
+			statsView.setCursor( c );
+			adapter.changeCursor( c );
+		}
 
 		if( service != null &&
 			service.started )

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="action_bar_background">#fff2c100</color>
+	<color name="action_bar_background">#ff222222</color>
+	<color name="action_bar_foreground">#ffffffff</color>
+	<color name="action_bar_shadow">#ff111111</color>
 	<color name="background">#fff3f3f3</color>
 	<color name="foreground">#ff000000</color>
 </resources>

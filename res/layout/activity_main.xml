@@ -29,8 +29,8 @@
 					android:layout_height="fill_parent"
 					android:gravity="center_vertical"
 					android:text="@string/app_name"
-					android:textColor="@color/foreground"
-					android:textSize="16dp"
+					android:textColor="@color/action_bar_foreground"
+					android:textSize="18dp"
 					android:lines="1"
 					android:ellipsize="end"/>
 			</LinearLayout>
@@ -46,11 +46,15 @@
 					android:padding="12dp"
 					android:gravity="center"
 					android:scaleType="fitXY"
-					android:src="@drawable/ic_start"
+					android:src="@drawable/ic_menu_start"
 					android:background="@drawable/button"
 					android:onClick="onStart"/>
 			</LinearLayout>
 		</LinearLayout>
+		<View
+			android:layout_width="fill_parent"
+			android:layout_height="1dp"
+			android:background="@color/action_bar_shadow"/>
 		<LinearLayout
 			android:id="@+id/counter"
 			android:layout_width="fill_parent"
@@ -79,10 +83,48 @@
 				android:gravity="center"
 				android:textSize="96dp"/>
 		</LinearLayout>
+<!--
 		<ListView
 			android:id="@+id/rides"
 			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:background="@android:color/transparent"
+			android:cacheColorHint="@android:color/transparent"/>
+-->
+
+		<RelativeLayout
+			android:layout_width="fill_parent"
 			android:layout_height="fill_parent">
-		</ListView>
+			<de.markusfisch.android.counter.StatsView
+				android:id="@+id/stats"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"/>
+			<ListView
+				android:id="@+id/rides"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:background="@android:color/transparent"
+				android:cacheColorHint="@android:color/transparent"/>
+		</RelativeLayout>
+
+<!--
+		<RelativeLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+			<de.markusfisch.android.counter.StatsView
+				android:id="@+id/stats"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"/>
+			<ScrollView
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
+				<LinearLayout
+					android:id="@+id/rides"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					android:orientation="vertical"/>
+			</ScrollView>
+		</RelativeLayout>
+-->
 	</LinearLayout>
 </RelativeLayout>
