@@ -1,0 +1,6 @@
+*.swp
+bin
+gen
+build.xml
+local.properties
+project.properties
