@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class CounterService
@@ -43,56 +44,56 @@ public class CounterService
 
 	public CounterDataSource dataSource = null;
 	public CounterServiceListener listener = null;
+	public boolean started = false;
+	public Date rideStart = null;
 	public int errors = 0;
 	public float distance = 0;
-	public boolean started = false;
-	public Date rideStart = new Date();
 
-	private static final int MILLISECONDS_BETWEEN_UPDATES = 10000;
+	private static final int MILLISECONDS_BETWEEN_UPDATES = 30000;
+	private static final int NANOSECONDS_BETWEEN_UPDATES = MILLISECONDS_BETWEEN_UPDATES*1000000;
 	private static final int METERS_BETWEEN_UPDATES = 20;
+	private static final int MINIMUM_ACCURACY = 100;
+
 	private final IBinder binder = new Binder();
 
-	private Notifications notifications = null;
+	private Notifications notifications;
 
 	private LocationManager locationManager = null;
-	private Location lastLocation = null;
 	private LocationRecorder locationRecorder = new LocationRecorder();
+	private long lastLocationUpdate;
+	private float lastLocationAccuracy;
+	private ArrayList<Location> wayPoints = new ArrayList<Location>();
 
-	private HeadsetReceiver headsetReceiver = null;
-	private AudioManager audioManager = null;
+	private HeadsetReceiver headsetReceiver;
+	private AudioManager audioManager;
 	private ComponentName remoteControlReceiver = null;
 	private long buttonDown = 0;
+
 	private Vibrator vibrator;
-	private long lastLocationUpdate;
 
 	@Override
 	public void onCreate()
 	{
-		dataSource = new CounterDataSource( getApplicationContext() );
+		final Context context = getApplicationContext();
+
+		dataSource = new CounterDataSource( context );
 		dataSource.open();
 
-		notifications = new Notifications( getApplicationContext() );
+		notifications = new Notifications( context );
 
 		locationManager = (LocationManager)
 			getSystemService( Context.LOCATION_SERVICE );
+
+		headsetReceiver = new HeadsetReceiver();
+		registerReceiver(
+			headsetReceiver,
+			new IntentFilter( Intent.ACTION_HEADSET_PLUG ) );
 
 		audioManager = (AudioManager)
 			getSystemService( Context.AUDIO_SERVICE );
 
 		vibrator = (Vibrator)
 			getSystemService( Context.VIBRATOR_SERVICE );
-
-		if( (lastLocation = locationManager.getLastKnownLocation(
-				LocationManager.GPS_PROVIDER )) == null &&
-			(lastLocation = locationManager.getLastKnownLocation(
-				LocationManager.NETWORK_PROVIDER )) == null )
-			lastLocation = locationManager.getLastKnownLocation(
-				LocationManager.PASSIVE_PROVIDER );
-
-		headsetReceiver = new HeadsetReceiver();
-		registerReceiver(
-			headsetReceiver,
-			new IntentFilter( Intent.ACTION_HEADSET_PLUG ) );
 
 		registerMediaButton();
 	}
@@ -131,6 +132,224 @@ public class CounterService
 		return binder;
 	}
 
+	public void start()
+	{
+		if( started )
+			return;
+
+		rideStart = new Date();
+		errors = 0;
+		distance = 0;
+		wayPoints.clear();
+
+		// only use last known location if it's fresh
+		{
+			final long fresh = 1000000000*60;
+			final long now = android.os.SystemClock.elapsedRealtimeNanos();
+			Location location = null;
+
+			if( (
+					(location = locationManager.getLastKnownLocation(
+						LocationManager.GPS_PROVIDER )) == null ||
+					now-location.getElapsedRealtimeNanos() > fresh
+				) &&
+				(
+					(location = locationManager.getLastKnownLocation(
+						LocationManager.NETWORK_PROVIDER )) == null ||
+					now-location.getElapsedRealtimeNanos() > fresh
+				) &&
+				(
+					(location = locationManager.getLastKnownLocation(
+						LocationManager.PASSIVE_PROVIDER )) == null ||
+					now-location.getElapsedRealtimeNanos() > fresh
+				) )
+			{
+				lastLocationUpdate = now;
+				lastLocationAccuracy = MINIMUM_ACCURACY;
+			}
+			else
+			{
+				wayPoints.add( location );
+
+				lastLocationUpdate = location.getElapsedRealtimeNanos();
+				lastLocationAccuracy = location.getAccuracy();
+			}
+		}
+
+		if( locationManager != null )
+		{
+			locationManager.requestLocationUpdates(
+				LocationManager.GPS_PROVIDER,
+				MILLISECONDS_BETWEEN_UPDATES,
+				METERS_BETWEEN_UPDATES,
+				locationRecorder );
+
+			locationManager.requestLocationUpdates(
+				LocationManager.NETWORK_PROVIDER,
+				MILLISECONDS_BETWEEN_UPDATES,
+				METERS_BETWEEN_UPDATES,
+				locationRecorder );
+		}
+
+		if( getSharedPreferences().getBoolean(
+				CounterPreferenceActivity.SHOW_NOTIFICATION,
+				true ) )
+			notifications.counting.show();
+
+		started = true;
+
+		if( listener != null )
+			listener.onCounterUpdate();
+	}
+
+	public void stop()
+	{
+		if( !started )
+			return;
+
+		if( locationManager != null )
+			locationManager.removeUpdates( locationRecorder );
+
+		notifications.counting.hide();
+		started = false;
+
+		distance = calculateDistance();
+		save();
+
+		if( listener != null )
+			listener.onCounterUpdate();
+
+// DEBUG
+try
+{
+	java.io.File sdCard = android.os.Environment.getExternalStorageDirectory();
+	java.io.File dir = new java.io.File( sdCard.getAbsolutePath()+"/motocounter" );
+	dir.mkdirs();
+	java.io.File file = new java.io.File( dir, "ride.kml" );
+	java.io.FileOutputStream out = null;
+
+	try
+	{
+		out = new java.io.FileOutputStream( file );
+
+		String s =
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"+
+			"<Placemark>\n"+
+			"<name>Ride</name>\n"+
+			"<description>Ride way points.</description>\n"+
+			"<LineString>\n"+
+			"<tessellate>1</tessellate>\n"+
+			"<coordinates>";
+
+		for( int n = 0, l = wayPoints.size(); n < l; ++n )
+		{
+			Location loc = wayPoints.get( n );
+
+			s += loc.getLongitude()+","+loc.getLatitude()+",0\n";
+		}
+
+		s +=
+			"</coordinates>\n"+
+			"</LineString>\n"+
+			"</Placemark>\n"+
+			"</kml>\n";
+
+		byte bytes[] = s.getBytes();
+
+		out.write( bytes, 0, bytes.length );
+	}
+	finally
+	{
+		if( out != null )
+			out.close();
+	}
+}
+catch( Exception e )
+{
+	Toast.makeText(
+		getApplicationContext(),
+		"Cannot write to SD card!",
+		Toast.LENGTH_LONG ).show();
+}
+	}
+
+	public void count()
+	{
+		synchronized( this )
+		{
+			++errors;
+
+			if( listener != null )
+				listener.onCounterUpdate();
+
+			vibrate( 1000 );
+		}
+	}
+
+	private void vibrate( int milliseconds )
+	{
+		if( !getSharedPreferences().getBoolean(
+				CounterPreferenceActivity.HAPTIC_FEEDBACK,
+				true ) )
+			return;
+
+		vibrator.vibrate( milliseconds );
+	}
+
+	private float calculateDistance()
+	{
+		int size = wayPoints.size();
+
+		if( size < 2 )
+			return 0;
+
+		float d = 0;
+		Location last = wayPoints.get( 0 );
+
+		for( int n = 1; n < size; ++n )
+		{
+			final Location location = wayPoints.get( n );
+
+			d += last.distanceTo( location );
+			last = location;
+		}
+
+		return d;
+	}
+
+	private void save()
+	{
+		if( !dataSource.ready() )
+		{
+			Toast.makeText(
+				getApplicationContext(),
+				R.string.error_data_source,
+				Toast.LENGTH_LONG ).show();
+
+			return;
+		}
+
+		dataSource.insert(
+			rideStart,
+			new Date(),
+			errors,
+			distance );
+	}
+
+	private void handleStateCommand( Intent intent )
+	{
+		switch( intent.getIntExtra( STATE, -1 ) )
+		{
+			case 0:
+				unregisterMediaButton();
+				break;
+			case 1:
+				registerMediaButton();
+				break;
+		}
+	}
+
 	public void unregisterMediaButton()
 	{
 		if( remoteControlReceiver == null )
@@ -158,107 +377,6 @@ public class CounterService
 
 		audioManager.registerMediaButtonEventReceiver(
 			remoteControlReceiver );
-	}
-
-	public void count()
-	{
-		synchronized( this )
-		{
-			++errors;
-
-			if( listener != null )
-				listener.onCounterUpdate();
-
-			vibrate( 1000 );
-		}
-	}
-
-	public void stop()
-	{
-		if( !started )
-			return;
-
-		if( locationManager != null )
-			locationManager.removeUpdates( locationRecorder );
-
-		notifications.counting.hide();
-		started = false;
-
-		save();
-
-		if( listener != null )
-			listener.onCounterUpdate();
-	}
-
-	public void start()
-	{
-		if( started )
-			return;
-
-		rideStart = new Date();
-		errors = 0;
-		distance = 0;
-
-		if( locationManager != null )
-		{
-			locationManager.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER,
-				MILLISECONDS_BETWEEN_UPDATES,
-				METERS_BETWEEN_UPDATES,
-				locationRecorder );
-		}
-
-		if( getSharedPreferences().getBoolean(
-				CounterPreferenceActivity.SHOW_NOTIFICATION,
-				true ) )
-			notifications.counting.show();
-
-		started = true;
-
-		if( listener != null )
-			listener.onCounterUpdate();
-	}
-
-	private void save()
-	{
-		if( !dataSource.ready() )
-		{
-			Toast.makeText(
-				getApplicationContext(),
-				R.string.error_data_source,
-				Toast.LENGTH_LONG ).show();
-
-			return;
-		}
-
-		dataSource.insert(
-			rideStart,
-			new Date(),
-			errors,
-			distance );
-	}
-
-	private void vibrate( int milliseconds )
-	{
-		if( !getSharedPreferences().getBoolean(
-				CounterPreferenceActivity.HAPTIC_FEEDBACK,
-				true ) )
-			return;
-
-		vibrator.vibrate( milliseconds );
-	}
-
-	private void handleStateCommand( Intent intent )
-	{
-		switch( intent.getIntExtra( STATE, -1 ) )
-		{
-			case 0:
-				unregisterMediaButton();
-				break;
-			case 1:
-				registerMediaButton();
-				break;
-		}
 	}
 
 	private void handleActionCommand( Intent intent )
@@ -308,21 +426,23 @@ public class CounterService
 		@Override
 		public void onLocationChanged( Location location )
 		{
-			if( location.getAccuracy() < METERS_BETWEEN_UPDATES &&
-				lastLocationUpdate+MILLISECONDS_BETWEEN_UPDATES <=
-					location.getTime() )
+			final float accuracy = location.getAccuracy();
+
+			if( lastLocationUpdate+NANOSECONDS_BETWEEN_UPDATES <=
+				location.getElapsedRealtimeNanos() )
 			{
-				if( lastLocation != null )
-				{
-					float d = lastLocation.distanceTo( location );
+				wayPoints.add( location );
 
-					distance += d;
-				}
-
-				lastLocation = location;
+				lastLocationAccuracy = MINIMUM_ACCURACY;
+				lastLocationUpdate = location.getElapsedRealtimeNanos();
 			}
-
-			lastLocationUpdate = location.getTime();
+			else if(
+				accuracy < lastLocationAccuracy ||
+				wayPoints.size() == 0 )
+			{
+				wayPoints.add( location );
+				lastLocationAccuracy = accuracy;
+			}
 		}
 
 		@Override
