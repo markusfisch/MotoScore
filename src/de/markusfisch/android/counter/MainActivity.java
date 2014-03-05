@@ -38,12 +38,7 @@ public class MainActivity
 			service = ((CounterService.Binder)binder).getService();
 			service.listener = MainActivity.this;
 
-			// re-register media button in case some other app
-			// stepped in between
-			service.registerMediaButton();
-
 			setState();
-			query();
 			refresh();
 		}
 
@@ -52,6 +47,14 @@ public class MainActivity
 		{
 			service.listener = null;
 			service = null;
+		}
+	};
+	private final Runnable retryQuery = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			query();
 		}
 	};
 	private boolean serviceBound = false;
@@ -87,6 +90,7 @@ public class MainActivity
 		errorsTextView = (TextView)findViewById( R.id.errors );
 		distanceTextView = (TextView)findViewById( R.id.distance );
 
+		statsView.listView = listView;
 		registerForContextMenu( listView );
 	}
 
@@ -97,14 +101,12 @@ public class MainActivity
 
 		// bind the service to be notified of new countings
 		// while visible
-		serviceBound = bindService(
+		if( !(serviceBound = bindService(
 			new Intent(
 				this,
 				CounterService.class ),
 			connection,
-			Context.BIND_AUTO_CREATE );
-
-		if( !serviceBound )
+			Context.BIND_AUTO_CREATE )) )
 			Toast.makeText(
 				this,
 				R.string.error_service,
@@ -204,33 +206,9 @@ public class MainActivity
 			R.drawable.ic_menu_start );
 	}
 
-	private void query()
-	{
-		if( !service.dataSource.ready() )
-			handler.postDelayed( new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					query();
-				}
-			}, 500 );
-
-		Cursor c = service.dataSource.queryAll();
-		statsView.setCursor( c );
-		adapter = new CounterAdapter( this, c );
-
-		listView.setAdapter( adapter );
-	}
-
 	private void refresh()
 	{
-		if( adapter != null )
-		{
-			Cursor c = service.dataSource.queryAll();
-			statsView.setCursor( c );
-			adapter.changeCursor( c );
-		}
+		query();
 
 		if( service != null &&
 			service.started )
@@ -243,5 +221,29 @@ public class MainActivity
 				String.format( "%d km",
 					(int)Math.ceil( service.distance/1000 ) ) );
 		}
+	}
+
+	private void query()
+	{
+		handler.removeCallbacks( retryQuery );
+
+		if( service == null ||
+			!service.dataSource.ready() )
+		{
+			handler.postDelayed( retryQuery, 500 );
+			return;
+		}
+
+		Cursor c = service.dataSource.queryAll();
+
+		if( adapter == null )
+		{
+			adapter = new CounterAdapter( this, c );
+			listView.setAdapter( adapter );
+		}
+		else
+			adapter.changeCursor( c );
+
+		statsView.setCursor( c );
 	}
 }

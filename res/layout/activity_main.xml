@@ -83,15 +83,6 @@
 				android:gravity="center"
 				android:textSize="96dp"/>
 		</LinearLayout>
-<!--
-		<ListView
-			android:id="@+id/rides"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
-			android:background="@android:color/transparent"
-			android:cacheColorHint="@android:color/transparent"/>
--->
-
 		<RelativeLayout
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent">
@@ -106,25 +97,5 @@
 				android:background="@android:color/transparent"
 				android:cacheColorHint="@android:color/transparent"/>
 		</RelativeLayout>
-
-<!--
-		<RelativeLayout
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent">
-			<de.markusfisch.android.counter.StatsView
-				android:id="@+id/stats"
-				android:layout_width="fill_parent"
-				android:layout_height="fill_parent"/>
-			<ScrollView
-				android:layout_width="fill_parent"
-				android:layout_height="fill_parent">
-				<LinearLayout
-					android:id="@+id/rides"
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent"
-					android:orientation="vertical"/>
-			</ScrollView>
-		</RelativeLayout>
--->
 	</LinearLayout>
 </RelativeLayout>
