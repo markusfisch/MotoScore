@@ -53,7 +53,7 @@ public class StatsView
 		do
 		{
 			int n = cursor.getInt( cursor.getColumnIndex(
-				CounterDataSource.COLUMN_ERRORS ) );
+				CounterDataSource.COLUMN_MISTAKES_PER_KM ) );
 
 			if( n > max )
 				max = n+n/2;

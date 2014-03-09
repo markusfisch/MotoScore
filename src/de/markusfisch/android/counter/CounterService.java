@@ -46,13 +46,11 @@ public class CounterService
 	public CounterServiceListener listener = null;
 	public boolean started = false;
 	public Date rideStart = null;
-	public int errors = 0;
+	public int mistakes = 0;
 	public float distance = 0;
 
 	private static final int MILLISECONDS_BETWEEN_UPDATES = 30000;
-	private static final int NANOSECONDS_BETWEEN_UPDATES = MILLISECONDS_BETWEEN_UPDATES*1000000;
 	private static final int METERS_BETWEEN_UPDATES = 20;
-	private static final int MINIMUM_ACCURACY = 100;
 
 	private final IBinder binder = new Binder();
 
@@ -60,8 +58,6 @@ public class CounterService
 
 	private LocationManager locationManager = null;
 	private LocationRecorder locationRecorder = new LocationRecorder();
-	private long lastLocationUpdate;
-	private float lastLocationAccuracy;
 	private ArrayList<Location> wayPoints = new ArrayList<Location>();
 
 	private HeadsetReceiver headsetReceiver;
@@ -138,58 +134,34 @@ public class CounterService
 			return;
 
 		rideStart = new Date();
-		errors = 0;
+		mistakes = 0;
 		distance = 0;
 		wayPoints.clear();
 
-		// only use last known location if it's fresh
+		// get last location
 		{
-			final long fresh = 1000000000*60;
-			final long now = android.os.SystemClock.elapsedRealtimeNanos();
-			Location location = null;
+			Location location;
 
 			if( (
 					(location = locationManager.getLastKnownLocation(
-						LocationManager.GPS_PROVIDER )) == null ||
-					now-location.getElapsedRealtimeNanos() > fresh
-				) &&
-				(
+						LocationManager.GPS_PROVIDER )) != null ||
 					(location = locationManager.getLastKnownLocation(
-						LocationManager.NETWORK_PROVIDER )) == null ||
-					now-location.getElapsedRealtimeNanos() > fresh
-				) &&
-				(
+						LocationManager.NETWORK_PROVIDER )) != null ||
 					(location = locationManager.getLastKnownLocation(
-						LocationManager.PASSIVE_PROVIDER )) == null ||
-					now-location.getElapsedRealtimeNanos() > fresh
-				) )
-			{
-				lastLocationUpdate = now;
-				lastLocationAccuracy = MINIMUM_ACCURACY;
-			}
-			else
-			{
+						LocationManager.PASSIVE_PROVIDER )) != null
+				) &&
+				// but only use it if's fresh
+				java.lang.System.currentTimeMillis()-
+					location.getTime() < 60000 )
 				wayPoints.add( location );
-
-				lastLocationUpdate = location.getElapsedRealtimeNanos();
-				lastLocationAccuracy = location.getAccuracy();
-			}
 		}
 
 		if( locationManager != null )
-		{
 			locationManager.requestLocationUpdates(
 				LocationManager.GPS_PROVIDER,
 				MILLISECONDS_BETWEEN_UPDATES,
 				METERS_BETWEEN_UPDATES,
 				locationRecorder );
-
-			locationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER,
-				MILLISECONDS_BETWEEN_UPDATES,
-				METERS_BETWEEN_UPDATES,
-				locationRecorder );
-		}
 
 		if( getSharedPreferences().getBoolean(
 				CounterPreferenceActivity.SHOW_NOTIFICATION,
@@ -223,9 +195,14 @@ public class CounterService
 try
 {
 	java.io.File sdCard = android.os.Environment.getExternalStorageDirectory();
-	java.io.File dir = new java.io.File( sdCard.getAbsolutePath()+"/motocounter" );
+	java.io.File dir = new java.io.File(
+		sdCard.getAbsolutePath()+"/motocounter" );
 	dir.mkdirs();
-	java.io.File file = new java.io.File( dir, "ride.kml" );
+	java.text.SimpleDateFormat df = new java.text.SimpleDateFormat(
+		"yyyyMMddHHmmss" );
+	java.io.File file = new java.io.File(
+		dir,
+		"ride-"+df.format( new java.util.Date() )+".kml" );
 	java.io.FileOutputStream out = null;
 
 	try
@@ -278,7 +255,7 @@ catch( Exception e )
 	{
 		synchronized( this )
 		{
-			++errors;
+			++mistakes;
 
 			if( listener != null )
 				listener.onCounterUpdate();
@@ -333,7 +310,7 @@ catch( Exception e )
 		dataSource.insert(
 			rideStart,
 			new Date(),
-			errors,
+			mistakes,
 			distance );
 	}
 
@@ -426,23 +403,7 @@ catch( Exception e )
 		@Override
 		public void onLocationChanged( Location location )
 		{
-			final float accuracy = location.getAccuracy();
-
-			if( lastLocationUpdate+NANOSECONDS_BETWEEN_UPDATES <=
-				location.getElapsedRealtimeNanos() )
-			{
-				wayPoints.add( location );
-
-				lastLocationAccuracy = MINIMUM_ACCURACY;
-				lastLocationUpdate = location.getElapsedRealtimeNanos();
-			}
-			else if(
-				accuracy < lastLocationAccuracy ||
-				wayPoints.size() == 0 )
-			{
-				wayPoints.add( location );
-				lastLocationAccuracy = accuracy;
-			}
+			wayPoints.add( location );
 		}
 
 		@Override

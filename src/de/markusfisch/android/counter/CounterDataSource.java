@@ -16,8 +16,11 @@ public class CounterDataSource
 	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_START = "start";
 	public static final String COLUMN_STOP = "stop";
-	public static final String COLUMN_ERRORS = "errors";
+	public static final String COLUMN_MISTAKES = "mistakes";
 	public static final String COLUMN_DISTANCE = "distance";
+
+	public static final String COLUMN_DATE_AND_TIME = "date_and_time";
+	public static final String COLUMN_MISTAKES_PER_KM = "mistakes_per_km";
 
 	private SQLiteDatabase db = null;
 	private OpenHelper helper;
@@ -65,9 +68,17 @@ public class CounterDataSource
 				COLUMN_ID+","+
 				COLUMN_START+","+
 				COLUMN_STOP+","+
-				COLUMN_ERRORS+","+
-				COLUMN_DISTANCE+
+				COLUMN_MISTAKES+","+
+				COLUMN_DISTANCE+","+
+				" strftime( '%Y-%m-%d %H:%M:%S', "+COLUMN_START+
+					" ) || "+
+					" strftime( ' - %H:%M:%S', "+COLUMN_STOP+
+					" ) AS "+COLUMN_DATE_AND_TIME+","+
+				" cast( "+COLUMN_MISTAKES+" as float)/"+
+					"max( round( "+COLUMN_DISTANCE+" ), 1 )"+
+					" AS "+COLUMN_MISTAKES_PER_KM+
 				" FROM "+TABLE+
+				" WHERE julianday('now')-julianday("+COLUMN_START+") < 31"+
 				" ORDER BY "+COLUMN_START+" DESC",
 			null );
 	}
@@ -75,13 +86,13 @@ public class CounterDataSource
 	public long insert(
 		Date start,
 		Date stop,
-		int errors,
+		int mistakes,
 		float distance )
 	{
 		if( db == null )
 			return 0;
 
-		return insert( db, start, stop, errors, distance );
+		return insert( db, start, stop, mistakes, distance );
 	}
 
 	public void remove( long id )
@@ -99,13 +110,13 @@ public class CounterDataSource
 		SQLiteDatabase db,
 		Date start,
 		Date stop,
-		int errors,
+		int mistakes,
 		float distance )
 	{
 		ContentValues cv = new ContentValues();
 		cv.put( COLUMN_START, dateToString( start ) );
 		cv.put( COLUMN_STOP, dateToString( stop ) );
-		cv.put( COLUMN_ERRORS, errors );
+		cv.put( COLUMN_MISTAKES, mistakes );
 		cv.put( COLUMN_DISTANCE, distance );
 
 		return db.insert( TABLE, null, cv );
@@ -133,7 +144,7 @@ public class CounterDataSource
 					COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+
 					COLUMN_START+" DATETIME,"+
 					COLUMN_STOP+" DATETIME,"+
-					COLUMN_ERRORS+" INTEGER,"+
+					COLUMN_MISTAKES+" INTEGER,"+
 					COLUMN_DISTANCE+" FLOAT );" );
 		}
 

@@ -49,12 +49,20 @@ public class MainActivity
 			service = null;
 		}
 	};
-	private final Runnable retryQuery = new Runnable()
+	private final Runnable queryRetryRunnable = new Runnable()
 	{
 		@Override
 		public void run()
 		{
 			query();
+		}
+	};
+	private final Runnable updateTimeRunnable = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			updateTime();
 		}
 	};
 	private boolean serviceBound = false;
@@ -66,8 +74,7 @@ public class MainActivity
 	private ImageButton startButton;
 	private View counterView;
 	private TextView dateTextView;
-	private TextView errorsTextView;
-	private TextView distanceTextView;
+	private TextView mistakesTextView;
 
 	@Override
 	public void onCreate( Bundle state )
@@ -87,8 +94,17 @@ public class MainActivity
 		startButton = (ImageButton)findViewById( R.id.start );
 		counterView = (View)findViewById( R.id.counter );
 		dateTextView = (TextView)findViewById( R.id.date );
-		errorsTextView = (TextView)findViewById( R.id.errors );
-		distanceTextView = (TextView)findViewById( R.id.distance );
+		mistakesTextView = (TextView)findViewById( R.id.mistakes );
+
+		counterView.setOnClickListener(
+			new View.OnClickListener()
+			{
+				public void onClick( View v )
+				{
+					if( service != null )
+						service.count();
+				}
+			} );
 
 		statsView.listView = listView;
 		registerForContextMenu( listView );
@@ -206,6 +222,22 @@ public class MainActivity
 			R.drawable.ic_menu_start );
 	}
 
+	private void updateTime()
+	{
+		handler.removeCallbacks( updateTimeRunnable );
+
+		if( service == null ||
+			!service.started )
+			return;
+
+		dateTextView.setText(
+			CounterAdapter.getRideDate(
+				service.rideStart,
+				new Date() ) );
+
+		handler.postDelayed( updateTimeRunnable, 1000 );
+	}
+
 	private void refresh()
 	{
 		query();
@@ -213,24 +245,21 @@ public class MainActivity
 		if( service != null &&
 			service.started )
 		{
-			dateTextView.setText(
-				service.rideStart.toString() );
-			errorsTextView.setText(
-				String.format( "%d", service.errors ) );
-			distanceTextView.setText(
-				String.format( "%d km",
-					(int)Math.ceil( service.distance/1000 ) ) );
+			updateTime();
+
+			mistakesTextView.setText(
+				String.format( "%d", service.mistakes ) );
 		}
 	}
 
 	private void query()
 	{
-		handler.removeCallbacks( retryQuery );
+		handler.removeCallbacks( queryRetryRunnable );
 
 		if( service == null ||
 			!service.dataSource.ready() )
 		{
-			handler.postDelayed( retryQuery, 500 );
+			handler.postDelayed( queryRetryRunnable, 500 );
 			return;
 		}
 

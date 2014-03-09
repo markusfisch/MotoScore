@@ -69,13 +69,7 @@
 				android:layout_weight="0"
 				android:paddingBottom="4dp"/>
 			<TextView
-				android:id="@+id/distance"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="0"
-				android:paddingBottom="4dp"/>
-			<TextView
-				android:id="@+id/errors"
+				android:id="@+id/mistakes"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:layout_weight="0"
