@@ -82,7 +82,9 @@ public class StatsView
 			xf = (float)canvas.getWidth()/max;
 
 		if( itemHeight == 0 )
-			itemHeight = firstChild.getMeasuredHeight();
+			itemHeight =
+				firstChild.getMeasuredHeight()+
+				listView.getDividerHeight();
 
 		final int first = listView.getFirstVisiblePosition();
 		final int total = itemHeight*samples;
