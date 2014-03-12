@@ -3,4 +3,5 @@
 	<color name="background">#ff5fabff</color>
 	<color name="foreground">#ffffffff</color>
 	<color name="secondary">#88ffffff</color>
+	<color name="list_item_pressed">#44222222</color>
 </resources>
