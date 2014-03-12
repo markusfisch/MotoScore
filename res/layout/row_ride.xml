@@ -3,13 +3,14 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:padding="8dp">
+	android:padding="8dp"
+	android:background="@drawable/row_ride_selector">
 	<TextView
 		android:id="@+id/date"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:textSize="12dp"
-		android:textColor="@android:color/secondary_text_light"
+		android:textColor="@color/secondary"
 		android:paddingBottom="4dp"/>
 	<LinearLayout
 		android:layout_width="fill_parent"
@@ -19,7 +20,7 @@
 			android:id="@+id/details"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/primary_text_light"/>
+			android:textColor="@color/foreground"/>
 		<TextView
 			android:id="@+id/ratio"
 			android:layout_width="fill_parent"
@@ -27,6 +28,6 @@
 			android:layout_weight="1"
 			android:layout_gravity="right"
 			android:gravity="right"
-			android:textColor="@android:color/primary_text_light"/>
+			android:textColor="@color/foreground"/>
 	</LinearLayout>
 </LinearLayout>
