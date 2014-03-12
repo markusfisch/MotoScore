@@ -220,6 +220,9 @@ public class MainActivity
 
 	private void setState()
 	{
+		if( service == null )
+			return;
+
 		if( counterView != null )
 			counterView.setVisibility( service.started ?
 				View.VISIBLE :
