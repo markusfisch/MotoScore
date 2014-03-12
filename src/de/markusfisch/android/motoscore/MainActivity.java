@@ -80,11 +80,6 @@ public class MainActivity
 	{
 		super.onCreate( state );
 
-		// start the service to keep it running without activities
-		startService( new Intent(
-			this,
-			MotoScoreService.class ) );
-
 		setContentView( R.layout.activity_main );
 
 		statsView = (StatsView)findViewById( R.id.stats );
@@ -105,6 +100,11 @@ public class MainActivity
 
 		statsView.listView = listView;
 		registerForContextMenu( listView );
+
+		// start the service to keep it running without activities
+		startService( new Intent(
+			this,
+			MotoScoreService.class ) );
 	}
 
 	@Override
@@ -220,9 +220,10 @@ public class MainActivity
 
 	private void setState()
 	{
-		counterView.setVisibility( service.started ?
-			View.VISIBLE :
-			View.GONE );
+		if( counterView != null )
+			counterView.setVisibility( service.started ?
+				View.VISIBLE :
+				View.GONE );
 
 		if( startMenuItem != null )
 			startMenuItem.setIcon( service.started ?
