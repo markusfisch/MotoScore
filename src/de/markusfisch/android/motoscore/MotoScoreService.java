@@ -190,65 +190,6 @@ public class MotoScoreService
 
 		if( listener != null )
 			listener.onMotoScoreUpdate();
-
-// DEBUG
-try
-{
-	java.io.File sdCard = android.os.Environment.getExternalStorageDirectory();
-	java.io.File dir = new java.io.File(
-		sdCard.getAbsolutePath()+"/motoscore" );
-	dir.mkdirs();
-	java.text.SimpleDateFormat df = new java.text.SimpleDateFormat(
-		"yyyyMMddHHmmss" );
-	java.io.File file = new java.io.File(
-		dir,
-		"ride-"+df.format( new java.util.Date() )+".kml" );
-	java.io.FileOutputStream out = null;
-
-	try
-	{
-		out = new java.io.FileOutputStream( file );
-
-		String s =
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"+
-			"<Placemark>\n"+
-			"<name>Ride</name>\n"+
-			"<description>Ride way points.</description>\n"+
-			"<LineString>\n"+
-			"<tessellate>1</tessellate>\n"+
-			"<coordinates>";
-
-		for( int n = 0, l = wayPoints.size(); n < l; ++n )
-		{
-			Location loc = wayPoints.get( n );
-
-			s += loc.getLongitude()+","+loc.getLatitude()+",0\n";
-		}
-
-		s +=
-			"</coordinates>\n"+
-			"</LineString>\n"+
-			"</Placemark>\n"+
-			"</kml>\n";
-
-		byte bytes[] = s.getBytes();
-
-		out.write( bytes, 0, bytes.length );
-	}
-	finally
-	{
-		if( out != null )
-			out.close();
-	}
-}
-catch( Exception e )
-{
-	Toast.makeText(
-		getApplicationContext(),
-		"Cannot write to SD card!",
-		Toast.LENGTH_LONG ).show();
-}
 	}
 
 	public void count()
