@@ -82,6 +82,8 @@ public class MainActivity
 
 		setContentView( R.layout.activity_main );
 
+		getSupportActionBar().setHomeButtonEnabled( false );
+
 		statsView = (StatsView)findViewById( R.id.stats );
 		listView = (ListView)findViewById( R.id.rides );
 		counterView = (View)findViewById( R.id.counter );
