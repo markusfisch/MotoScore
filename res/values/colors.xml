@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="background">#ff5fabff</color>
+	<color name="background_top">#ff1c5493</color>
+	<color name="background_bottom">#ff3e87da</color>
 	<color name="foreground">#ffffffff</color>
 	<color name="secondary">#88ffffff</color>
 	<color name="list_item_pressed">#44222222</color>
