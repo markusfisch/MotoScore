@@ -68,7 +68,7 @@ public class MotoScoreAdapter
 				MotoScoreDataSource.COLUMN_DISTANCE ) )/1000f );
 		final int mistakes = cursor.getInt( cursor.getColumnIndex(
 			MotoScoreDataSource.COLUMN_MISTAKES ) );
-		final int ratio = cursor.getInt( cursor.getColumnIndex(
+		final float ratio = cursor.getFloat( cursor.getColumnIndex(
 			MotoScoreDataSource.COLUMN_MISTAKES_PER_KM ) );
 
 		setTextView(
@@ -86,7 +86,7 @@ public class MotoScoreAdapter
 
 		setTextView(
 			(TextView)view.findViewById( R.id.ratio ),
-			String.format( "%d", ratio ) );
+			String.format( "%.1f", ratio ) );
 	}
 
 	public static String getRideDate( Date start, Date stop )

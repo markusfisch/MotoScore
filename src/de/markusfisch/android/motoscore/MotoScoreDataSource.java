@@ -74,8 +74,8 @@ public class MotoScoreDataSource
 					" ) || "+
 					" strftime( ' - %H:%M:%S', "+COLUMN_STOP+
 					" ) AS "+COLUMN_DATE_AND_TIME+","+
-				" cast( "+COLUMN_MISTAKES+" as float)/"+
-					"max( round( "+COLUMN_DISTANCE+" ), 1 )"+
+				" cast( "+COLUMN_MISTAKES+" as float )/"+
+					"max( "+COLUMN_DISTANCE+"/1000, 1 )"+
 					" AS "+COLUMN_MISTAKES_PER_KM+
 				" FROM "+TABLE+
 				" WHERE julianday('now')-julianday("+COLUMN_START+") < 31"+
