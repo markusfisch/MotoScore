@@ -22,11 +22,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class MainActivity
 	extends ActionBarActivity
 	implements MotoScoreService.MotoScoreServiceListener
 {
+	public static final SimpleDateFormat startDateFormat =
+		new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+	public static final SimpleDateFormat nowDateFormat =
+		new SimpleDateFormat( "HH:mm:ss" );
 	private final ServiceConnection connection = new ServiceConnection()
 	{
 		@Override
@@ -195,7 +200,7 @@ public class MainActivity
 		switch( item.getItemId() )
 		{
 			case R.id.remove_ride:
-				service.dataSource.remove( info.id );
+				service.dataSource.removeRide( info.id );
 				refresh();
 				return true;
 		}
@@ -245,12 +250,18 @@ public class MainActivity
 			!service.started )
 			return;
 
-		dateTextView.setText(
-			MotoScoreAdapter.getRideDate(
-				service.rideStart,
-				new Date() ) );
+		dateTextView.setText( getRideDate(
+			service.rideStart,
+			new Date() ) );
 
 		handler.postDelayed( updateTimeRunnable, 1000 );
+	}
+
+	private String getRideDate( Date start, Date stop )
+	{
+		return
+			startDateFormat.format( start )+" - "+
+			nowDateFormat.format( stop );
 	}
 
 	private void refresh()
@@ -278,7 +289,7 @@ public class MainActivity
 			return;
 		}
 
-		Cursor c = service.dataSource.queryAll();
+		Cursor c = service.dataSource.queryRides( 30 );
 
 		if( adapter == null )
 		{

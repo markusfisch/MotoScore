@@ -248,11 +248,25 @@ public class MotoScoreService
 			return;
 		}
 
-		dataSource.insert(
+		long rideId;
+
+		if( (rideId = dataSource.insertRide(
 			rideStart,
 			new Date(),
 			mistakes,
-			distance );
+			distance )) < 1 )
+			return;
+
+		for( int n = 0, size = wayPoints.size(); n < size; ++n )
+		{
+			final Location location = wayPoints.get( n );
+
+			dataSource.insertWaypoint(
+				rideId,
+				location.getLatitude(),
+				location.getLongitude(),
+				location.getTime() );
+		}
 	}
 
 	private void handleStateCommand( Intent intent )

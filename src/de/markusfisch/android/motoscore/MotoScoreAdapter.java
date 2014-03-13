@@ -10,35 +10,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class MotoScoreAdapter
 	extends CursorAdapter
 {
-	public static final SimpleDateFormat startDateFormat =
-		new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-	public static final SimpleDateFormat nowDateFormat =
-		new SimpleDateFormat( "HH:mm:ss" );
-
 	private LayoutInflater inflater = null;
-	private int layout = 0;
 
 	public MotoScoreAdapter( Context context, Cursor cursor )
 	{
 		super( context, cursor, false );
 		init( context );
-	}
-
-	public MotoScoreAdapter(
-		Context context,
-		Cursor cursor,
-		int layout )
-	{
-		super( context, cursor, false );
-		init( context );
-
-		this.layout = layout;
 	}
 
 	@Override
@@ -47,11 +27,11 @@ public class MotoScoreAdapter
 		Cursor cursor,
 		ViewGroup parent )
 	{
-		LayoutInflater i = LayoutInflater.from(
+		LayoutInflater inflater = LayoutInflater.from(
 			parent.getContext() );
 
-		return i.inflate(
-			layout > 0 ? layout : R.layout.row_ride,
+		return inflater.inflate(
+			R.layout.row_ride,
 			parent,
 			false );
 	}
@@ -60,22 +40,22 @@ public class MotoScoreAdapter
 	public void bindView( View view, Context context, Cursor cursor )
 	{
 		final long id = cursor.getLong( cursor.getColumnIndex(
-			MotoScoreDataSource.COLUMN_ID ) );
+			MotoScoreDataSource.RIDES_ID ) );
 		final String date = cursor.getString( cursor.getColumnIndex(
-			MotoScoreDataSource.COLUMN_DATE_AND_TIME ) );
+			MotoScoreDataSource.RIDES_DATE_AND_TIME ) );
 		final int distance =
 			(int)Math.round( cursor.getFloat( cursor.getColumnIndex(
-				MotoScoreDataSource.COLUMN_DISTANCE ) )/1000f );
+				MotoScoreDataSource.RIDES_DISTANCE ) )/1000f );
 		final int mistakes = cursor.getInt( cursor.getColumnIndex(
-			MotoScoreDataSource.COLUMN_MISTAKES ) );
+			MotoScoreDataSource.RIDES_MISTAKES ) );
 		final float ratio = cursor.getFloat( cursor.getColumnIndex(
-			MotoScoreDataSource.COLUMN_MISTAKES_PER_KM ) );
+			MotoScoreDataSource.RIDES_MISTAKES_PER_KM ) );
 
-		setTextView(
+		setText(
 			(TextView)view.findViewById( R.id.date ),
 			date );
 
-		setTextView(
+		setText(
 			(TextView)view.findViewById( R.id.details ),
 			String.format(
 				"%d %s / %d %s",
@@ -84,22 +64,19 @@ public class MotoScoreAdapter
 				distance,
 				context.getString( R.string.km ) ) );
 
-		setTextView(
+		setText(
 			(TextView)view.findViewById( R.id.ratio ),
 			String.format( "%.1f", ratio ) );
 	}
 
-	public static String getRideDate( Date start, Date stop )
+	private void setText(
+		TextView tv,
+		String text )
 	{
-		return
-			MotoScoreAdapter.startDateFormat.format( start )+" - "+
-			MotoScoreAdapter.nowDateFormat.format( stop );
-	}
+		if( tv == null )
+			return;
 
-	private void setTextView( TextView tv, String text )
-	{
-		if( tv != null )
-			tv.setText( text );
+		tv.setText( text );
 	}
 
 	private void init( Context context )

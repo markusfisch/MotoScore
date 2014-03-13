@@ -50,7 +50,7 @@ public class StatsView
 		do
 		{
 			float n = cursor.getFloat( cursor.getColumnIndex(
-				MotoScoreDataSource.COLUMN_MISTAKES_PER_KM ) );
+				MotoScoreDataSource.RIDES_MISTAKES_PER_KM ) );
 
 			if( n > max )
 				max = n+n*.5f;
