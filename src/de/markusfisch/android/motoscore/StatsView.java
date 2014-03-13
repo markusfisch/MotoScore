@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
@@ -18,14 +17,13 @@ public class StatsView
 
 	private final Paint linePaint = new Paint( Paint.ANTI_ALIAS_FLAG );
 	private final Paint fillPaint = new Paint( Paint.ANTI_ALIAS_FLAG );
-	private final Path path = new Path();
 	private float lineWidth = 4;
 	private float dotRadius = 10;
-	private final ArrayList<Integer> sample = new ArrayList<Integer>();
+	private final ArrayList<Float> sample = new ArrayList<Float>();
+	private float vertices[];
 	private int samples = 0;
-	private int max = 0;
+	private float max = 0;
 	private int itemHeight = 0;
-	private float xf = -1;
 
 	public StatsView( Context context )
 	{
@@ -47,21 +45,23 @@ public class StatsView
 
 		sample.clear();
 		samples = 0;
-		max = 10;
-		xf = -1;
+		max = 2f;
 
 		do
 		{
-			int n = cursor.getInt( cursor.getColumnIndex(
+			float n = cursor.getFloat( cursor.getColumnIndex(
 				MotoScoreDataSource.COLUMN_MISTAKES_PER_KM ) );
 
 			if( n > max )
-				max = n+n/2;
+				max = n+n*.5f;
 
 			sample.add( n );
 			++samples;
 
 		} while( cursor.moveToNext() );
+
+		if( samples > 0 )
+			vertices = new float[samples << 2];
 	}
 
 	@Override
@@ -78,8 +78,9 @@ public class StatsView
 		if( firstChild == null )
 			return;
 
-		if( xf < 0 )
-			xf = (float)canvas.getWidth()/max;
+		final float w = getWidth();
+		final float h = getHeight();
+		final float xf = w/max;
 
 		if( itemHeight == 0 )
 			itemHeight =
@@ -88,36 +89,54 @@ public class StatsView
 
 		final int first = listView.getFirstVisiblePosition();
 		final int total = itemHeight*samples;
+		float x = -1;
 		float y = total-((first*itemHeight)-firstChild.getTop());
-		boolean move = true;
-
-		path.reset();
+		float lastY = 0;
+		int v = 0;
 
 		y -= itemHeight/2f;
 
+		int layer = canvas.saveLayerAlpha(
+			0,
+			0,
+			w,
+			h,
+			0x22,
+			Canvas.MATRIX_SAVE_FLAG |
+			Canvas.CLIP_SAVE_FLAG |
+			Canvas.HAS_ALPHA_LAYER_SAVE_FLAG |
+			Canvas.FULL_COLOR_LAYER_SAVE_FLAG |
+			Canvas.CLIP_TO_LAYER_SAVE_FLAG );
+
 		for( int n = samples; n-- > 0; )
 		{
-			final float x = xf*sample.get( n ).intValue();
+			if( x > -1 &&
+				v % 4 == 0 )
+			{
+				vertices[v++] = x;
+				vertices[v++] = lastY;
+			}
+
+			x = xf*sample.get( n ).floatValue();
 
 			canvas.drawCircle( x, y, dotRadius, fillPaint );
 
-			if( move )
-			{
-				move = false;
-				path.moveTo( x, y );
-			}
-			else
-				path.lineTo( x, y );
+			vertices[v++] = x;
+			vertices[v++] = y;
+			lastY = y;
 
 			y -= itemHeight;
 		}
 
-		canvas.drawPath( path, linePaint );
+		if( v > 3 )
+			canvas.drawLines( vertices, linePaint );
+
+		canvas.restoreToCount( layer );
 	}
 
 	private void init()
 	{
-		final int color = 0xff68a4e7;
+		final int color = 0xffffffff;
 		final float dp = getContext()
 			.getResources()
 			.getDisplayMetrics()
