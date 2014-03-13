@@ -23,6 +23,7 @@
 				android:layout_height="wrap_content"
 				android:layout_weight="0"
 				android:paddingBottom="4dp"
+				android:textSize="12dp"
 				android:textColor="@color/secondary"/>
 			<TextView
 				android:id="@+id/mistakes"
@@ -48,6 +49,28 @@
 				android:background="@android:color/transparent"
 				android:cacheColorHint="@android:color/transparent"
 				android:listSelector="@drawable/row_ride_selector"/>
+			<LinearLayout
+				android:id="@+id/no_rides"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:gravity="center"
+				android:orientation="vertical"
+				android:visibility="gone">
+				<ImageView
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:padding="8dp"
+					android:scaleType="center"
+					android:src="@drawable/no_rides"/>
+				<TextView
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center"
+					android:padding="8dp"
+					android:text="@string/no_rides"
+					android:textSize="24dp"
+					android:textColor="@color/no_rides"/>
+			</LinearLayout>
 		</RelativeLayout>
 	</LinearLayout>
 </RelativeLayout>

@@ -100,6 +100,7 @@ public class MainActivity
 				}
 			} );
 
+		listView.setEmptyView( findViewById( R.id.no_rides ) );
 		statsView.listView = listView;
 		registerForContextMenu( listView );
 

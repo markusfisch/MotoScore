@@ -4,6 +4,7 @@
 	<string name="error_service">Cannot start service</string>
 	<string name="error_data_source">Data source unavailable</string>
 	<string name="restart_service">Restarting service</string>
+	<string name="no_rides">No rides recorded.</string>
 	<string name="counting">Recording</string>
 	<string name="mistakes">Mistakes</string>
 	<string name="km">km</string>

@@ -5,4 +5,5 @@
 	<color name="foreground">#ffffffff</color>
 	<color name="secondary">#88ffffff</color>
 	<color name="list_item_pressed">#44222222</color>
+	<color name="no_rides">#22000000</color>
 </resources>
