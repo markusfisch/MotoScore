@@ -47,10 +47,12 @@ public class StatsView
 		samples = 0;
 		max = 2f;
 
+		final int idx = cursor.getColumnIndex(
+			MotoScoreDataSource.RIDES_MISTAKES_PER_KM );
+
 		do
 		{
-			float n = cursor.getFloat( cursor.getColumnIndex(
-				MotoScoreDataSource.RIDES_MISTAKES_PER_KM ) );
+			final float n = cursor.getFloat( idx );
 
 			if( n > max )
 				max = n+n*.5f;
