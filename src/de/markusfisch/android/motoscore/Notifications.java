@@ -10,15 +10,15 @@ import android.support.v4.app.NotificationCompat;
 
 public class Notifications
 {
-	public Counting counting;
+	public Recording recording;
 
-	private static final int NOTIFY_COUNTING = 1;
+	private static final int NOTIFY_RECORDING = 1;
 
 	private NotificationManager notificationManager;
 
-	public class Counting extends AbstractNotification
+	public class Recording extends AbstractNotification
 	{
-		public Counting( Context context, int id )
+		public Recording( Context context, int id )
 		{
 			super( id );
 
@@ -28,7 +28,7 @@ public class Notifications
 				context,
 				R.drawable.notify,
 				r.getString( R.string.app_name ),
-				r.getString( R.string.counting ),
+				r.getString( R.string.recording ),
 				getDefaultIntent( context ) );
 
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
@@ -40,9 +40,9 @@ public class Notifications
 		notificationManager = (NotificationManager)
 			context.getSystemService( Context.NOTIFICATION_SERVICE );
 
-		counting = new Counting(
+		recording = new Recording(
 			context,
-			NOTIFY_COUNTING );
+			NOTIFY_RECORDING );
 	}
 
 	private abstract class AbstractNotification

@@ -15,9 +15,23 @@
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 	<uses-permission android:name="android.permission.VIBRATE"/>
+	<!-- Google Maps -->
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+	<permission
+		android:name="de.markusfisch.android.motoscore.permission.MAPS_RECEIVE"
+		android:protectionLevel="signature"/>
+	<uses-permission android:name="de.markusfisch.android.motoscore.permission.MAPS_RECEIVE"/>
+	<uses-feature
+		android:glEsVersion="0x00020000"
+		android:required="true"/>
 	<application
+		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name"
-		android:icon="@drawable/ic_launcher">
+		android:name="MotoScoreApplication"
+		android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
 		<service
 			android:name="MotoScoreService"
 			android:label="@string/app_name"/>
@@ -28,10 +42,8 @@
 			</intent-filter>
 		</receiver>
 		<activity
-			android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
 			android:name="MainActivity"
 			android:label="@string/app_name"
-			android:icon="@drawable/ic_launcher"
 			android:launchMode="singleTop">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
@@ -39,10 +51,23 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+			android:name="RideViewActivity"
+			android:label="@string/ride_view"
+			android:parentActivityName="MainActivity">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="de.markusfisch.android.motoscore.MainActivity"/>
+		</activity>
+		<activity
 			android:name="MotoScorePreferenceActivity"
 			android:label="@string/preferences"
 			android:exported="true">
 		</activity>
+		<meta-data
+			android:name="com.google.android.gms.version"
+			android:value="@integer/google_play_services_version"/>
+		<meta-data
+			android:name="com.google.android.maps.v2.API_KEY"
+			android:value="AIzaSyAdgCTr82qH62hgvOIH9LZs2aBdZqzoHVM"/>
 	</application>
 </manifest>

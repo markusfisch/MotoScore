@@ -29,10 +29,13 @@ public class MotoScoreDataSource
 	public static final String WAYPOINTS_LONGITUDE = "longitude";
 	public static final String WAYPOINTS_LATITUDE = "latitude";
 	public static final String WAYPOINTS_TIME = "time";
+	public static final String WAYPOINTS_ACCURACY = "accuracy";
+	public static final String WAYPOINTS_ALTITUDE = "altitude";
+	public static final String WAYPOINTS_BEARING = "bearing";
+	public static final String WAYPOINTS_SPEED = "speed";
 
 	private SQLiteDatabase db = null;
 	private OpenHelper helper;
-	private Context context;
 
 	private boolean opening = false;
 	private Handler handler = new Handler();
@@ -48,7 +51,6 @@ public class MotoScoreDataSource
 	public MotoScoreDataSource( Context c )
 	{
 		helper = new OpenHelper( c );
-		context = c;
 	}
 
 	public boolean ready()
@@ -94,7 +96,7 @@ public class MotoScoreDataSource
 
 	public Cursor queryRides( int days )
 	{
-		if( db == null )
+		if( !ready() )
 			return null;
 
 		return db.rawQuery(
@@ -113,13 +115,21 @@ public class MotoScoreDataSource
 					" AS "+RIDES_MISTAKES_PER_KM+
 				" FROM "+RIDES+
 				" WHERE julianday( 'now' )-julianday( "+
-					RIDES_START+" ) < "+days+
+					RIDES_STOP+" ) < "+days+
 				" ORDER BY "+RIDES_START+" DESC",
 			null );
 	}
 
-	public long insertRide(
-		Date start,
+	public long insertRide( Date start )
+	{
+		if( !ready() )
+			return 0;
+
+		return insertRide( db, start );
+	}
+
+	public long updateRide(
+		long rideId,
 		Date stop,
 		int mistakes,
 		float distance )
@@ -127,12 +137,12 @@ public class MotoScoreDataSource
 		if( db == null )
 			return 0;
 
-		return insertRide( db, start, stop, mistakes, distance );
+		return updateRide( db, rideId, stop, mistakes, distance );
 	}
 
 	public void removeRide( long id )
 	{
-		if( db == null )
+		if( !ready() )
 			return;
 
 		db.delete(
@@ -148,52 +158,104 @@ public class MotoScoreDataSource
 
 	private static long insertRide(
 		SQLiteDatabase db,
-		Date start,
+		Date start )
+	{
+		ContentValues cv = new ContentValues();
+
+		cv.put( RIDES_START, dateToString( start ) );
+		cv.put( RIDES_MISTAKES, 0 );
+		cv.put( RIDES_DISTANCE, 0f );
+
+		return db.insert( RIDES, null, cv );
+	}
+
+	private static long updateRide(
+		SQLiteDatabase db,
+		long rideId,
 		Date stop,
 		int mistakes,
 		float distance )
 	{
 		ContentValues cv = new ContentValues();
 
-		cv.put( RIDES_START, dateToString( start ) );
 		cv.put( RIDES_STOP, dateToString( stop ) );
 		cv.put( RIDES_MISTAKES, mistakes );
 		cv.put( RIDES_DISTANCE, distance );
 
-		return db.insert( RIDES, null, cv );
+		return db.update(
+			RIDES,
+			cv,
+			RIDES_ID+"="+rideId,
+			null );
 	}
 
-	public Cursor queryWaypoints( long ride )
+	public Cursor queryWaypoints( long rideId )
 	{
-		if( db == null )
+		if( !ready() )
 			return null;
 
 		return db.rawQuery(
 			"SELECT "+
 				WAYPOINTS_ID+","+
+				WAYPOINTS_TIME+","+
 				WAYPOINTS_LONGITUDE+","+
-				WAYPOINTS_LATITUDE+
+				WAYPOINTS_LATITUDE+","+
+				WAYPOINTS_ACCURACY+","+
+				WAYPOINTS_ALTITUDE+","+
+				WAYPOINTS_BEARING+","+
+				WAYPOINTS_SPEED+
 				" FROM "+WAYPOINTS+
-				" WHERE "+WAYPOINTS_RIDE+" = "+ride+
+				" WHERE "+WAYPOINTS_RIDE+" = "+rideId+
 				" ORDER BY "+WAYPOINTS_TIME,
 			null );
 	}
 
+	public int queryWaypointsCount( long rideId )
+	{
+		if( !ready() )
+			return -1;
+
+		Cursor cursor = db.rawQuery(
+			"SELECT COUNT(*)"+
+				" FROM "+WAYPOINTS+
+				" WHERE "+WAYPOINTS_RIDE+" = "+rideId,
+			null );
+
+		if( cursor == null ||
+			!cursor.moveToFirst() )
+			return -1;
+
+		return cursor.getInt( 0 );
+	}
+
 	public long insertWaypoint(
 		long rideId,
+		long time,
 		double latitude,
 		double longitude,
-		long time )
+		float accuracy,
+		double altitude,
+		float bearing,
+		float speed )
 	{
-		if( db == null )
+		if( !ready() )
 			return 0;
 
-		return insertWaypoint( db, rideId, latitude, longitude, time );
+		return insertWaypoint(
+			db,
+			rideId,
+			time,
+			latitude,
+			longitude,
+			accuracy,
+			altitude,
+			bearing,
+			speed );
 	}
 
 	public void removeWaypoint( long id )
 	{
-		if( db == null )
+		if( !ready() )
 			return;
 
 		db.delete(
@@ -205,16 +267,24 @@ public class MotoScoreDataSource
 	private static long insertWaypoint(
 		SQLiteDatabase db,
 		long rideId,
+		long time,
 		double latitude,
 		double longitude,
-		long time )
+		float accuracy,
+		double altitude,
+		float bearing,
+		float speed )
 	{
 		ContentValues cv = new ContentValues();
 
 		cv.put( WAYPOINTS_RIDE, rideId );
+		cv.put( WAYPOINTS_TIME, time );
 		cv.put( WAYPOINTS_LATITUDE, latitude );
 		cv.put( WAYPOINTS_LONGITUDE, longitude );
-		cv.put( WAYPOINTS_TIME, time );
+		cv.put( WAYPOINTS_ACCURACY, accuracy );
+		cv.put( WAYPOINTS_ALTITUDE, altitude );
+		cv.put( WAYPOINTS_BEARING, bearing );
+		cv.put( WAYPOINTS_SPEED, speed );
 
 		return db.insert( WAYPOINTS, null, cv );
 	}
@@ -248,9 +318,13 @@ public class MotoScoreDataSource
 				"CREATE TABLE "+WAYPOINTS+" ("+
 					WAYPOINTS_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+
 					WAYPOINTS_RIDE+" INTEGER,"+
+					WAYPOINTS_TIME+" TIMESTAMP,"+
 					WAYPOINTS_LONGITUDE+" FLOAT,"+
 					WAYPOINTS_LATITUDE+" FLOAT,"+
-					WAYPOINTS_TIME+" TIMESTAMP );" );
+					WAYPOINTS_ACCURACY+" FLOAT,"+
+					WAYPOINTS_ALTITUDE+" FLOAT,"+
+					WAYPOINTS_BEARING+" FLOAT,"+
+					WAYPOINTS_SPEED+" FLOAT );" );
 		}
 
 		@Override

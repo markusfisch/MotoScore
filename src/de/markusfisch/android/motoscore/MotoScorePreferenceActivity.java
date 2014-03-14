@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.widget.Toast;
 
 public class MotoScorePreferenceActivity
 	extends PreferenceActivity
@@ -52,16 +51,14 @@ public class MotoScorePreferenceActivity
 
 		if( dirty )
 		{
-			Toast.makeText(
-				this,
-				R.string.restart_service,
-				Toast.LENGTH_SHORT ).show();
-
-			Intent intent = new Intent(
+			final Intent intent = new Intent(
 				this,
 				MotoScoreService.class );
 
-			stopService( intent );
+			intent.putExtra(
+				MotoScoreService.COMMAND,
+				MotoScoreService.COMMAND_CONFIGURATION );
+
 			startService( intent );
 		}
 	}

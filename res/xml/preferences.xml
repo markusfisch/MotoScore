@@ -20,7 +20,7 @@
 	</PreferenceCategory>
 	<PreferenceCategory
 		android:title="@string/notification"
-		android:key="recognition_preferences">
+		android:key="notification_preferences">
 		<CheckBoxPreference
 			android:key="show_notification"
 			android:title="@string/show_notification"

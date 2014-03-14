@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -28,9 +29,9 @@ public class MainActivity
 	extends ActionBarActivity
 	implements MotoScoreService.MotoScoreServiceListener
 {
-	public static final SimpleDateFormat startDateFormat =
+	private static final SimpleDateFormat startDateFormat =
 		new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-	public static final SimpleDateFormat nowDateFormat =
+	private static final SimpleDateFormat nowDateFormat =
 		new SimpleDateFormat( "HH:mm:ss" );
 	private final ServiceConnection connection = new ServiceConnection()
 	{
@@ -106,6 +107,19 @@ public class MainActivity
 			} );
 
 		listView.setEmptyView( findViewById( R.id.no_rides ) );
+		listView.setOnItemClickListener(
+			new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public void onItemClick(
+					AdapterView<?> parent,
+					View view,
+					int position,
+					long id )
+				{
+					new QueryNumberOfWaypoints().execute( id );
+				}
+			} );
 		statsView.listView = listView;
 		registerForContextMenu( listView );
 
@@ -163,9 +177,9 @@ public class MainActivity
 		switch( item.getItemId() )
 		{
 			case R.id.start:
-				start();
+				startStop();
 
-				item.setIcon( service.started ?
+				item.setIcon( service.recording() ?
 					R.drawable.ic_menu_stop :
 					R.drawable.ic_menu_start );
 				return true;
@@ -200,7 +214,10 @@ public class MainActivity
 		switch( item.getItemId() )
 		{
 			case R.id.remove_ride:
-				service.dataSource.removeRide( info.id );
+				MotoScoreApplication
+					.dataSource
+					.removeRide( info.id );
+
 				refresh();
 				return true;
 		}
@@ -215,9 +232,12 @@ public class MainActivity
 		refresh();
 	}
 
-	public void start()
+	public void startStop()
 	{
-		if( service.started )
+		if( service == null )
+			return;
+
+		if( service.recording() )
 			service.stop();
 		else
 			service.start();
@@ -232,12 +252,12 @@ public class MainActivity
 			return;
 
 		if( counterView != null )
-			counterView.setVisibility( service.started ?
+			counterView.setVisibility( service.recording() ?
 				View.VISIBLE :
 				View.GONE );
 
 		if( startMenuItem != null )
-			startMenuItem.setIcon( service.started ?
+			startMenuItem.setIcon( service.recording() ?
 				R.drawable.ic_menu_stop :
 				R.drawable.ic_menu_start );
 	}
@@ -247,7 +267,7 @@ public class MainActivity
 		handler.removeCallbacks( updateTimeRunnable );
 
 		if( service == null ||
-			!service.started )
+			!service.recording() )
 			return;
 
 		dateTextView.setText( getRideDate(
@@ -269,7 +289,7 @@ public class MainActivity
 		query();
 
 		if( service != null &&
-			service.started )
+			service.recording() )
 		{
 			updateTime();
 
@@ -283,22 +303,104 @@ public class MainActivity
 		handler.removeCallbacks( queryRetryRunnable );
 
 		if( service == null ||
-			!service.dataSource.ready() )
+			!MotoScoreApplication.dataSource.ready() )
 		{
 			handler.postDelayed( queryRetryRunnable, 500 );
 			return;
 		}
 
-		Cursor c = service.dataSource.queryRides( 30 );
+		new QueryRides().execute( 30 );
+	}
 
-		if( adapter == null )
+	private class QueryRides
+		extends AsyncTask<Integer, Void, Cursor>
+	{
+		@Override
+		protected Cursor doInBackground( Integer... days )
 		{
-			adapter = new MotoScoreAdapter( this, c );
-			listView.setAdapter( adapter );
-		}
-		else
-			adapter.changeCursor( c );
+			if( days.length != 1 )
+				return null;
 
-		statsView.setCursor( c );
+			return MotoScoreApplication
+				.dataSource
+				.queryRides( days[0].intValue() );
+		}
+
+		@Override
+		protected void onProgressUpdate( Void... nothing )
+		{
+		}
+
+		@Override
+		protected void onPostExecute( Cursor cursor )
+		{
+			if( cursor == null )
+				return;
+
+			if( adapter == null )
+			{
+				adapter = new MotoScoreAdapter(
+					MainActivity.this,
+					cursor );
+
+				listView.setAdapter( adapter );
+			}
+			else
+				adapter.changeCursor( cursor );
+
+			statsView.setCursor( cursor );
+		}
+	}
+
+	private class QueryNumberOfWaypoints
+		extends AsyncTask<Long, Void, Integer>
+	{
+		private long rideId;
+
+		@Override
+		protected Integer doInBackground( Long... rideIds )
+		{
+			if( rideIds.length != 1 )
+				return null;
+
+			rideId = rideIds[0].longValue();
+
+			return MotoScoreApplication
+				.dataSource
+				.queryWaypointsCount( rideId );
+		}
+
+		@Override
+		protected void onProgressUpdate( Void... nothing )
+		{
+		}
+
+		@Override
+		protected void onPostExecute( Integer count )
+		{
+			if( count == null ||
+				rideId < 1 )
+				return;
+
+			if( count.intValue() < 1 )
+			{
+				Toast.makeText(
+					MainActivity.this,
+					R.string.no_waypoints,
+					Toast.LENGTH_LONG ).show();
+			}
+			else
+			{
+				Intent intent = new Intent(
+					MainActivity.this,
+					RideViewActivity.class );
+
+				intent.putExtra(
+					MotoScoreDataSource.RIDES_ID,
+					rideId );
+
+				startActivity( intent );
+			}
+		}
 	}
 }
