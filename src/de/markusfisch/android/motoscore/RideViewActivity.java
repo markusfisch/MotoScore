@@ -111,16 +111,26 @@ public class RideViewActivity
 				MotoScoreDataSource.WAYPOINTS_LATITUDE );
 			int lngIdx = cursor.getColumnIndex(
 				MotoScoreDataSource.WAYPOINTS_LONGITUDE );
+			LatLng start = null;
 
 			do
 			{
-				po.add( new LatLng(
+				LatLng ll = new LatLng(
 					cursor.getDouble( latIdx ),
-					cursor.getDouble( lngIdx ) ) );
+					cursor.getDouble( lngIdx ) );
+
+				if( start == null )
+					start = ll;
+
+				po.add( ll );
 
 			} while( cursor.moveToNext() );
 
 			map.addPolyline( po );
+
+			map.moveCamera( CameraUpdateFactory.newLatLngZoom(
+				start,
+				18 ) );
 		}
 	}
 }
