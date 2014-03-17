@@ -43,6 +43,10 @@ public class MainActivity
 			service = ((MotoScoreService.Binder)binder).getService();
 			service.listener = MainActivity.this;
 
+			// (re-)register media button because another app
+			// may have registered itself in the meantime
+			service.registerMediaButton();
+
 			setState();
 			refresh();
 		}
@@ -120,8 +124,9 @@ public class MainActivity
 					new QueryNumberOfWaypoints().execute( id );
 				}
 			} );
-		statsView.listView = listView;
+
 		registerForContextMenu( listView );
+		statsView.listView = listView;
 
 		// start the service to keep it running without activities
 		startService( new Intent(
@@ -316,14 +321,14 @@ public class MainActivity
 		extends AsyncTask<Integer, Void, Cursor>
 	{
 		@Override
-		protected Cursor doInBackground( Integer... days )
+		protected Cursor doInBackground( Integer... limits )
 		{
-			if( days.length != 1 )
+			if( limits.length != 1 )
 				return null;
 
 			return MotoScoreApplication
 				.dataSource
-				.queryRides( days[0].intValue() );
+				.queryRides( limits[0].intValue() );
 		}
 
 		@Override

@@ -88,11 +88,16 @@ public class MotoScoreService
 
 		vibrator = (Vibrator)
 			getSystemService( Context.VIBRATOR_SERVICE );
+
+		// register media button to be able to start as soon
+		// as the button is pressed
+		registerMediaButton();
 	}
 
 	@Override
 	public void onDestroy()
 	{
+		unregisterMediaButton();
 		unregisterReceiver( headsetReceiver );
 
 		stop();
@@ -124,6 +129,33 @@ public class MotoScoreService
 		return binder;
 	}
 
+	public void registerMediaButton()
+	{
+		unregisterMediaButton();
+
+		if( audioManager == null ||
+			!useMediaButton() )
+			return;
+
+		remoteControlReceiver = new ComponentName(
+			getPackageName(),
+			RemoteControlReceiver.class.getName() );
+
+		audioManager.registerMediaButtonEventReceiver(
+			remoteControlReceiver );
+	}
+
+	public void unregisterMediaButton()
+	{
+		if( remoteControlReceiver == null )
+			return;
+
+		audioManager.unregisterMediaButtonEventReceiver(
+			remoteControlReceiver );
+
+		remoteControlReceiver = null;
+	}
+
 	public boolean recording()
 	{
 		return rideId > 0;
@@ -133,8 +165,6 @@ public class MotoScoreService
 	{
 		if( recording() )
 			return;
-
-		registerMediaButton();
 
 		rideStart = new Date();
 		mistakes = 0;
@@ -172,8 +202,6 @@ public class MotoScoreService
 	{
 		if( !recording() )
 			return;
-
-		unregisterMediaButton();
 
 		if( locationManager != null )
 			locationManager.removeUpdates( locationRecorder );
@@ -227,35 +255,6 @@ public class MotoScoreService
 				registerMediaButton();
 				break;
 		}
-	}
-
-	public void registerMediaButton()
-	{
-		if( audioManager == null ||
-			// don't register again
-			remoteControlReceiver != null ||
-			!useMediaButton() )
-			return;
-
-		unregisterMediaButton();
-
-		remoteControlReceiver = new ComponentName(
-			getPackageName(),
-			RemoteControlReceiver.class.getName() );
-
-		audioManager.registerMediaButtonEventReceiver(
-			remoteControlReceiver );
-	}
-
-	public void unregisterMediaButton()
-	{
-		if( remoteControlReceiver == null )
-			return;
-
-		audioManager.unregisterMediaButtonEventReceiver(
-			remoteControlReceiver );
-
-		remoteControlReceiver = null;
 	}
 
 	private void handleActionCommand( Intent intent )
@@ -379,7 +378,7 @@ public class MotoScoreService
 	private void record( Location location )
 	{
 		if( location == null ||
-			location.getAccuracy() < MINIMUM_ACCURACY )
+			location.getAccuracy() > MINIMUM_ACCURACY )
 			return;
 
 		if( recording() &&
