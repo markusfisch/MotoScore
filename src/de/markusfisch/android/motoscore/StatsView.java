@@ -45,7 +45,7 @@ public class StatsView
 
 		sample.clear();
 		samples = 0;
-		max = 2f;
+		max = .5f;
 
 		final int idx = cursor.getColumnIndex(
 			MotoScoreDataSource.RIDES_MISTAKES_PER_KM );
