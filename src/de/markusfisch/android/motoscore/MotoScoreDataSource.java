@@ -94,7 +94,7 @@ public class MotoScoreDataSource
 		db = null;
 	}
 
-	public Cursor queryRides( int days )
+	public Cursor queryRides( int limit )
 	{
 		if( !ready() )
 			return null;
@@ -103,7 +103,6 @@ public class MotoScoreDataSource
 			"SELECT "+
 				RIDES_ID+","+
 				RIDES_START+","+
-				RIDES_STOP+","+
 				RIDES_MISTAKES+","+
 				RIDES_DISTANCE+","+
 				" strftime( '%Y-%m-%d %H:%M', "+RIDES_START+
@@ -115,7 +114,23 @@ public class MotoScoreDataSource
 					" AS "+RIDES_MISTAKES_PER_KM+
 				" FROM "+RIDES+
 				" WHERE julianday( 'now' )-julianday( "+
-					RIDES_STOP+" ) < "+days+
+					RIDES_STOP+" ) <= "+limit+
+			" UNION SELECT "+
+				"0,"+
+				" min( "+RIDES_START+" ),"+
+				" sum( "+RIDES_MISTAKES+" ),"+
+				" sum( "+RIDES_DISTANCE+" ),"+
+				" strftime( '%Y-%m-%d', min( "+
+					RIDES_START+" ) ) || "+
+					" strftime( ' - %Y-%m-%d', max( "+
+					RIDES_START+" ) ) AS "+RIDES_DATE_AND_TIME+","+
+				" cast( sum( "+RIDES_MISTAKES+" ) as float )/"+
+					"max( sum( "+RIDES_DISTANCE+" )/1000, 1 )"+
+					" AS "+RIDES_MISTAKES_PER_KM+
+				" FROM "+RIDES+
+				" WHERE julianday( 'now' )-julianday( "+
+					RIDES_STOP+" ) > "+limit+
+				" GROUP BY strftime( '%Y%W', "+RIDES_START+" )"+
 				" ORDER BY "+RIDES_START+" DESC",
 			null );
 	}
