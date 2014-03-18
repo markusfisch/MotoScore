@@ -66,7 +66,7 @@ public class MotoScoreAdapter
 
 		setText(
 			(TextView)view.findViewById( R.id.ratio ),
-			String.format( "%.1f", ratio ) );
+			String.format( "%.2f", ratio ) );
 	}
 
 	private void setText(
