@@ -40,7 +40,7 @@ You get the idea.
 The thinking is, that the action of counting helps you to remember a
 mistake which prevents you from doing it again.
 
-Consciously counting the mistake stimulates learning.
+Consciously counting mistakes stimulates learning.
 
 So I got myself a small little counter that I could wear on a glove
 and started counting. And while that worked for me a very long time,
