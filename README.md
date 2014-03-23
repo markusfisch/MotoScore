@@ -21,7 +21,7 @@ Simply press the button to log a mistake. The phone will vibrate to confirm.
 
 Keep the button pressed for a full second to signal start or end of a ride.
 
-Moto Score will record the distance your rode to calculate a mistakes per
+Moto Score will record the distance you've driven to calculate a mistakes per
 km ratio.
 
 Background
