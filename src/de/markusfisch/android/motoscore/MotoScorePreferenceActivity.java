@@ -10,11 +10,6 @@ public class MotoScorePreferenceActivity
 	extends PreferenceActivity
 	implements OnSharedPreferenceChangeListener
 {
-	public static final String SHARED_PREFERENCES_NAME = "MotoScoreSettings";
-	public static final String USE_MEDIA_BUTTON = "use_media_button";
-	public static final String HAPTIC_FEEDBACK = "haptic_feedback";
-	public static final String SHOW_NOTIFICATION = "show_notification";
-
 	private boolean dirty;
 
 	@Override
@@ -23,7 +18,7 @@ public class MotoScorePreferenceActivity
 		super.onCreate( state );
 
 		getPreferenceManager().setSharedPreferencesName(
-			SHARED_PREFERENCES_NAME );
+			MotoScorePreferences.SHARED_PREFERENCES_NAME );
 
 		addPreferencesFromResource( R.xml.preferences );
 	}

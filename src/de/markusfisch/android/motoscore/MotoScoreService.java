@@ -23,7 +23,8 @@ public class MotoScoreService
 {
 	public interface MotoScoreServiceListener
 	{
-		public void onMotoScoreUpdate();
+		public void onMistakeUpdate();
+		public void onDataUpdate();
 	}
 
 	public class Binder extends android.os.Binder
@@ -43,14 +44,12 @@ public class MotoScoreService
 	public static final int COMMAND_ACTION = 1;
 	public static final int COMMAND_CONFIGURATION = 2;
 
+	public MotoScorePreferences preferences;
 	public MotoScoreServiceListener listener = null;
 	public Date rideStart = new Date();
 	public float distance = 0;
 	public int mistakes = 0;
-
-	private static final int MILLISECONDS_BETWEEN_UPDATES = 30000;
-	private static final int METERS_BETWEEN_UPDATES = 20;
-	private static final int MINIMUM_ACCURACY = 100;
+	public int waypoints = 0;
 
 	private final IBinder binder = new Binder();
 
@@ -65,6 +64,7 @@ public class MotoScoreService
 	private AudioManager audioManager;
 	private ComponentName remoteControlReceiver = null;
 	private long buttonDown = 0;
+	private int minimumAccuracy = 100;
 
 	private Vibrator vibrator;
 
@@ -73,6 +73,7 @@ public class MotoScoreService
 	{
 		final Context context = getApplicationContext();
 
+		preferences = new MotoScorePreferences( context );
 		notifications = new Notifications( context );
 
 		locationManager = (LocationManager)
@@ -134,7 +135,7 @@ public class MotoScoreService
 		unregisterMediaButton();
 
 		if( audioManager == null ||
-			!useMediaButton() )
+			!preferences.useMediaButton() )
 			return;
 
 		remoteControlReceiver = new ComponentName(
@@ -169,6 +170,7 @@ public class MotoScoreService
 		rideStart = new Date();
 		mistakes = 0;
 		distance = 0;
+		waypoints = 0;
 
 		if( !MotoScoreApplication.dataSource.ready() ||
 			(rideId = MotoScoreApplication.dataSource.insertRide(
@@ -184,18 +186,20 @@ public class MotoScoreService
 
 		record( getLastKnownLocation() );
 
+		minimumAccuracy = preferences.minimumAccuracy();
+
 		if( locationManager != null )
 			locationManager.requestLocationUpdates(
 				LocationManager.GPS_PROVIDER,
-				MILLISECONDS_BETWEEN_UPDATES,
-				METERS_BETWEEN_UPDATES,
+				preferences.secondsBetweenUpdates(),
+				preferences.metersBetweenUpdates(),
 				locationRecorder );
 
-		if( showNotification() )
+		if( preferences.showNotification() )
 			notifications.recording.show();
 
 		if( listener != null )
-			listener.onMotoScoreUpdate();
+			listener.onDataUpdate();
 	}
 
 	public void stop()
@@ -217,7 +221,7 @@ public class MotoScoreService
 		rideId = 0;
 
 		if( listener != null )
-			listener.onMotoScoreUpdate();
+			listener.onDataUpdate();
 	}
 
 	public void count()
@@ -227,7 +231,7 @@ public class MotoScoreService
 			++mistakes;
 
 			if( listener != null )
-				listener.onMotoScoreUpdate();
+				listener.onMistakeUpdate();
 
 			vibrate( 1000 );
 		}
@@ -235,7 +239,7 @@ public class MotoScoreService
 
 	private void vibrate( int milliseconds )
 	{
-		if( !hapticFeedback() )
+		if( !preferences.hapticFeedback() )
 			return;
 
 		vibrator.vibrate( milliseconds );
@@ -297,43 +301,15 @@ public class MotoScoreService
 		if( !recording() )
 			return;
 
-		if( useMediaButton() )
+		if( preferences.useMediaButton() )
 			registerMediaButton();
 		else
 			unregisterMediaButton();
 
-		if( showNotification() )
+		if( preferences.showNotification() )
 			notifications.recording.show();
 		else
 			notifications.recording.hide();
-	}
-
-	private boolean useMediaButton()
-	{
-		return getSharedPreferences().getBoolean(
-			MotoScorePreferenceActivity.USE_MEDIA_BUTTON,
-			true );
-	}
-
-	private boolean showNotification()
-	{
-		return getSharedPreferences().getBoolean(
-			MotoScorePreferenceActivity.SHOW_NOTIFICATION,
-			true );
-	}
-
-	private boolean hapticFeedback()
-	{
-		return getSharedPreferences().getBoolean(
-			MotoScorePreferenceActivity.HAPTIC_FEEDBACK,
-			true );
-	}
-
-	private SharedPreferences getSharedPreferences()
-	{
-		return getSharedPreferences(
-			MotoScorePreferenceActivity.SHARED_PREFERENCES_NAME,
-			0 );
 	}
 
 	private Location getLastKnownLocation()
@@ -369,7 +345,7 @@ public class MotoScoreService
 			// it's not older than 10 minutes
 			java.lang.System.currentTimeMillis()-youngestTime < 600000 &&
 			// its accuracy is lower than MINIMUM_ACCURACY meters
-			youngest.getAccuracy() < MINIMUM_ACCURACY )
+			youngest.getAccuracy() < minimumAccuracy )
 			return youngest;
 
 		return null;
@@ -378,11 +354,14 @@ public class MotoScoreService
 	private void record( Location location )
 	{
 		if( location == null ||
-			location.getAccuracy() > MINIMUM_ACCURACY )
+			location.getAccuracy() > minimumAccuracy )
 			return;
 
 		if( recording() &&
 			MotoScoreApplication.dataSource.ready() )
+		{
+			++waypoints;
+
 			MotoScoreApplication.dataSource.insertWaypoint(
 				rideId,
 				location.getTime(),
@@ -392,6 +371,7 @@ public class MotoScoreService
 				location.getAltitude(),
 				location.getBearing(),
 				location.getSpeed() );
+		}
 
 		if( lastLocation == null )
 			lastLocation = location;

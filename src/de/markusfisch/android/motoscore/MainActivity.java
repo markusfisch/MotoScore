@@ -1,6 +1,5 @@
 package de.markusfisch.android.motoscore;
 
-import android.support.v7.app.ActionBarActivity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,10 +80,12 @@ public class MainActivity
 	private MotoScoreAdapter adapter = null;
 	private Handler handler = new Handler();
 	private MenuItem startMenuItem;
-	private StatsView statsView;
+	private GraphView statsView;
 	private ListView listView;
+	private LinearLayout progressCircle;
 	private View counterView;
 	private TextView dateTextView;
+	private TextView distanceTextView;
 	private TextView mistakesTextView;
 
 	@Override
@@ -94,10 +97,12 @@ public class MainActivity
 
 		getSupportActionBar().setHomeButtonEnabled( false );
 
-		statsView = (StatsView)findViewById( R.id.stats );
+		statsView = (GraphView)findViewById( R.id.stats );
 		listView = (ListView)findViewById( R.id.rides );
+		progressCircle = (LinearLayout)findViewById( R.id.progress );
 		counterView = (View)findViewById( R.id.counter );
 		dateTextView = (TextView)findViewById( R.id.date );
+		distanceTextView = (TextView)findViewById( R.id.distance );
 		mistakesTextView = (TextView)findViewById( R.id.mistakes );
 
 		counterView.setOnClickListener(
@@ -185,8 +190,8 @@ public class MainActivity
 				startStop();
 
 				item.setIcon( service.recording() ?
-					R.drawable.ic_menu_stop :
-					R.drawable.ic_menu_start );
+					R.drawable.ic_action_stop :
+					R.drawable.ic_action_start );
 				return true;
 			case R.id.preferences:
 				startActivity( new Intent(
@@ -231,7 +236,13 @@ public class MainActivity
 	}
 
 	@Override
-	public void onMotoScoreUpdate()
+	public void onMistakeUpdate()
+	{
+		updateMistakes();
+	}
+
+	@Override
+	public void onDataUpdate()
 	{
 		setState();
 		refresh();
@@ -263,8 +274,18 @@ public class MainActivity
 
 		if( startMenuItem != null )
 			startMenuItem.setIcon( service.recording() ?
-				R.drawable.ic_menu_stop :
-				R.drawable.ic_menu_start );
+				R.drawable.ic_action_stop :
+				R.drawable.ic_action_start );
+	}
+
+	private void updateMistakes()
+	{
+		if( service == null ||
+			!service.recording() )
+			return;
+
+		mistakesTextView.setText(
+			String.format( "%d", service.mistakes ) );
 	}
 
 	private void updateTime()
@@ -279,10 +300,16 @@ public class MainActivity
 			service.rideStart,
 			new Date() ) );
 
+		distanceTextView.setText( service.waypoints > 0 ?
+			String.format( "%.1f %s",
+				service.distance/1000,
+				getString( R.string.km ) ) :
+			getString( R.string.awaiting_gps_fix ) );
+
 		handler.postDelayed( updateTimeRunnable, 1000 );
 	}
 
-	private String getRideDate( Date start, Date stop )
+	private static String getRideDate( Date start, Date stop )
 	{
 		return
 			startDateFormat.format( start )+" - "+
@@ -297,9 +324,7 @@ public class MainActivity
 			service.recording() )
 		{
 			updateTime();
-
-			mistakesTextView.setText(
-				String.format( "%d", service.mistakes ) );
+			updateMistakes();
 		}
 	}
 
@@ -314,21 +339,39 @@ public class MainActivity
 			return;
 		}
 
-		new QueryRides().execute( 30 );
+		new QueryRides().execute();
+	}
+
+	private void showProgressCircle()
+	{
+		progressCircle.post( new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				progressCircle.setVisibility( View.VISIBLE );
+			}
+		} );
+	}
+
+	private void hideProgressCircle()
+	{
+		progressCircle.setVisibility( View.GONE );
 	}
 
 	private class QueryRides
-		extends AsyncTask<Integer, Void, Cursor>
+		extends AsyncTask<Void, Void, Cursor>
 	{
 		@Override
-		protected Cursor doInBackground( Integer... limits )
+		protected Cursor doInBackground( Void... nothing )
 		{
-			if( limits.length != 1 )
-				return null;
+			showProgressCircle();
 
 			return MotoScoreApplication
 				.dataSource
-				.queryRides( limits[0].intValue() );
+				.queryRides(
+					service.preferences.numberOfRides(),
+					service.preferences.score() );
 		}
 
 		@Override
@@ -339,6 +382,8 @@ public class MainActivity
 		@Override
 		protected void onPostExecute( Cursor cursor )
 		{
+			hideProgressCircle();
+
 			if( cursor == null )
 				return;
 
@@ -365,6 +410,8 @@ public class MainActivity
 		@Override
 		protected Integer doInBackground( Long... rideIds )
 		{
+			showProgressCircle();
+
 			if( rideIds.length != 1 )
 				return null;
 
@@ -383,6 +430,8 @@ public class MainActivity
 		@Override
 		protected void onPostExecute( Integer count )
 		{
+			hideProgressCircle();
+
 			if( count == null ||
 				rideId < 1 )
 				return;

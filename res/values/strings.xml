@@ -8,6 +8,7 @@
 	<string name="no_rides">No rides recorded.</string>
 	<string name="no_waypoints">This ride has no waypoints.</string>
 	<string name="recording">Recording</string>
+	<string name="awaiting_gps_fix">Awaiting GPS fix</string>
 	<string name="mistakes">Mistakes</string>
 	<string name="km">km</string>
 	<string name="remove_ride">Remove ride</string>
@@ -20,4 +21,16 @@
 	<string name="notification">Notifiation</string>
 	<string name="show_notification">Show notification</string>
 	<string name="show_notification_summary">Show notification icon when service is started</string>
+	<string name="display">Display</string>
+	<string name="score">Graph value</string>
+	<string name="score_summary">Define graph value</string>
+	<string name="number_of_rides">Rides</string>
+	<string name="number_of_rides_summary">Maximum number of rides to list</string>
+	<string name="tracking">Tracking</string>
+	<string name="seconds_between_updates">Seconds between updates</string>
+	<string name="seconds_between_updates_summary">Minimum time interval between location updates</string>
+	<string name="meters_between_updates">Meters between updates</string>
+	<string name="meters_between_updates_summary">Minimum distance between location updates</string>
+	<string name="minimum_accuracy">Minimum accuracy</string>
+	<string name="minimum_accuracy_summary">Minimum accuracy of location, in meters</string>
 </resources>

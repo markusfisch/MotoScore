@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class StatsView
+public class GraphView
 	extends View
 {
 	public ListView listView = null;
@@ -25,13 +25,13 @@ public class StatsView
 	private float max = 0;
 	private int itemHeight = 0;
 
-	public StatsView( Context context )
+	public GraphView( Context context )
 	{
 		super( context );
 		init();
 	}
 
-	public StatsView( Context context, AttributeSet attrs )
+	public GraphView( Context context, AttributeSet attrs )
 	{
 		super( context, attrs );
 		init();
@@ -48,7 +48,7 @@ public class StatsView
 		max = .5f;
 
 		final int idx = cursor.getColumnIndex(
-			MotoScoreDataSource.RIDES_MISTAKES_PER_KM );
+			MotoScoreDataSource.RIDES_SCORE );
 
 		do
 		{

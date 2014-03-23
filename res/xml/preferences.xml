@@ -28,4 +28,39 @@
 			android:checked="true"
 			android:defaultValue="true"/>
 	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="@string/display"
+		android:key="display_preferences">
+		<ListPreference
+			android:key="score"
+			android:title="@string/score"
+			android:summary="@string/score_summary"
+			android:entries="@array/score_names"
+			android:entryValues="@array/score_values"
+			android:defaultValue="1"/>
+		<EditTextPreference
+			android:key="number_of_rides"
+			android:title="@string/number_of_rides"
+			android:summary="@string/number_of_rides_summary"
+			android:defaultValue="100"/>
+	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="@string/tracking"
+		android:key="tracking_preferences">
+		<EditTextPreference
+			android:key="seconds_between_updates"
+			android:title="@string/seconds_between_updates"
+			android:summary="@string/seconds_between_updates_summary"
+			android:defaultValue="30"/>
+		<EditTextPreference
+			android:key="meters_between_updates"
+			android:title="@string/meters_between_updates"
+			android:summary="@string/meters_between_updates_summary"
+			android:defaultValue="20"/>
+		<EditTextPreference
+			android:key="minimum_accuracy"
+			android:title="@string/minimum_accuracy"
+			android:summary="@string/minimum_accuracy_summary"
+			android:defaultValue="100"/>
+	</PreferenceCategory>
 </PreferenceScreen>

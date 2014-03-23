@@ -13,6 +13,11 @@ import java.util.Date;
 
 public class MotoScoreDataSource
 {
+	public static final int SCORE_MISTAKES_DISTANCE = 1;
+	public static final int SCORE_DISTANCE_MISTAKES = 2;
+	public static final int SCORE_MISTAKES = 3;
+	public static final int SCORE_DISTANCE = 4;
+
 	public static final String RIDES = "rides";
 	public static final String RIDES_ID = "_id";
 	public static final String RIDES_START = "start";
@@ -21,7 +26,7 @@ public class MotoScoreDataSource
 	public static final String RIDES_DISTANCE = "distance";
 
 	public static final String RIDES_DATE_AND_TIME = "date_and_time";
-	public static final String RIDES_MISTAKES_PER_KM = "mistakes_per_km";
+	public static final String RIDES_SCORE = "score";
 
 	public static final String WAYPOINTS = "waypoints";
 	public static final String WAYPOINTS_ID = "_id";
@@ -94,10 +99,33 @@ public class MotoScoreDataSource
 		db = null;
 	}
 
-	public Cursor queryRides( int limit )
+	public Cursor queryRides( int limit, int score )
 	{
 		if( !ready() )
 			return null;
+
+		String scoreExpression;
+
+		switch( score )
+		{
+			default:
+			case 1:
+				scoreExpression =
+					"cast( "+RIDES_MISTAKES+" as float )/"+
+					"max( "+RIDES_DISTANCE+"/1000, 1 )";
+				break;
+			case 2:
+				scoreExpression =
+					"max( "+RIDES_DISTANCE+"/1000, 1 )/"+
+					"cast( "+RIDES_MISTAKES+" as float )";
+				break;
+			case 3:
+				scoreExpression = RIDES_MISTAKES;
+				break;
+			case 4:
+				scoreExpression = RIDES_DISTANCE;
+				break;
+		}
 
 		return db.rawQuery(
 			"SELECT "+
@@ -109,29 +137,11 @@ public class MotoScoreDataSource
 					" ) || "+
 					" strftime( ' - %H:%M', "+RIDES_STOP+
 					" ) AS "+RIDES_DATE_AND_TIME+","+
-				" cast( "+RIDES_MISTAKES+" as float )/"+
-					"max( "+RIDES_DISTANCE+"/1000, 1 )"+
-					" AS "+RIDES_MISTAKES_PER_KM+
+				" "+scoreExpression+" AS "+RIDES_SCORE+
 				" FROM "+RIDES+
-				" WHERE julianday( 'now' )-julianday( "+
-					RIDES_STOP+" ) <= "+limit+
-			" UNION SELECT "+
-				"0,"+
-				" min( "+RIDES_START+" ),"+
-				" sum( "+RIDES_MISTAKES+" ),"+
-				" sum( "+RIDES_DISTANCE+" ),"+
-				" strftime( '%Y-%m-%d', min( "+
-					RIDES_START+" ) ) || "+
-					" strftime( ' - %Y-%m-%d', max( "+
-					RIDES_START+" ) ) AS "+RIDES_DATE_AND_TIME+","+
-				" cast( sum( "+RIDES_MISTAKES+" ) as float )/"+
-					"max( sum( "+RIDES_DISTANCE+" )/1000, 1 )"+
-					" AS "+RIDES_MISTAKES_PER_KM+
-				" FROM "+RIDES+
-				" WHERE julianday( 'now' )-julianday( "+
-					RIDES_STOP+" ) > "+limit+
-				" GROUP BY strftime( '%Y%W', "+RIDES_START+" )"+
-				" ORDER BY "+RIDES_START+" DESC",
+				" WHERE "+RIDES_STOP+" IS NOT NULL"+
+				" ORDER BY "+RIDES_START+" DESC"+
+				" LIMIT "+limit,
 			null );
 	}
 
