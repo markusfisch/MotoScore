@@ -13,12 +13,9 @@ import android.widget.TextView;
 public class MotoScoreAdapter
 	extends CursorAdapter
 {
-	private LayoutInflater inflater = null;
-
 	public MotoScoreAdapter( Context context, Cursor cursor )
 	{
 		super( context, cursor, false );
-		init( context );
 	}
 
 	@Override
@@ -77,10 +74,5 @@ public class MotoScoreAdapter
 			return;
 
 		tv.setText( text );
-	}
-
-	private void init( Context context )
-	{
-		inflater = LayoutInflater.from( context );
 	}
 }
