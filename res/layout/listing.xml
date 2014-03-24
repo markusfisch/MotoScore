@@ -26,14 +26,6 @@
 			android:padding="8dp"
 			android:scaleType="center"
 			android:src="@drawable/no_rides"/>
-		<TextView
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:padding="8dp"
-			android:text="@string/no_rides"
-			android:textSize="24dp"
-			android:textColor="@color/no_rides"/>
 	</LinearLayout>
 	<LinearLayout
 		android:id="@+id/progress"
