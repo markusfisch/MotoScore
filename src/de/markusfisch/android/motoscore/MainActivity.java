@@ -48,6 +48,8 @@ public class MainActivity
 			// may have registered itself in the meantime
 			service.registerMediaButton();
 
+			listLength = service.preferences.numberOfRides();
+
 			setState();
 			refresh();
 		}
@@ -80,13 +82,16 @@ public class MainActivity
 	private MotoScoreAdapter adapter = null;
 	private Handler handler = new Handler();
 	private MenuItem startMenuItem;
-	private GraphView statsView;
+	private GraphView graphView;
 	private ListView listView;
 	private LinearLayout progressCircle;
 	private View counterView;
 	private TextView dateTextView;
 	private TextView distanceTextView;
 	private TextView mistakesTextView;
+	private View showMoreView;
+	private int totalRides = 0;
+	private int listLength = 100;
 
 	@Override
 	public void onCreate( Bundle state )
@@ -97,7 +102,7 @@ public class MainActivity
 
 		getSupportActionBar().setHomeButtonEnabled( false );
 
-		statsView = (GraphView)findViewById( R.id.stats );
+		graphView = (GraphView)findViewById( R.id.stats );
 		listView = (ListView)findViewById( R.id.rides );
 		progressCircle = (LinearLayout)findViewById( R.id.progress );
 		counterView = (View)findViewById( R.id.counter );
@@ -108,6 +113,7 @@ public class MainActivity
 		counterView.setOnClickListener(
 			new View.OnClickListener()
 			{
+				@Override
 				public void onClick( View v )
 				{
 					if( service != null )
@@ -131,12 +137,20 @@ public class MainActivity
 			} );
 
 		registerForContextMenu( listView );
-		statsView.listView = listView;
+		graphView.listView = listView;
 
 		// start the service to keep it running without activities
 		startService( new Intent(
 			this,
 			MotoScoreService.class ) );
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+
+		closeCursor();
 	}
 
 	@Override
@@ -167,6 +181,8 @@ public class MainActivity
 
 		if( serviceBound )
 			unbindService( connection );
+
+		closeCursor();
 	}
 
 	@Override
@@ -246,6 +262,12 @@ public class MainActivity
 	{
 		setState();
 		refresh();
+	}
+
+	private void closeCursor()
+	{
+		if( adapter != null )
+			adapter.changeCursor( null );
 	}
 
 	public void startStop()
@@ -339,7 +361,7 @@ public class MainActivity
 			return;
 		}
 
-		new QueryRides().execute();
+		new QueryNumberOfRides().execute();
 	}
 
 	private void showProgressCircle()
@@ -359,6 +381,38 @@ public class MainActivity
 		progressCircle.setVisibility( View.GONE );
 	}
 
+	private class QueryNumberOfRides
+		extends AsyncTask<Void, Void, Integer>
+	{
+		@Override
+		protected Integer doInBackground( Void... nothing )
+		{
+			showProgressCircle();
+
+			return MotoScoreApplication
+				.dataSource
+				.queryNumberOfRides();
+		}
+
+		@Override
+		protected void onProgressUpdate( Void... nothing )
+		{
+		}
+
+		@Override
+		protected void onPostExecute( Integer count )
+		{
+			hideProgressCircle();
+
+			if( count == null )
+				return;
+
+			totalRides = count.intValue();
+
+			new QueryRides().execute();
+		}
+	}
+
 	private class QueryRides
 		extends AsyncTask<Void, Void, Cursor>
 	{
@@ -370,7 +424,7 @@ public class MainActivity
 			return MotoScoreApplication
 				.dataSource
 				.queryRides(
-					service.preferences.numberOfRides(),
+					listLength,
 					service.preferences.score() );
 		}
 
@@ -389,16 +443,46 @@ public class MainActivity
 
 			if( adapter == null )
 			{
+				showMoreView =
+					MainActivity.this.getLayoutInflater().inflate(
+						R.layout.show_more,
+						null );
+
+				showMoreView.setOnClickListener(
+					new View.OnClickListener()
+					{
+						@Override
+						public void onClick( View v )
+						{
+							listLength += 100;
+							query();
+						}
+					} );
+
+				// it's required to call addFooterView()
+				// BEFORE setting the adapter (fixed in KitKat)
+				listView.addFooterView( showMoreView );
+
 				adapter = new MotoScoreAdapter(
 					MainActivity.this,
 					cursor );
 
 				listView.setAdapter( adapter );
+
+				if( totalRides < listLength )
+					listView.removeFooterView( showMoreView );
 			}
 			else
+			{
+				listView.removeFooterView( showMoreView );
+
 				adapter.changeCursor( cursor );
 
-			statsView.setCursor( cursor );
+				if( totalRides > listLength )
+					listView.addFooterView( showMoreView );
+			}
+
+			graphView.setCursor( cursor );
 		}
 	}
 

@@ -99,6 +99,29 @@ public class MotoScoreDataSource
 		db = null;
 	}
 
+	public int queryNumberOfRides()
+	{
+		if( !ready() )
+			return -1;
+
+		Cursor cursor = db.rawQuery(
+			"SELECT "+
+				" COUNT(*)"+
+				" FROM "+RIDES+
+				" WHERE "+RIDES_STOP+" IS NOT NULL",
+			null );
+
+		if( cursor == null ||
+			!cursor.moveToFirst() )
+			return -1;
+
+		int n = cursor.getInt( 0 );
+
+		cursor.close();
+
+		return n;
+	}
+
 	public Cursor queryRides( int limit, int score )
 	{
 		if( !ready() )
@@ -250,7 +273,11 @@ public class MotoScoreDataSource
 			!cursor.moveToFirst() )
 			return -1;
 
-		return cursor.getInt( 0 );
+		int n = cursor.getInt( 0 );
+
+		cursor.close();
+
+		return n;
 	}
 
 	public long insertWaypoint(
