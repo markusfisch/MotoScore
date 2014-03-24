@@ -110,6 +110,8 @@ public class RideViewActivity
 
 		} while( cursor.moveToNext() );
 
+		cursor.close();
+
 		map.addPolyline( po );
 
 		final View mapView = findViewById( R.id.map );
