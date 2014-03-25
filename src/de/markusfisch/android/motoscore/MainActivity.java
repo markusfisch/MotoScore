@@ -150,7 +150,9 @@ public class MainActivity
 	{
 		super.onDestroy();
 
-		closeCursor();
+		// close cursor
+		if( adapter != null )
+			adapter.changeCursor( null );
 	}
 
 	@Override
@@ -181,8 +183,6 @@ public class MainActivity
 
 		if( serviceBound )
 			unbindService( connection );
-
-		closeCursor();
 	}
 
 	@Override
@@ -262,12 +262,6 @@ public class MainActivity
 	{
 		setState();
 		refresh();
-	}
-
-	private void closeCursor()
-	{
-		if( adapter != null )
-			adapter.changeCursor( null );
 	}
 
 	public void startStop()
@@ -361,7 +355,7 @@ public class MainActivity
 			return;
 		}
 
-		new QueryNumberOfRides().execute();
+		new QueryTotalAndRides().execute();
 	}
 
 	private void showProgressCircle()
@@ -381,7 +375,7 @@ public class MainActivity
 		progressCircle.setVisibility( View.GONE );
 	}
 
-	private class QueryNumberOfRides
+	private class QueryTotalAndRides
 		extends AsyncTask<Void, Void, Integer>
 	{
 		@Override
