@@ -42,6 +42,7 @@
 			android:key="number_of_rides"
 			android:title="@string/number_of_rides"
 			android:summary="@string/number_of_rides_summary"
+			android:inputType="number"
 			android:defaultValue="100"/>
 	</PreferenceCategory>
 	<PreferenceCategory
@@ -51,16 +52,19 @@
 			android:key="seconds_between_updates"
 			android:title="@string/seconds_between_updates"
 			android:summary="@string/seconds_between_updates_summary"
+			android:inputType="number"
 			android:defaultValue="30"/>
 		<EditTextPreference
 			android:key="meters_between_updates"
 			android:title="@string/meters_between_updates"
 			android:summary="@string/meters_between_updates_summary"
+			android:inputType="number"
 			android:defaultValue="20"/>
 		<EditTextPreference
 			android:key="minimum_accuracy"
 			android:title="@string/minimum_accuracy"
 			android:summary="@string/minimum_accuracy_summary"
+			android:inputType="number"
 			android:defaultValue="100"/>
 	</PreferenceCategory>
 </PreferenceScreen>
