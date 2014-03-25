@@ -4,10 +4,9 @@ Moto Score
 Tally counter for motorcyclists to record mistakes (i.e. everything you
 wouldn't do again that way).
 
-The prototype of this app was done and presented at [Hack The Ride][2].
+[![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=de.markusfisch.android.motoscore)
 
-After tinkering with a lot of ideas I decided to write something simple
-I want myself.
+The prototype of this app was done and presented at [Hack The Ride][2].
 
 How to use
 ----------
@@ -17,12 +16,14 @@ Moto Score is intended to be used with a __headset with a button__ on it.
 Prepare the headset in a way that makes it very easy for you to press
 the button __while__ riding.
 
-Simply press the button to log a mistake. The phone will vibrate to confirm.
-
 Keep the button pressed for a full second to signal start or end of a ride.
+Your phone will vibrate for three seconds to confirm.
 
-Moto Score will record the distance you've driven to calculate a mistakes per
-km ratio.
+When riding, simply press the button to log a mistake.
+Your phone will vibrate for a second to confirm.
+
+Moto Score will record the distance you've driven to give you a reference
+to compare rides.
 
 Background
 ----------
@@ -45,6 +46,16 @@ Consciously counting mistakes stimulates learning.
 So I got myself a small little counter that I could wear on a glove
 and started counting. And while that worked for me a very long time,
 I finally wanted to use my smart phone to keep history of my rides.
+
+Troubleshooting
+---------------
+
+### Tracking
+
+The quality of tracking depends on the quality of your phone's GPS sensor.
+Just try. If you can only get a bad resolution, you may want to change the
+default values for GPS update requests in the settings. But be careful, the
+more updates you request, the more battery you're using.
 
 License
 -------
