@@ -277,10 +277,8 @@ public class MotoScoreService
 			case android.view.KeyEvent.ACTION_UP:
 				if( time-buttonDown < 900 )
 				{
-					if( !recording() )
-						start();
-
-					count();
+					if( recording() )
+						count();
 				}
 				else
 				{
