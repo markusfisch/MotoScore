@@ -2,4 +2,7 @@
 	<item
 		android:id="@+id/remove_ride"
 		android:title="@string/remove_ride"/>
+	<item
+		android:id="@+id/export_ride"
+		android:title="@string/export_ride"/>
 </menu>

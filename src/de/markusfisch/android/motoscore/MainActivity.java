@@ -28,7 +28,9 @@ import java.text.SimpleDateFormat;
 
 public class MainActivity
 	extends ActionBarActivity
-	implements MotoScoreService.MotoScoreServiceListener
+	implements
+		MotoScoreService.MotoScoreServiceListener,
+		RideExporter.ExportListener
 {
 	private static final SimpleDateFormat startDateFormat =
 		new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
@@ -239,6 +241,11 @@ public class MainActivity
 
 		switch( item.getItemId() )
 		{
+			case R.id.export_ride:
+				new RideExporter(
+					info.id,
+					this );
+				return true;
 			case R.id.remove_ride:
 				MotoScoreApplication
 					.dataSource
@@ -262,6 +269,18 @@ public class MainActivity
 	{
 		setState();
 		refresh();
+	}
+
+	@Override
+	public void onExportStarted()
+	{
+		showProgressCircle();
+	}
+
+	@Override
+	public void onExportFinished()
+	{
+		hideProgressCircle();
 	}
 
 	public void startStop()
