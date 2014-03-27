@@ -24,6 +24,7 @@ public class MotoScoreDataSource
 	public static final String RIDES_STOP = "stop";
 	public static final String RIDES_MISTAKES = "mistakes";
 	public static final String RIDES_DISTANCE = "distance";
+	public static final String RIDES_DURATION = "duration";
 
 	public static final String RIDES_DATE_AND_TIME = "date_and_time";
 	public static final String RIDES_SCORE = "score";
@@ -99,6 +100,29 @@ public class MotoScoreDataSource
 		db = null;
 	}
 
+	public String queryRideDate( long id )
+	{
+		if( !ready() )
+			return null;
+
+		Cursor cursor = db.rawQuery(
+			"SELECT "+
+				" strftime( '%Y%m%d%H%M%S', "+RIDES_START+" )"+
+				" FROM "+RIDES+
+				" WHERE "+RIDES_ID+" = "+id,
+			null );
+
+		if( cursor == null ||
+			!cursor.moveToFirst() )
+			return null;
+
+		String date = cursor.getString( 0 );
+
+		cursor.close();
+
+		return date;
+	}
+
 	public int queryNumberOfRides()
 	{
 		if( !ready() )
@@ -139,14 +163,20 @@ public class MotoScoreDataSource
 				break;
 			case 2:
 				scoreExpression =
-					"max( "+RIDES_DISTANCE+"/1000, 1 )/"+
-					"cast( "+RIDES_MISTAKES+" as float )";
+					"cast( "+RIDES_MISTAKES+" as float )/"+
+					"round( (julianday( "+RIDES_STOP+" )-julianday( "+
+						RIDES_START+" ))*1440 )";
 				break;
 			case 3:
 				scoreExpression = RIDES_MISTAKES;
 				break;
 			case 4:
 				scoreExpression = RIDES_DISTANCE;
+				break;
+			case 5:
+				scoreExpression =
+					"(julianday( "+RIDES_STOP+
+						" )-julianday( "+RIDES_START+" ))*24";
 				break;
 		}
 
@@ -160,6 +190,9 @@ public class MotoScoreDataSource
 					" ) || "+
 					" strftime( ' - %H:%M', "+RIDES_STOP+
 					" ) AS "+RIDES_DATE_AND_TIME+","+
+				" julianday( "+RIDES_STOP+
+					" )-julianday( "+RIDES_START+
+					" ) AS "+RIDES_DURATION+","+
 				" "+scoreExpression+" AS "+RIDES_SCORE+
 				" FROM "+RIDES+
 				" WHERE "+RIDES_STOP+" IS NOT NULL"+

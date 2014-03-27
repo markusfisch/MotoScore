@@ -45,6 +45,9 @@ public class MotoScoreAdapter
 				MotoScoreDataSource.RIDES_DISTANCE ) )/1000f );
 		final int mistakes = cursor.getInt( cursor.getColumnIndex(
 			MotoScoreDataSource.RIDES_MISTAKES ) );
+		final double duration = cursor.getDouble( cursor.getColumnIndex(
+			MotoScoreDataSource.RIDES_DURATION ) )*24d;
+		final long minutes = Math.round( (duration % 1d)*60d ) % 60;
 		final float score = cursor.getFloat( cursor.getColumnIndex(
 			MotoScoreDataSource.RIDES_SCORE ) );
 
@@ -55,11 +58,21 @@ public class MotoScoreAdapter
 		setText(
 			(TextView)view.findViewById( R.id.details ),
 			String.format(
-				"%d %s / %d %s",
+				"%d %s / %d %s / %s",
 				mistakes,
 				context.getString( R.string.mistakes ),
 				distance,
-				context.getString( R.string.km ) ) );
+				context.getString( R.string.km ),
+				duration < 1d ?
+					String.format(
+						"%d %s",
+						minutes,
+						context.getString( R.string.minutes ) ) :
+					String.format(
+						"%d:%02d %s",
+						Math.round( duration ),
+						minutes,
+						context.getString( R.string.hours ) ) ) );
 
 		setText(
 			(TextView)view.findViewById( R.id.score ),
