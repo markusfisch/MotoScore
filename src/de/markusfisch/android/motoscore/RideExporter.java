@@ -14,11 +14,12 @@ public class RideExporter
 	public interface ExportListener
 	{
 		public void onExportStarted();
-		public void onExportFinished();
+		public void onExportFinished( String file );
 	}
 
 	private String name;
 	private ExportListener listener;
+	private String exportedFile = null;
 
 	public RideExporter( long id, ExportListener listener )
 	{
@@ -84,6 +85,8 @@ public class RideExporter
 				byte bytes[] = s.getBytes();
 
 				out.write( bytes, 0, bytes.length );
+
+				exportedFile = file.getAbsolutePath();
 			}
 			finally
 			{
@@ -98,6 +101,8 @@ public class RideExporter
 
 	private void exportStarted()
 	{
+		exportedFile = null;
+
 		if( listener != null )
 			listener.onExportStarted();
 	}
@@ -105,7 +110,7 @@ public class RideExporter
 	private void exportFinished()
 	{
 		if( listener != null )
-			listener.onExportFinished();
+			listener.onExportFinished( exportedFile );
 	}
 
 	private class QueryRideAndWaypoints
