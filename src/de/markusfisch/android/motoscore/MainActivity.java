@@ -32,9 +32,7 @@ public class MainActivity
 		MotoScoreService.MotoScoreServiceListener,
 		RideExporter.ExportListener
 {
-	private static final SimpleDateFormat startDateFormat =
-		new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-	private static final SimpleDateFormat nowDateFormat =
+	private static final SimpleDateFormat timeFormat =
 		new SimpleDateFormat( "HH:mm:ss" );
 	private final ServiceConnection connection = new ServiceConnection()
 	{
@@ -278,9 +276,23 @@ public class MainActivity
 	}
 
 	@Override
-	public void onExportFinished()
+	public void onExportFinished( String file )
 	{
 		hideProgressCircle();
+
+		String message;
+
+		if( file == null )
+			message = getString( R.string.error_ride_export_failed );
+		else
+			message = String.format(
+				getString( R.string.ride_exported_to ),
+				file );
+
+		Toast.makeText(
+			MainActivity.this,
+			message,
+			Toast.LENGTH_LONG ).show();
 	}
 
 	public void startStop()
@@ -331,7 +343,7 @@ public class MainActivity
 			!service.recording() )
 			return;
 
-		dateTextView.setText( getRideDate(
+		dateTextView.setText( getRideTime(
 			service.rideStart,
 			new Date() ) );
 
@@ -344,11 +356,11 @@ public class MainActivity
 		handler.postDelayed( updateTimeRunnable, 1000 );
 	}
 
-	private static String getRideDate( Date start, Date stop )
+	private static String getRideTime( Date start, Date stop )
 	{
 		return
-			startDateFormat.format( start )+" - "+
-			nowDateFormat.format( stop );
+			timeFormat.format( start )+" - "+
+			timeFormat.format( stop );
 	}
 
 	private void refresh()
