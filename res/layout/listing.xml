@@ -13,7 +13,8 @@
 		android:background="@android:color/transparent"
 		android:cacheColorHint="@android:color/transparent"
 		android:listSelector="@drawable/row_ride_selector"
-		android:divider="@android:color/transparent"/>
+		android:divider="@color/divider"
+		android:dividerHeight="1px"/>
 	<LinearLayout
 		android:id="@+id/no_rides"
 		android:layout_width="fill_parent"
