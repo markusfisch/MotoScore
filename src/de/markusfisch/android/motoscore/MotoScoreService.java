@@ -48,6 +48,7 @@ public class MotoScoreService
 	public MotoScoreServiceListener listener = null;
 	public Date rideStart = new Date();
 	public float distance = 0;
+	public float averageSpeed = 0;
 	public int mistakes = 0;
 	public int waypoints = 0;
 
@@ -168,8 +169,9 @@ public class MotoScoreService
 			return;
 
 		rideStart = new Date();
-		mistakes = 0;
 		distance = 0;
+		averageSpeed = 0;
+		mistakes = 0;
 		waypoints = 0;
 
 		if( !MotoScoreApplication.dataSource.ready() ||
@@ -216,7 +218,8 @@ public class MotoScoreService
 			rideId,
 			new Date(),
 			mistakes,
-			distance );
+			distance,
+			averageSpeed );
 
 		rideId = 0;
 
@@ -358,7 +361,30 @@ public class MotoScoreService
 		if( recording() &&
 			MotoScoreApplication.dataSource.ready() )
 		{
-			++waypoints;
+			float meters = 0f;
+			float speed = 0f;
+
+			if( lastLocation != null )
+				meters = lastLocation.distanceTo( location );
+
+			if( location.hasSpeed() )
+				speed = location.getSpeed();
+			else if( lastLocation != null )
+			{
+				double seconds;
+
+				if( android.os.Build.VERSION.SDK_INT >=
+						android.os.Build.VERSION_CODES.JELLY_BEAN_MR1 )
+					seconds = (location.getElapsedRealtimeNanos()-
+						lastLocation.getElapsedRealtimeNanos())/
+						1000000000d;
+				else
+					seconds = (location.getTime()-
+						lastLocation.getTime())/
+						1000d;
+
+				speed = (float)(meters/seconds);
+			}
 
 			MotoScoreApplication.dataSource.insertWaypoint(
 				rideId,
@@ -368,16 +394,18 @@ public class MotoScoreService
 				location.getAccuracy(),
 				location.getAltitude(),
 				location.getBearing(),
-				location.getSpeed() );
+				speed );
+
+			++waypoints;
+
+			if( lastLocation != null )
+			{
+				averageSpeed = (averageSpeed+speed)/waypoints;
+				distance += meters;
+			}
 		}
 
-		if( lastLocation == null )
-			lastLocation = location;
-		else
-		{
-			distance += lastLocation.distanceTo( location );
-			lastLocation = location;
-		}
+		lastLocation = location;
 	}
 
 	private class LocationRecorder implements LocationListener

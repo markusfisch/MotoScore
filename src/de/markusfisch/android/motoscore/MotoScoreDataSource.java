@@ -25,6 +25,7 @@ public class MotoScoreDataSource
 	public static final String RIDES_MISTAKES = "mistakes";
 	public static final String RIDES_DISTANCE = "distance";
 	public static final String RIDES_DURATION = "duration";
+	public static final String RIDES_AVERAGE = "average";
 
 	public static final String RIDES_DATE_AND_TIME = "date_and_time";
 	public static final String RIDES_SCORE = "score";
@@ -186,6 +187,7 @@ public class MotoScoreDataSource
 				RIDES_START+","+
 				RIDES_MISTAKES+","+
 				RIDES_DISTANCE+","+
+				RIDES_AVERAGE+","+
 				" strftime( '%Y-%m-%d %H:%M', "+RIDES_START+
 					" ) || "+
 					" strftime( ' - %H:%M', "+RIDES_STOP+
@@ -213,12 +215,19 @@ public class MotoScoreDataSource
 		long rideId,
 		Date stop,
 		int mistakes,
-		float distance )
+		float distance,
+		float averageSpeed )
 	{
 		if( db == null )
 			return 0;
 
-		return updateRide( db, rideId, stop, mistakes, distance );
+		return updateRide(
+			db,
+			rideId,
+			stop,
+			mistakes,
+			distance,
+			averageSpeed );
 	}
 
 	public void removeRide( long id )
@@ -255,13 +264,15 @@ public class MotoScoreDataSource
 		long rideId,
 		Date stop,
 		int mistakes,
-		float distance )
+		float distance,
+		float averageSpeed )
 	{
 		ContentValues cv = new ContentValues();
 
 		cv.put( RIDES_STOP, dateToString( stop ) );
 		cv.put( RIDES_MISTAKES, mistakes );
 		cv.put( RIDES_DISTANCE, distance );
+		cv.put( RIDES_AVERAGE, averageSpeed );
 
 		return db.update(
 			RIDES,
@@ -385,20 +396,23 @@ public class MotoScoreDataSource
 	{
 		public OpenHelper( Context c )
 		{
-			super( c, "MotoScore.db", null, 1 );
+			super( c, "MotoScore.db", null, 2 );
 		}
 
 		@Override
 		public void onCreate( SQLiteDatabase db )
 		{
+			db.execSQL( "DROP TABLE IF EXISTS "+RIDES );
 			db.execSQL(
 				"CREATE TABLE "+RIDES+" ("+
 					RIDES_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+
 					RIDES_START+" DATETIME,"+
 					RIDES_STOP+" DATETIME,"+
 					RIDES_MISTAKES+" INTEGER,"+
-					RIDES_DISTANCE+" FLOAT );" );
+					RIDES_DISTANCE+" FLOAT,"+
+					RIDES_AVERAGE+" FLOAT );" );
 
+			db.execSQL( "DROP TABLE IF EXISTS "+WAYPOINTS );
 			db.execSQL(
 				"CREATE TABLE "+WAYPOINTS+" ("+
 					WAYPOINTS_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+
@@ -418,10 +432,51 @@ public class MotoScoreDataSource
 			int oldVersion,
 			int newVersion )
 		{
-			db.execSQL( "DROP TABLE IF EXISTS "+RIDES );
-			db.execSQL( "DROP TABLE IF EXISTS "+WAYPOINTS );
+			switch( oldVersion )
+			{
+				default:
+					onCreate( db );
+					break;
+				case 1:
+					updateToVersion2( db );
+					break;
+			}
+		}
 
-			onCreate( db );
+		private void updateToVersion2( SQLiteDatabase db )
+		{
+			db.execSQL(
+				"ALTER TABLE "+RIDES+
+					" ADD COLUMN "+RIDES_AVERAGE+" FLOAT" );
+
+			Cursor cursor = db.rawQuery(
+				"SELECT "+
+					RIDES_ID+","+
+					" (SELECT SUM(speed)"+
+						" FROM "+WAYPOINTS+
+						" WHERE "+WAYPOINTS_RIDE+" = r."+RIDES_ID+")/"+
+					" (SELECT COUNT(*)"+
+						" FROM "+WAYPOINTS+
+						" WHERE "+WAYPOINTS_RIDE+" = r."+RIDES_ID+")"+
+					" FROM "+RIDES+" AS r",
+				null );
+
+			if( cursor == null ||
+				!cursor.moveToFirst() )
+				return;
+
+			do
+			{
+				db.execSQL(
+					"UPDATE "+RIDES+
+						" SET "+RIDES_AVERAGE+" = "+
+							cursor.getInt( 1 )+
+						" WHERE "+RIDES_ID+" = "+
+							cursor.getInt( 0 ) );
+
+			} while( cursor.moveToNext() );
+
+			cursor.close();
 		}
 	}
 }
