@@ -16,10 +16,49 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal">
+		<ImageView
+			android:layout_width="16dp"
+			android:layout_height="16dp"
+			android:paddingRight="4dp"
+			android:src="@drawable/ic_mistakes"/>
 		<TextView
-			android:id="@+id/details"
+			android:id="@+id/mistakes"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:paddingRight="8dp"
+			android:textColor="@color/foreground"/>
+		<ImageView
+			android:layout_width="16dp"
+			android:layout_height="16dp"
+			android:paddingRight="4dp"
+			android:src="@drawable/ic_distance"/>
+		<TextView
+			android:id="@+id/distance"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingRight="8dp"
+			android:textColor="@color/foreground"/>
+		<ImageView
+			android:layout_width="16dp"
+			android:layout_height="16dp"
+			android:paddingRight="4dp"
+			android:src="@drawable/ic_duration"/>
+		<TextView
+			android:id="@+id/duration"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingRight="8dp"
+			android:textColor="@color/foreground"/>
+		<ImageView
+			android:layout_width="16dp"
+			android:layout_height="16dp"
+			android:paddingRight="4dp"
+			android:src="@drawable/ic_average"/>
+		<TextView
+			android:id="@+id/average"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingRight="8dp"
 			android:textColor="@color/foreground"/>
 		<TextView
 			android:id="@+id/score"

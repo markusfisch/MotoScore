@@ -8,13 +8,13 @@
 	<string name="no_waypoints">This ride has no waypoints.</string>
 	<string name="recording">Recording</string>
 	<string name="awaiting_gps_fix">Awaiting GPS fix</string>
-	<string name="mistakes">Mistakes</string>
 	<string name="km">km</string>
-	<string name="hours">hours</string>
-	<string name="minutes">minutes</string>
+	<string name="km_h">km/h</string>
 	<string name="more">Show more</string>
 	<string name="remove_ride">Remove ride</string>
 	<string name="export_ride">Export ride</string>
+	<string name="ride_exported_to">KML exported to %s</string>
+	<string name="error_ride_export_failed">Cannot export ride</string>
 	<string name="preferences">Preferences</string>
 	<string name="recognition">Sensors</string>
 	<string name="use_media_button">Use headset button</string>

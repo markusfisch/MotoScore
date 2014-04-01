@@ -43,6 +43,8 @@ public class MotoScoreAdapter
 		final int distance =
 			(int)Math.round( cursor.getFloat( cursor.getColumnIndex(
 				MotoScoreDataSource.RIDES_DISTANCE ) )/1000f );
+		final float average = cursor.getFloat( cursor.getColumnIndex(
+			MotoScoreDataSource.RIDES_AVERAGE ) )*3.6f;
 		final int mistakes = cursor.getInt( cursor.getColumnIndex(
 			MotoScoreDataSource.RIDES_MISTAKES ) );
 		final double duration = cursor.getDouble( cursor.getColumnIndex(
@@ -56,23 +58,31 @@ public class MotoScoreAdapter
 			date );
 
 		setText(
-			(TextView)view.findViewById( R.id.details ),
+			(TextView)view.findViewById( R.id.mistakes ),
 			String.format(
-				"%d %s / %d %s / %s",
-				mistakes,
-				context.getString( R.string.mistakes ),
+				"%d",
+				mistakes ) );
+
+		setText(
+			(TextView)view.findViewById( R.id.distance ),
+			String.format(
+				"%d %s",
 				distance,
-				context.getString( R.string.km ),
-				duration < 1d ?
-					String.format(
-						"%d %s",
-						minutes,
-						context.getString( R.string.minutes ) ) :
-					String.format(
-						"%d:%02d %s",
-						Math.round( duration ),
-						minutes,
-						context.getString( R.string.hours ) ) ) );
+				context.getString( R.string.km ) ) );
+
+		setText(
+			(TextView)view.findViewById( R.id.duration ),
+			String.format(
+				"%02d:%02d",
+				Math.round( duration ),
+				minutes ) );
+
+		setText(
+			(TextView)view.findViewById( R.id.average ),
+			String.format(
+				"%d %s",
+				Math.round( average ),
+				context.getString( R.string.km_h ) ) );
 
 		setText(
 			(TextView)view.findViewById( R.id.score ),
