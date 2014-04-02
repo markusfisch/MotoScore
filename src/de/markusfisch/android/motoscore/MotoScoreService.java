@@ -66,6 +66,7 @@ public class MotoScoreService
 	private ComponentName remoteControlReceiver = null;
 	private long buttonDown = 0;
 	private int minimumAccuracy = 100;
+	private float speeds = 0;
 
 	private Vibrator vibrator;
 
@@ -171,6 +172,7 @@ public class MotoScoreService
 		rideStart = new Date();
 		distance = 0;
 		averageSpeed = 0;
+		speeds = 0;
 		mistakes = 0;
 		waypoints = 0;
 
@@ -352,6 +354,13 @@ public class MotoScoreService
 		return null;
 	}
 
+	private String uniqueDeviceId( Context context )
+	{
+		return android.provider.Settings.Secure.getString(
+			context.getContentResolver(),
+			android.provider.Settings.Secure.ANDROID_ID );
+	}
+
 	private void record( Location location )
 	{
 		if( location == null ||
@@ -400,7 +409,8 @@ public class MotoScoreService
 
 			if( lastLocation != null )
 			{
-				averageSpeed = (averageSpeed+speed)/waypoints;
+				speeds += speed;
+				averageSpeed = speeds/waypoints;
 				distance += meters;
 			}
 		}
