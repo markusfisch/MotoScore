@@ -78,6 +78,7 @@ public class MotoScoreDataSource
 			public void run()
 			{
 				db = helper.getWritableDatabase();
+				recalculateAverages( db );
 				opening = false;
 			}
 		} ).start();
@@ -178,6 +179,9 @@ public class MotoScoreDataSource
 				scoreExpression =
 					"(julianday( "+RIDES_STOP+
 						" )-julianday( "+RIDES_START+" ))*24";
+				break;
+			case 6:
+				scoreExpression = RIDES_AVERAGE+"*3.6";
 				break;
 		}
 
@@ -392,6 +396,38 @@ public class MotoScoreDataSource
 			date );
 	}
 
+	private static void recalculateAverages( SQLiteDatabase db )
+	{
+		Cursor cursor = db.rawQuery(
+			"SELECT "+
+				RIDES_ID+","+
+				" (SELECT SUM(speed)"+
+					" FROM "+WAYPOINTS+
+					" WHERE "+WAYPOINTS_RIDE+" = r."+RIDES_ID+")/"+
+				" (SELECT COUNT(*)"+
+					" FROM "+WAYPOINTS+
+					" WHERE "+WAYPOINTS_RIDE+" = r."+RIDES_ID+")"+
+				" FROM "+RIDES+" AS r",
+			null );
+
+		if( cursor == null ||
+			!cursor.moveToFirst() )
+			return;
+
+		do
+		{
+			db.execSQL(
+				"UPDATE "+RIDES+
+					" SET "+RIDES_AVERAGE+" = "+
+						cursor.getInt( 1 )+
+					" WHERE "+RIDES_ID+" = "+
+						cursor.getInt( 0 ) );
+
+		} while( cursor.moveToNext() );
+
+		cursor.close();
+	}
+
 	private class OpenHelper extends SQLiteOpenHelper
 	{
 		public OpenHelper( Context c )
@@ -449,34 +485,7 @@ public class MotoScoreDataSource
 				"ALTER TABLE "+RIDES+
 					" ADD COLUMN "+RIDES_AVERAGE+" FLOAT" );
 
-			Cursor cursor = db.rawQuery(
-				"SELECT "+
-					RIDES_ID+","+
-					" (SELECT SUM(speed)"+
-						" FROM "+WAYPOINTS+
-						" WHERE "+WAYPOINTS_RIDE+" = r."+RIDES_ID+")/"+
-					" (SELECT COUNT(*)"+
-						" FROM "+WAYPOINTS+
-						" WHERE "+WAYPOINTS_RIDE+" = r."+RIDES_ID+")"+
-					" FROM "+RIDES+" AS r",
-				null );
-
-			if( cursor == null ||
-				!cursor.moveToFirst() )
-				return;
-
-			do
-			{
-				db.execSQL(
-					"UPDATE "+RIDES+
-						" SET "+RIDES_AVERAGE+" = "+
-							cursor.getInt( 1 )+
-						" WHERE "+RIDES_ID+" = "+
-							cursor.getInt( 0 ) );
-
-			} while( cursor.moveToNext() );
-
-			cursor.close();
+			recalculateAverages( db );
 		}
 	}
 }
