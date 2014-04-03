@@ -74,7 +74,7 @@ public class MotoScoreAdapter
 			(TextView)view.findViewById( R.id.duration ),
 			String.format(
 				"%02d:%02d",
-				Math.round( duration ),
+				(int)Math.floor( duration ),
 				minutes ) );
 
 		setText(
