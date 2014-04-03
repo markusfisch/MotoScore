@@ -78,7 +78,6 @@ public class MotoScoreDataSource
 			public void run()
 			{
 				db = helper.getWritableDatabase();
-				recalculateAverages( db );
 				opening = false;
 			}
 		} ).start();
@@ -463,20 +462,29 @@ public class MotoScoreDataSource
 		}
 
 		@Override
+		public void onDowngrade(
+			SQLiteDatabase db,
+			int oldVersion,
+			int newVersion )
+		{
+			// do nothing, but without that method, a downgrade
+			// would cause an exception
+		}
+
+		@Override
 		public void onUpgrade(
 			SQLiteDatabase db,
 			int oldVersion,
 			int newVersion )
 		{
-			switch( oldVersion )
+			if( newVersion == 1 )
 			{
-				default:
-					onCreate( db );
-					break;
-				case 1:
-					updateToVersion2( db );
-					break;
+				onCreate( db );
+				return;
 			}
+
+			if( oldVersion < 2 )
+				updateToVersion2( db );
 		}
 
 		private void updateToVersion2( SQLiteDatabase db )
