@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/menu/ride_options.xml",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/menu/ride_options.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/menu/main_activity_options.xml",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/menu/main_activity_options.xml"
+    }
+]

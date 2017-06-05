@@ -1,0 +1,122 @@
+[
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_bar_tabbar.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_bar_tabbar.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/support_simple_spinner_dropdown_item.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/support_simple_spinner_dropdown_item.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/show_more.xml",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/layout/show_more.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_bar_home.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_bar_home.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_mode_bar.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_mode_bar.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/listing.xml",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/layout/listing.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_menu_item_layout.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_menu_item_layout.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_bar_title_item.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_bar_title_item.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_bar_decor_include.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_bar_decor_include.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view_list_item.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_activity_chooser_view_list_item.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_search_view.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_search_view.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_activity_chooser_view.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/activity_ride_view.xml",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/layout/activity_ride_view.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view_include.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_activity_chooser_view_include.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_list_menu_item_icon.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_list_menu_item_icon.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_list_menu_item_radio.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_list_menu_item_radio.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_expanded_menu_layout.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_expanded_menu_layout.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_bar_view_list_nav_layout.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_bar_view_list_nav_layout.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/counter.xml",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/layout/counter.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_bar_tab.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_bar_tab.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_list_menu_item_layout.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_list_menu_item_layout.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_bar_decor.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_bar_decor.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_bar_decor_overlay.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_bar_decor_overlay.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_menu_layout.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_menu_layout.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_action_mode_close_item.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_action_mode_close_item.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_popup_menu_item_layout.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_popup_menu_item_layout.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_search_dropdown_item_icons_2line.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_search_dropdown_item_icons_2line.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/activity_main.xml",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/layout/activity_main.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/row_ride.xml",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/layout/row_ride.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/layout/abc_list_menu_item_checkbox.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/layout/abc_list_menu_item_checkbox.xml"
+    }
+]

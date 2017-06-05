@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Moto Score</string>
+	<string name="ride_view">Ride View</string>
+	<string name="error_service">Cannot start service</string>
+	<string name="error_data_source">Data source unavailable</string>
+	<string name="error_cant_find_db">Cannot find database</string>
+	<string name="error_storage_not_writeable">Cannot write database</string>
+	<string name="start">Start</string>
+	<string name="export">Export database to SD card</string>
+	<string name="restart_service">Restarting service</string>
+	<string name="no_waypoints">This ride has no waypoints.</string>
+	<string name="recording">Recording</string>
+	<string name="awaiting_gps_fix">Awaiting GPS fix</string>
+	<string name="km">km</string>
+	<string name="km_h">km/h</string>
+	<string name="more">Show more</string>
+	<string name="remove_ride">Remove ride</string>
+	<string name="export_ride">Export ride</string>
+	<string name="ride_exported_to">KML exported to %s</string>
+	<string name="error_ride_export_failed">Cannot export ride</string>
+	<string name="preferences">Preferences</string>
+	<string name="recognition">Sensors</string>
+	<string name="use_media_button">Use headset button</string>
+	<string name="use_media_button_summary">Use the button on your headset to count mistakes</string>
+	<string name="haptic_feedback">Vibrate to confirm</string>
+	<string name="haptic_feedback_summary">Vibrate to confirm a counting</string>
+	<string name="notification">Notifiation</string>
+	<string name="show_notification">Show notification</string>
+	<string name="show_notification_summary">Show notification icon when service is started</string>
+	<string name="display">Display</string>
+	<string name="score">Graph value</string>
+	<string name="score_summary">Define graph value</string>
+	<string name="number_of_rides">Rides</string>
+	<string name="number_of_rides_summary">Maximum number of rides to list</string>
+	<string name="tracking">Tracking</string>
+	<string name="seconds_between_updates">Seconds between updates</string>
+	<string name="seconds_between_updates_summary">Minimum time interval between location updates</string>
+	<string name="meters_between_updates">Meters between updates</string>
+	<string name="meters_between_updates_summary">Minimum distance between location updates</string>
+	<string name="minimum_accuracy">Minimum accuracy</string>
+	<string name="minimum_accuracy_summary">Minimum accuracy of location, in meters</string>
+	<string name="successfully_exported">Successfully exported</string>
+</resources>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/markus/.android/build-cache/0c4b6972dba1ed2367c009f5a12b37ad6395a071/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="345a1b5cf5b144ce18ba6962bc66a7e2f26c1c1b">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/pre-dexed/debug/classes_81d04aa3d30add24ed1dcb3b8ab57e72c598ab16.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/markus/.android/build-cache/679399b1df0989eb1b059ab0e476c73fd711375a/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_b9b1228bc0731fa08226f756e996c02c7bcbfb19/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/markus/.android/build-cache/cddded95902f1e2b9dac3647cc18ed11172cd332/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="77f9593d979f4347344be233bd0d888315f79517">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_baf889ad73e50c526330d87a1e6f28f3434c9021/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/markus/.android/build-cache/679399b1df0989eb1b059ab0e476c73fd711375a/output/jars/libs/internal_impl-22.2.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-22.2.0_6042a4cec2360fec671192605d9aa49c3d725c06/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="98baea437d5c7fd3ace1b85e51053d0de48d04ef">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_af89bc6883db0a576dc171c7b68b41b23e99ca0b/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/markus/.android/build-cache/0c4b6972dba1ed2367c009f5a12b37ad6395a071/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="345a1b5cf5b144ce18ba6962bc66a7e2f26c1c1b">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_81d04aa3d30add24ed1dcb3b8ab57e72c598ab16/classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/markus/.android/build-cache/cddded95902f1e2b9dac3647cc18ed11172cd332/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="77f9593d979f4347344be233bd0d888315f79517">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/pre-dexed/debug/classes_baf889ad73e50c526330d87a1e6f28f3434c9021.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/markus/.android/build-cache/679399b1df0989eb1b059ab0e476c73fd711375a/output/jars/libs/internal_impl-22.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.0_6042a4cec2360fec671192605d9aa49c3d725c06.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/markus/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.0/support-annotations-22.2.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-22.2.0_9ff9860b682162d872890fc99c317b8487a14cf7/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="eb69b5c2e53e59d82f7439f3217f46f9d98f0c89">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_f56d0d600d1800d38b66b0e61ab92fea8150cc22/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="caff8e51a24901cfc9cd7e1cf83d84f4cb0c103b">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_85592fdafc4c3c841831a7d99106b7fbbec9d0a5/classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="eb69b5c2e53e59d82f7439f3217f46f9d98f0c89">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/pre-dexed/debug/classes_f56d0d600d1800d38b66b0e61ab92fea8150cc22.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/markus/.android/build-cache/fd90d72dd3f11f43e1e1c901faaf864f53e45014/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="01a90bbb9495a8bbf6f3cfdf12f1b35caaa9524b">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/pre-dexed/debug/classes_50e6d73dda7ed4f765e45df634a8cdf62e1d3c56.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/markus/.android/build-cache/fd90d72dd3f11f43e1e1c901faaf864f53e45014/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="01a90bbb9495a8bbf6f3cfdf12f1b35caaa9524b">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_50e6d73dda7ed4f765e45df634a8cdf62e1d3c56/classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/markus/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.0/support-annotations-22.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.0_9ff9860b682162d872890fc99c317b8487a14cf7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/markus/.android/build-cache/679399b1df0989eb1b059ab0e476c73fd711375a/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
+        <dex dex="/Users/markus/.sesame/src/MotoScore/app/build/intermediates/pre-dexed/debug/classes_b9b1228bc0731fa08226f756e996c02c7bcbfb19.jar" />
+    </item>
+
+</items>

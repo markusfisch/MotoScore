@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/release/color/common_plus_signin_btn_text_light.xml",
+        "source": "/Users/markus/.android/build-cache/fd90d72dd3f11f43e1e1c901faaf864f53e45014/output/res/color/common_plus_signin_btn_text_light.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/release/color/common_plus_signin_btn_text_dark.xml",
+        "source": "/Users/markus/.android/build-cache/fd90d72dd3f11f43e1e1c901faaf864f53e45014/output/res/color/common_plus_signin_btn_text_dark.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/release/color/common_google_signin_btn_text_light.xml",
+        "source": "/Users/markus/.android/build-cache/fd90d72dd3f11f43e1e1c901faaf864f53e45014/output/res/color/common_google_signin_btn_text_light.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/release/color/abc_search_url_text_holo.xml",
+        "source": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/color/abc_search_url_text_holo.xml"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/release/color/common_google_signin_btn_text_dark.xml",
+        "source": "/Users/markus/.android/build-cache/fd90d72dd3f11f43e1e1c901faaf864f53e45014/output/res/color/common_google_signin_btn_text_dark.xml"
+    }
+]

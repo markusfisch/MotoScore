@@ -1,0 +1,177 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:2:1-73:12
+	package
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:3:2-44
+		INJECTED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml
+	android:versionName
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:5:2-29
+		INJECTED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml
+	android:versionCode
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:4:2-25
+		INJECTED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:2:11-69
+	android:installLocation
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:6:2-32
+uses-sdk
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:7:2-39
+MERGED from [com.android.support:appcompat-v7:19.0.0] /Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] /Users/markus/.android/build-cache/cddded95902f1e2b9dac3647cc18ed11172cd332/output/AndroidManifest.xml:26:5-42
+MERGED from [com.google.android.gms:play-services-base:8.3.0] /Users/markus/.android/build-cache/fd90d72dd3f11f43e1e1c901faaf864f53e45014/output/AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] /Users/markus/.android/build-cache/0c4b6972dba1ed2367c009f5a12b37ad6395a071/output/AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:22.2.0] /Users/markus/.android/build-cache/679399b1df0989eb1b059ab0e476c73fd711375a/output/AndroidManifest.xml:20:5-43
+	android:targetSdkVersion
+		INJECTED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:7:12-37
+		INJECTED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml
+supports-screens
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:8:2-14:30
+	android:largeScreens
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:12:3-30
+	android:smallScreens
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:10:3-30
+	android:normalScreens
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:11:3-31
+	android:xlargeScreens
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:13:3-31
+	android:resizeable
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:9:3-28
+	android:anyDensity
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:14:3-28
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:15:2-75
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:15:19-73
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:16:2-77
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:16:19-75
+uses-permission#android.permission.VIBRATE
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:17:2-62
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:17:19-60
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:19:2-75
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] /Users/markus/.android/build-cache/cddded95902f1e2b9dac3647cc18ed11172cd332/output/AndroidManifest.xml:20:5-78
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:19:19-73
+uses-permission#android.permission.INTERNET
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:20:2-63
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] /Users/markus/.android/build-cache/cddded95902f1e2b9dac3647cc18ed11172cd332/output/AndroidManifest.xml:21:5-66
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:20:19-61
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:21:2-77
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:21:19-75
+uses-permission#com.google.android.providers.gsf.permission.READ_GSERVICES
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:22:2-94
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:22:19-92
+permission#de.markusfisch.android.motoscore.permission.MAPS_RECEIVE
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:23:2-25:40
+	android:protectionLevel
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:25:3-38
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:24:3-74
+uses-permission#de.markusfisch.android.motoscore.permission.MAPS_RECEIVE
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:26:2-92
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:26:19-90
+uses-feature#0x00020000
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:27:2-29:28
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] /Users/markus/.android/build-cache/cddded95902f1e2b9dac3647cc18ed11172cd332/output/AndroidManifest.xml:22:5-24:33
+	android:glEsVersion
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:28:3-35
+	android:required
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:29:3-26
+application
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:30:2-72:16
+MERGED from [com.android.support:appcompat-v7:19.0.0] /Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] /Users/markus/.android/build-cache/cddded95902f1e2b9dac3647cc18ed11172cd332/output/AndroidManifest.xml:27:5-20
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] /Users/markus/.android/build-cache/0c4b6972dba1ed2367c009f5a12b37ad6395a071/output/AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:22.2.0] /Users/markus/.android/build-cache/679399b1df0989eb1b059ab0e476c73fd711375a/output/AndroidManifest.xml:22:5-20
+	android:label
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:32:3-35
+	android:icon
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:31:3-39
+	android:theme
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:34:3-61
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:33:3-38
+service#de.markusfisch.android.motoscore.MotoScoreService
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:35:3-37:38
+	android:label
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:37:4-36
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:36:4-35
+receiver#de.markusfisch.android.motoscore.RemoteControlReceiver
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:38:3-43:14
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:39:4-40
+intent-filter#android.intent.action.MEDIA_BUTTON
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:40:4-42:20
+action#android.intent.action.MEDIA_BUTTON
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:41:5-64
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:41:13-62
+activity#de.markusfisch.android.motoscore.MainActivity
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:44:3-52:14
+	android:label
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:46:4-36
+	android:launchMode
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:47:4-34
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:45:4-31
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:48:4-51:20
+action#android.intent.action.MAIN
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:49:5-56
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:49:13-54
+category#android.intent.category.LAUNCHER
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:50:5-64
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:50:15-62
+activity#de.markusfisch.android.motoscore.RideViewActivity
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:53:3-60:14
+	android:label
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:55:4-37
+	android:parentActivityName
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:56:4-45
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:54:4-35
+meta-data#android.support.PARENT_ACTIVITY
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:57:4-59:68
+	android:value
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:59:5-66
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:58:5-51
+activity#de.markusfisch.android.motoscore.MotoScorePreferenceActivity
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:61:3-65:14
+	android:label
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:63:4-39
+	android:exported
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:64:4-27
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:62:4-46
+meta-data#com.google.android.gms.version
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:66:3-68:59
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] /Users/markus/.android/build-cache/0c4b6972dba1ed2367c009f5a12b37ad6395a071/output/AndroidManifest.xml:21:9-23:69
+	android:value
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:68:4-57
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:67:4-49
+meta-data#com.google.android.maps.v2.API_KEY
+ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:69:3-71:61
+	android:value
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:71:4-59
+	android:name
+		ADDED from /Users/markus/.sesame/src/MotoScore/app/src/main/AndroidManifest.xml:70:4-53

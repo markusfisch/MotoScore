@@ -1,0 +1,26 @@
+[
+    {
+        "outputFile": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-w500dp-v13/values-w500dp-v13.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 54,
+                    "endOffset": 105
+                },
+                "from": {
+                    "file": "/Users/markus/.android/build-cache/8135ae15a5475fb2ab554f01d8acf4dba634eac4/output/res/values-w500dp/values.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 188,
+                        "endColumn": 54,
+                        "endOffset": 238
+                    }
+                }
+            }
+        ]
+    }
+]

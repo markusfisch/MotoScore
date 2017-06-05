@@ -1,0 +1,22 @@
+#Mon Jun 05 12:32:05 CEST 2017
+renamed.6=classes7.dex
+renamed.5=classes2.dex
+renamed.4=classes6.dex
+renamed.3=classes.dex
+renamed.2=classes5.dex
+renamed.1=classes3.dex
+renamed.0=classes4.dex
+base.6=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-22.2.0_9ff9860b682162d872890fc99c317b8487a14cf7
+base.5=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_81d04aa3d30add24ed1dcb3b8ab57e72c598ab16
+base.4=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-22.2.0_6042a4cec2360fec671192605d9aa49c3d725c06
+base.3=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_50e6d73dda7ed4f765e45df634a8cdf62e1d3c56
+base.2=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_f56d0d600d1800d38b66b0e61ab92fea8150cc22
+base.1=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_b9b1228bc0731fa08226f756e996c02c7bcbfb19
+base.0=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_baf889ad73e50c526330d87a1e6f28f3434c9021
+file.6=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-22.2.0_9ff9860b682162d872890fc99c317b8487a14cf7/classes.dex
+file.5=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_81d04aa3d30add24ed1dcb3b8ab57e72c598ab16/classes.dex
+file.4=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-22.2.0_6042a4cec2360fec671192605d9aa49c3d725c06/classes.dex
+file.3=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_50e6d73dda7ed4f765e45df634a8cdf62e1d3c56/classes.dex
+file.2=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_f56d0d600d1800d38b66b0e61ab92fea8150cc22/classes.dex
+file.1=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_b9b1228bc0731fa08226f756e996c02c7bcbfb19/classes.dex
+file.0=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_baf889ad73e50c526330d87a1e6f28f3434c9021/classes.dex

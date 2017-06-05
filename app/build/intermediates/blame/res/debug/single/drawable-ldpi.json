@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/drawable-ldpi/ic_action_start.png",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/drawable-ldpi/ic_action_start.png"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/drawable-ldpi/ic_launcher.png",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/drawable-ldpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/markus/.sesame/src/MotoScore/app/build/intermediates/res/merged/debug/drawable-ldpi/ic_action_stop.png",
+        "source": "/Users/markus/.sesame/src/MotoScore/app/src/main/res/drawable-ldpi/ic_action_stop.png"
+    }
+]
