@@ -12,5 +12,6 @@
 		android:title="@string/preferences"/>
 	<item
 		android:id="@+id/export"
+		android:icon="@drawable/ic_action_export"
 		android:title="@string/export"/>
 </menu>

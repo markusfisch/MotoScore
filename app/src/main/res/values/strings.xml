@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Moto Score</string>
 	<string name="ride_view">Ride View</string>
+	<string name="error_database">Cannot open database</string>
 	<string name="error_service">Cannot start service</string>
 	<string name="error_data_source">Data source unavailable</string>
 	<string name="error_cant_find_db">Cannot find database</string>
 	<string name="error_storage_not_writeable">Cannot write database</string>
+	<string name="channel_name">Recording</string>
+	<string name="channel_description">Record route</string>
 	<string name="start">Start</string>
 	<string name="export">Export database to SD card</string>
-	<string name="restart_service">Restarting service</string>
 	<string name="no_waypoints">This ride has no waypoints.</string>
 	<string name="recording">Recording</string>
 	<string name="awaiting_gps_fix">Awaiting GPS fix</string>
@@ -26,8 +26,6 @@
 	<string name="haptic_feedback">Vibrate to confirm</string>
 	<string name="haptic_feedback_summary">Vibrate to confirm a counting</string>
 	<string name="notification">Notifiation</string>
-	<string name="show_notification">Show notification</string>
-	<string name="show_notification_summary">Show notification icon when service is started</string>
 	<string name="display">Display</string>
 	<string name="score">Graph value</string>
 	<string name="score_summary">Define graph value</string>
@@ -41,4 +39,9 @@
 	<string name="minimum_accuracy">Minimum accuracy</string>
 	<string name="minimum_accuracy_summary">Minimum accuracy of location, in meters</string>
 	<string name="successfully_exported">Successfully exported</string>
+	<string name="no_rides">No rides available</string>
+	<string name="mistakes">Mistakes</string>
+	<string name="distance">Distance</string>
+	<string name="duration">Duration</string>
+	<string name="average">Average</string>
 </resources>

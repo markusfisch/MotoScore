@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="background_top">#ff1c5493</color>
-	<color name="background_bottom">#ff3e87da</color>
-	<color name="foreground">#ffffffff</color>
+	<color name="primary">#222</color>
+	<color name="primary_dark">#111</color>
+	<color name="accent">#faa75e</color>
+	<color name="background_top">#1c5493</color>
+	<color name="background_bottom">#3e87da</color>
+	<color name="foreground">#ffffff</color>
 	<color name="secondary">#88ffffff</color>
 	<color name="list_item_pressed">#44222222</color>
+	<color name="stats">#fff</color>
 	<color name="divider">#22000000</color>
 </resources>

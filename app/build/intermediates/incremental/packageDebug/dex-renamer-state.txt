@@ -1,7 +1,0 @@
-#Mon Jun 05 12:42:55 CEST 2017
-base.0=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_af89bc6883db0a576dc171c7b68b41b23e99ca0b
-renamed.1=classes.dex
-renamed.0=classes2.dex
-file.1=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_85592fdafc4c3c841831a7d99106b7fbbec9d0a5/classes.dex
-base.1=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_85592fdafc4c3c841831a7d99106b7fbbec9d0a5
-file.0=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_af89bc6883db0a576dc171c7b68b41b23e99ca0b/classes.dex

@@ -1,72 +1,86 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:ignore="RtlSymmetry"
+	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
 	android:padding="8dp"
 	android:background="@drawable/row_ride_selector">
 	<TextView
 		android:id="@+id/date"
-		android:layout_width="fill_parent"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:textSize="12dp"
+		android:textSize="12sp"
 		android:textColor="@color/secondary"
 		android:paddingBottom="4dp"/>
 	<LinearLayout
-		android:layout_width="fill_parent"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal">
 		<ImageView
 			android:layout_width="16dp"
 			android:layout_height="16dp"
 			android:paddingRight="4dp"
+			android:paddingEnd="4dp"
+			android:contentDescription="@string/mistakes"
 			android:src="@drawable/ic_mistakes"/>
 		<TextView
 			android:id="@+id/mistakes"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:paddingRight="8dp"
+			android:paddingEnd="8dp"
 			android:textColor="@color/foreground"/>
 		<ImageView
 			android:layout_width="16dp"
 			android:layout_height="16dp"
 			android:paddingRight="4dp"
+			android:paddingEnd="4dp"
+			android:contentDescription="@string/distance"
 			android:src="@drawable/ic_distance"/>
 		<TextView
 			android:id="@+id/distance"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:paddingRight="8dp"
+			android:paddingEnd="8dp"
 			android:textColor="@color/foreground"/>
 		<ImageView
 			android:layout_width="16dp"
 			android:layout_height="16dp"
 			android:paddingRight="4dp"
+			android:paddingEnd="4dp"
+			android:contentDescription="@string/duration"
 			android:src="@drawable/ic_duration"/>
 		<TextView
 			android:id="@+id/duration"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:paddingRight="8dp"
+			android:paddingEnd="8dp"
 			android:textColor="@color/foreground"/>
 		<ImageView
 			android:layout_width="16dp"
 			android:layout_height="16dp"
 			android:paddingRight="4dp"
+			android:paddingEnd="4dp"
+			android:contentDescription="@string/average"
 			android:src="@drawable/ic_average"/>
 		<TextView
 			android:id="@+id/average"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:paddingRight="8dp"
+			android:paddingEnd="8dp"
 			android:textColor="@color/foreground"/>
 		<TextView
 			android:id="@+id/score"
-			android:layout_width="fill_parent"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:layout_gravity="right"
-			android:gravity="right"
+			android:layout_gravity="end"
+			android:gravity="end"
 			android:textColor="@color/foreground"/>
 	</LinearLayout>
 </LinearLayout>

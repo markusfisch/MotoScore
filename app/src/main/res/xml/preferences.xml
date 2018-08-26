@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:title="@string/preferences"
 	android:key="preferences">
 	<PreferenceCategory
@@ -15,16 +15,6 @@
 			android:key="haptic_feedback"
 			android:title="@string/haptic_feedback"
 			android:summary="@string/haptic_feedback_summary"
-			android:checked="true"
-			android:defaultValue="true"/>
-	</PreferenceCategory>
-	<PreferenceCategory
-		android:title="@string/notification"
-		android:key="notification_preferences">
-		<CheckBoxPreference
-			android:key="show_notification"
-			android:title="@string/show_notification"
-			android:summary="@string/show_notification_summary"
 			android:checked="true"
 			android:defaultValue="true"/>
 	</PreferenceCategory>

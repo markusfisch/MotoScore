@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	<de.markusfisch.android.motoscore.GraphView
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<de.markusfisch.android.motoscore.widget.GraphView
 		android:id="@+id/stats"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"/>
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"/>
 	<ListView
 		android:id="@+id/rides"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
 		android:background="@android:color/transparent"
 		android:cacheColorHint="@android:color/transparent"
 		android:listSelector="@drawable/row_ride_selector"
@@ -17,22 +17,23 @@
 		android:dividerHeight="1px"/>
 	<LinearLayout
 		android:id="@+id/no_rides"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
 		android:gravity="center"
 		android:orientation="vertical"
 		android:visibility="gone">
 		<ImageView
-			android:layout_width="fill_parent"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="8dp"
+			android:contentDescription="@string/no_rides"
 			android:scaleType="center"
 			android:src="@drawable/no_rides"/>
 	</LinearLayout>
 	<LinearLayout
 		android:id="@+id/progress"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
 		android:gravity="center"
 		android:orientation="vertical"
 		android:visibility="gone">
@@ -41,4 +42,4 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
 	</LinearLayout>
-</RelativeLayout>
+</FrameLayout>

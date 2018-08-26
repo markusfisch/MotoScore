@@ -1,4 +1,0 @@
-#Mon Jun 05 12:32:05 CEST 2017
-base.0=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_1
-renamed.0=classes.dex
-file.0=/Users/markus/.sesame/src/MotoScore/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_1/classes.dex
