@@ -7,6 +7,7 @@
 	<string name="error_storage_not_writeable">Cannot write database</string>
 	<string name="channel_name">Recording</string>
 	<string name="channel_description">Record route</string>
+	<string name="rides">Rides</string>
 	<string name="start">Start</string>
 	<string name="export">Export database to SD card</string>
 	<string name="no_waypoints">This ride has no waypoints.</string>
