@@ -26,7 +26,6 @@
 	<string name="use_media_button_summary">Use the button on your headset to count mistakes</string>
 	<string name="haptic_feedback">Vibrate to confirm</string>
 	<string name="haptic_feedback_summary">Vibrate to confirm a counting</string>
-	<string name="notification">Notifiation</string>
 	<string name="display">Display</string>
 	<string name="score">Graph value</string>
 	<string name="score_summary">Define graph value</string>
@@ -41,8 +40,4 @@
 	<string name="minimum_accuracy_summary">Minimum accuracy of location, in meters</string>
 	<string name="successfully_exported">Successfully exported</string>
 	<string name="no_rides">No rides available</string>
-	<string name="mistakes">Mistakes</string>
-	<string name="distance">Distance</string>
-	<string name="duration">Duration</string>
-	<string name="average">Average</string>
 </resources>

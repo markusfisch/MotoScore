@@ -5,7 +5,12 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:padding="8dp"
+	android:paddingTop="8dp"
+	android:paddingBottom="8dp"
+	android:paddingStart="16dp"
+	android:paddingLeft="16dp"
+	android:paddingEnd="16dp"
+	android:paddingRight="16dp"
 	android:background="@drawable/row_ride_selector">
 	<TextView
 		android:id="@+id/date"
@@ -18,57 +23,37 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal">
-		<ImageView
-			android:layout_width="16dp"
-			android:layout_height="16dp"
-			android:paddingRight="4dp"
-			android:paddingEnd="4dp"
-			android:contentDescription="@string/mistakes"
-			android:src="@drawable/ic_mistakes"/>
 		<TextView
 			android:id="@+id/mistakes"
+			android:drawableLeft="@drawable/ic_mistakes"
+			android:drawablePadding="4dp"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:paddingRight="8dp"
 			android:paddingEnd="8dp"
 			android:textColor="@color/foreground"/>
-		<ImageView
-			android:layout_width="16dp"
-			android:layout_height="16dp"
-			android:paddingRight="4dp"
-			android:paddingEnd="4dp"
-			android:contentDescription="@string/distance"
-			android:src="@drawable/ic_distance"/>
 		<TextView
 			android:id="@+id/distance"
+			android:drawableLeft="@drawable/ic_distance"
+			android:drawablePadding="4dp"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:paddingRight="8dp"
 			android:paddingEnd="8dp"
 			android:textColor="@color/foreground"/>
-		<ImageView
-			android:layout_width="16dp"
-			android:layout_height="16dp"
-			android:paddingRight="4dp"
-			android:paddingEnd="4dp"
-			android:contentDescription="@string/duration"
-			android:src="@drawable/ic_duration"/>
 		<TextView
 			android:id="@+id/duration"
+			android:drawableLeft="@drawable/ic_duration"
+			android:drawablePadding="4dp"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:paddingRight="8dp"
 			android:paddingEnd="8dp"
 			android:textColor="@color/foreground"/>
-		<ImageView
-			android:layout_width="16dp"
-			android:layout_height="16dp"
-			android:paddingRight="4dp"
-			android:paddingEnd="4dp"
-			android:contentDescription="@string/average"
-			android:src="@drawable/ic_average"/>
 		<TextView
 			android:id="@+id/average"
+			android:drawableLeft="@drawable/ic_average"
+			android:drawablePadding="4dp"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:paddingRight="8dp"
