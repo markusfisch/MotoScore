@@ -2,16 +2,13 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:material="http://schemas.android.com/apk/res-auto">
 	<item
-		android:id="@+id/start"
-		android:icon="@drawable/ic_action_start"
-		android:title="@string/start"
-		material:showAsAction="ifRoom"/>
-	<item
 		android:id="@+id/preferences"
 		android:icon="@drawable/ic_action_settings"
-		android:title="@string/preferences"/>
+		android:title="@string/preferences"
+		material:showAsAction="ifRoom"/>
 	<item
 		android:id="@+id/export"
 		android:icon="@drawable/ic_action_export"
-		android:title="@string/export"/>
+		android:title="@string/export"
+		material:showAsAction="ifRoom"/>
 </menu>

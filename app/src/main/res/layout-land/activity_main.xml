@@ -1,17 +1,17 @@
-<LinearLayout
+<android.support.constraint.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="horizontal"
-	android:baselineAligned="false">
+	android:layout_height="match_parent">
 	<include
+		android:id="@+id/counter"
 		layout="@layout/counter"
-		android:layout_width="0dp"
-		android:layout_height="match_parent"
-		android:layout_weight="1"/>
+		android:layout_width="200dp"
+		android:layout_height="match_parent"/>
 	<include
 		layout="@layout/listing"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
-		android:layout_weight="1"/>
-</LinearLayout>
+		app:layout_constraintStart_toEndOf="@+id/counter"/>
+	<include layout="@layout/fab_start"/>
+</android.support.constraint.ConstraintLayout>

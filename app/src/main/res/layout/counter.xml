@@ -4,28 +4,25 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:padding="8dp"
+	android:padding="16dp"
 	android:visibility="gone">
 	<TextView
 		android:id="@+id/date"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_weight="0"
 		android:textSize="12sp"
 		android:textColor="@color/secondary"/>
 	<TextView
 		android:id="@+id/distance"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_weight="0"
-		android:paddingBottom="4dp"
+		android:paddingBottom="8dp"
 		android:textSize="12sp"
 		android:textColor="@color/secondary"/>
 	<TextView
 		android:id="@+id/mistakes"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_weight="0"
 		android:layout_gravity="center"
 		android:gravity="center"
 		android:textSize="128sp"

@@ -20,7 +20,7 @@ public class RideExporter {
 
 	private String name;
 	private ExportListener listener;
-	private String exportedFile = null;
+	private String exportedFile;
 
 	public RideExporter(long id, ExportListener listener) {
 		this.listener = listener;

@@ -2,7 +2,6 @@ package de.markusfisch.android.motoscore.service;
 
 import de.markusfisch.android.motoscore.app.MotoScoreApp;
 import de.markusfisch.android.motoscore.notification.Notifications;
-import de.markusfisch.android.motoscore.preference.Preferences;
 import de.markusfisch.android.motoscore.receiver.HeadsetReceiver;
 import de.markusfisch.android.motoscore.receiver.RemoteControlReceiver;
 import de.markusfisch.android.motoscore.R;
@@ -94,12 +93,9 @@ public class MotoScoreService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-android.util.Log.d("mfdbg", "mfdbg: MotoScoreService.onStartCommand(" + startId + ")");
 		if (intent != null) {
-android.util.Log.d("mfdbg", "mfdbg: intent != null");
 			switch (intent.getIntExtra(COMMAND, -1)) {
 				case -1:
-android.util.Log.d("mfdbg", "mfdbg: start()");
 					start();
 					break;
 				case COMMAND_STATE:
@@ -113,7 +109,6 @@ android.util.Log.d("mfdbg", "mfdbg: start()");
 					break;
 			}
 		}
-android.util.Log.d("mfdbg", "mfdbg: return START_STICKY");
 		return START_STICKY;
 	}
 

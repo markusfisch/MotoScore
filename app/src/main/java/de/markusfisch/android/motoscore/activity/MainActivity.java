@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -124,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
 	private boolean serviceBound = false;
 	private MotoScoreService service = null;
 	private RideAdapter adapter = null;
-	private MenuItem startMenuItem;
 	private GraphView graphView;
 	private ListView listView;
 	private LinearLayout progressCircle;
@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
 	private TextView distanceTextView;
 	private TextView mistakesTextView;
 	private View showMoreView;
+	private FloatingActionButton fab;
 	private int totalRides = 0;
 	private int listLength = MotoScoreApp.preferences.numberOfRides();
 
@@ -143,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 		requestPermissions();
 
+		fab = (FloatingActionButton) findViewById(R.id.start);
 		graphView = (GraphView) findViewById(R.id.stats);
 		listView = (ListView) findViewById(R.id.rides);
 		progressCircle = (LinearLayout) findViewById(R.id.progress);
@@ -150,6 +152,13 @@ public class MainActivity extends AppCompatActivity {
 		dateTextView = (TextView) findViewById(R.id.date);
 		distanceTextView = (TextView) findViewById(R.id.distance);
 		mistakesTextView = (TextView) findViewById(R.id.mistakes);
+
+		fab.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startStop();
+			}
+		});
 
 		counterView.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -218,26 +227,14 @@ public class MainActivity extends AppCompatActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_activity_options, menu);
-
-		if ((startMenuItem = menu.findItem(R.id.start)) != null) {
-			setState();
-		}
-
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.start:
-				startStop();
-				item.setIcon(service != null && service.isRecording() ?
-						R.drawable.ic_action_stop :
-						R.drawable.ic_action_start);
-				return true;
 			case R.id.preferences:
-				startActivity(new Intent(this,
-						PrefActivity.class));
+				startActivity(new Intent(this, PrefActivity.class));
 				return true;
 			case R.id.export:
 				exportDatabase();
@@ -253,9 +250,7 @@ public class MainActivity extends AppCompatActivity {
 			View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.ride_options, menu);
+		getMenuInflater().inflate(R.menu.ride_options, menu);
 	}
 
 	@Override
@@ -322,12 +317,9 @@ public class MainActivity extends AppCompatActivity {
 		if (service == null) {
 			return;
 		}
-android.util.Log.d("mfdbg", "mfdbg: startStop()");
 		if (service.isRecording()) {
-android.util.Log.d("mfdbg", "mfdbg: service.stop()");
 			service.stop();
 		} else {
-android.util.Log.d("mfdbg", "mfdbg: startService()");
 			startService(new Intent(this, MotoScoreService.class));
 		}
 	}
@@ -336,18 +328,13 @@ android.util.Log.d("mfdbg", "mfdbg: startService()");
 		if (service == null) {
 			return;
 		}
-
-		if (counterView != null) {
-			counterView.setVisibility(service.isRecording() ?
-					View.VISIBLE :
-					View.GONE);
-		}
-
-		if (startMenuItem != null) {
-			startMenuItem.setIcon(service.isRecording() ?
-					R.drawable.ic_action_stop :
-					R.drawable.ic_action_start);
-		}
+		boolean isRecording = service.isRecording();
+		counterView.setVisibility(isRecording ?
+				View.VISIBLE :
+				View.GONE);
+		fab.setImageResource(isRecording ?
+				R.drawable.ic_action_stop :
+				R.drawable.ic_action_start);
 	}
 
 	private void updateMistakes() {
@@ -454,11 +441,9 @@ android.util.Log.d("mfdbg", "mfdbg: startService()");
 		@Override
 		protected void onPostExecute(Integer count) {
 			hideProgress();
-
 			if (count == null) {
 				return;
 			}
-
 			totalRides = count.intValue();
 			new QueryRides().execute();
 		}
@@ -479,16 +464,13 @@ android.util.Log.d("mfdbg", "mfdbg: startService()");
 		@Override
 		protected void onPostExecute(Cursor cursor) {
 			hideProgress();
-
 			if (cursor == null) {
 				return;
 			}
-
 			if (adapter == null) {
 				showMoreView = MainActivity.this.getLayoutInflater().inflate(
 						R.layout.show_more,
 						null);
-
 				showMoreView.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -541,11 +523,9 @@ android.util.Log.d("mfdbg", "mfdbg: startService()");
 		@Override
 		protected void onPostExecute(Integer count) {
 			hideProgress();
-
 			if (count == null || rideId < 1) {
 				return;
 			}
-
 			if (count.intValue() < 1) {
 				Toast.makeText(MainActivity.this, R.string.no_waypoints,
 						Toast.LENGTH_LONG).show();
