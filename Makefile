@@ -5,7 +5,7 @@ all: debug install start
 debug:
 	./gradlew assembleDebug
 
-release: lint findbugs
+release: lint
 	@./gradlew assembleRelease \
 		-Pandroid.injected.signing.store.file=$(ANDROID_KEYFILE) \
 		-Pandroid.injected.signing.store.password=$(ANDROID_STORE_PASSWORD) \
@@ -14,9 +14,6 @@ release: lint findbugs
 
 lint:
 	./gradlew lintDebug
-
-findbugs:
-	./gradlew findBugs
 
 install:
 	adb $(TARGET) install -r app/build/outputs/apk/debug/app-debug.apk
