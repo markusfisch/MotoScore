@@ -15,6 +15,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -190,23 +191,32 @@ public class MotoScoreService extends Service {
 	}
 
 	public void stop() {
-		if (isRecording()) {
-			if (locationManager != null) {
-				locationManager.removeUpdates(locationRecorder);
-			}
-
-			MotoScoreApp.db.updateRide(
-					rideId,
-					new Date(),
-					mistakes,
-					distance,
-					averageSpeed);
-			rideId = 0;
-
-			if (listener != null) {
-				listener.onDataUpdate();
-			}
+		if (!isRecording()) {
+			return;
 		}
+
+		if (locationManager != null) {
+			locationManager.removeUpdates(locationRecorder);
+		}
+
+		MotoScoreApp.db.updateRide(
+				rideId,
+				new Date(),
+				mistakes,
+				distance,
+				averageSpeed);
+		rideId = 0;
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			stopForeground(Service.STOP_FOREGROUND_REMOVE);
+		} else {
+			stopForeground(true);
+		}
+
+		if (listener != null) {
+			listener.onDataUpdate();
+		}
+
 		stopSelf();
 	}
 
@@ -345,8 +355,7 @@ public class MotoScoreService extends Service {
 			} else if (lastLocation != null) {
 				double seconds;
 
-				if (android.os.Build.VERSION.SDK_INT >=
-						android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
 					seconds = (location.getElapsedRealtimeNanos() -
 							lastLocation.getElapsedRealtimeNanos()) /
 							1000000000d;
