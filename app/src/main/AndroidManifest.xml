@@ -63,7 +63,7 @@
 		</activity>
 		<activity
 			android:name=".activity.RideViewActivity"
-			android:label="@string/ride_view"
+			android:label="@string/ride"
 			android:parentActivityName="MainActivity">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"

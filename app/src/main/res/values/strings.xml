@@ -1,5 +1,4 @@
 <resources>
-	<string name="ride_view">Ride View</string>
 	<string name="error_database">Cannot open database</string>
 	<string name="error_service">Cannot start service</string>
 	<string name="error_data_source">Data source unavailable</string>
@@ -8,6 +7,7 @@
 	<string name="channel_name">Recording</string>
 	<string name="channel_description">Record route</string>
 	<string name="rides">Rides</string>
+	<string name="ride">Ride</string>
 	<string name="start">Start</string>
 	<string name="export">Export database to SD card</string>
 	<string name="no_waypoints">This ride has no waypoints.</string>
