@@ -1,7 +1,7 @@
 <resources>
 	<color name="primary">#222</color>
 	<color name="primary_dark">#111</color>
-	<color name="accent">#faa75e</color>
+	<color name="accent">#222</color>
 	<color name="background_top">#1c5493</color>
 	<color name="background_bottom">#3e87da</color>
 	<color name="foreground">#ffffff</color>
