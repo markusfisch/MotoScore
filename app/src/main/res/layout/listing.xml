@@ -28,7 +28,7 @@
 			android:padding="8dp"
 			android:contentDescription="@string/no_rides"
 			android:scaleType="center"
-			android:src="@drawable/no_rides"/>
+			android:src="@drawable/ic_no_rides"/>
 	</LinearLayout>
 	<LinearLayout
 		android:id="@+id/progress"
