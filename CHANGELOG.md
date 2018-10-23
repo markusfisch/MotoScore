@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.4.3
+* Fix settings screen
+
 ## 1.4.2
 * Fix crash of Google Maps view on Android Pie
 
