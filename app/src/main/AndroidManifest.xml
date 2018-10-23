@@ -15,9 +15,6 @@
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-	<!--permission
-		android:name="de.markusfisch.android.motoscore.permission.MAPS_RECEIVE"
-		android:protectionLevel="signature"/-->
 	<uses-permission android:name="de.markusfisch.android.motoscore.permission.MAPS_RECEIVE"/>
 	<uses-feature android:glEsVersion="0x00020000" android:required="true"/>
 	<application
@@ -75,6 +72,7 @@
 		<activity
 			android:name=".activity.PrefActivity"
 			android:label="@string/preferences"
+			android:theme="@style/PreferenceTheme"
 			android:exported="true">
 		</activity>
 		<meta-data

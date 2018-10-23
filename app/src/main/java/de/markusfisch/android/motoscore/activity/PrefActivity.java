@@ -8,9 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 
-public class PrefActivity extends PreferenceActivity {
+public class PrefActivity extends AppCompatPreferenceActivity {
 	private final OnSharedPreferenceChangeListener listener =
 			new OnSharedPreferenceChangeListener() {
 		@Override
