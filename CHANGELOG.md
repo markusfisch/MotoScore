@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.5.0
+* Move export database action into settings
+
 ## 1.4.3
 * Fix settings screen
 
