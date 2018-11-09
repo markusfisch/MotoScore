@@ -57,4 +57,11 @@
 			android:inputType="number"
 			android:defaultValue="100"/>
 	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="@string/export">
+		<Preference
+				android:key="export_db"
+				android:title="@string/export_db"
+				android:summary="@string/export_db_summary"/>
+	</PreferenceCategory>
 </PreferenceScreen>

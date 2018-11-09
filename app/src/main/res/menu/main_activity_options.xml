@@ -6,9 +6,4 @@
 		android:icon="@drawable/ic_action_settings"
 		android:title="@string/preferences"
 		material:showAsAction="ifRoom"/>
-	<item
-		android:id="@+id/export"
-		android:icon="@drawable/ic_action_export"
-		android:title="@string/export"
-		material:showAsAction="ifRoom"/>
 </menu>

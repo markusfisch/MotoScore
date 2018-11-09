@@ -9,7 +9,6 @@
 	<string name="rides">Rides</string>
 	<string name="ride">Ride</string>
 	<string name="start">Start</string>
-	<string name="export">Export database to SD card</string>
 	<string name="no_waypoints">This ride has no waypoints.</string>
 	<string name="recording">Recording</string>
 	<string name="awaiting_gps_fix">Awaiting GPS fix</string>
@@ -38,6 +37,9 @@
 	<string name="meters_between_updates_summary">Minimum distance between location updates</string>
 	<string name="minimum_accuracy">Minimum accuracy</string>
 	<string name="minimum_accuracy_summary">Minimum accuracy of location, in meters</string>
+	<string name="export">Export</string>
+	<string name="export_db">Export database</string>
+	<string name="export_db_summary">Export SQLite database to SD card</string>
 	<string name="successfully_exported">Successfully exported</string>
 	<string name="no_rides">No rides available</string>
 </resources>

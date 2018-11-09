@@ -18,7 +18,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
@@ -37,10 +36,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -236,9 +231,6 @@ public class MainActivity extends AppCompatActivity {
 			case R.id.preferences:
 				startActivity(new Intent(this, PrefActivity.class));
 				return true;
-			case R.id.export:
-				exportDatabase();
-				return true;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -388,43 +380,6 @@ public class MainActivity extends AppCompatActivity {
 
 	private void hideProgress() {
 		progressCircle.setVisibility(View.GONE);
-	}
-
-	private void exportDatabase() {
-		try {
-			File sd = Environment.getExternalStorageDirectory();
-			File data = Environment.getDataDirectory();
-
-			if (sd.canWrite()) {
-				String dbName = "MotoScore.db";
-				String backupDBPath = dbName;
-				String currentDBPath = "//data//" + getPackageName() +
-						"//databases//" + dbName;
-				File currentDB = new File(data, currentDBPath);
-				File backupDB = new File(sd, backupDBPath);
-
-				if (currentDB.exists()) {
-					FileChannel src = new FileInputStream(
-							currentDB).getChannel();
-					FileChannel dst = new FileOutputStream(
-							backupDB).getChannel();
-					dst.transferFrom(src, 0, src.size());
-					src.close();
-					dst.close();
-
-					Toast.makeText(this, R.string.successfully_exported,
-							Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(this, R.string.error_cant_find_db,
-							Toast.LENGTH_SHORT).show();
-				}
-			} else {
-				Toast.makeText(this, R.string.error_storage_not_writeable,
-						Toast.LENGTH_SHORT).show();
-			}
-		} catch (Exception e) {
-			Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-		}
 	}
 
 	// this AsyncTask is running for a short and finite time only

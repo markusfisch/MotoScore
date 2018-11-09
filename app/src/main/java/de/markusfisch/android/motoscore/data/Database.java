@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Database {
+	public static final String FILE_NAME = "MotoScore.db";
+
 	public static final int SCORE_MISTAKES_DISTANCE = 1;
 	public static final int SCORE_DISTANCE_MISTAKES = 2;
 	public static final int SCORE_MISTAKES = 3;
@@ -322,7 +324,7 @@ public class Database {
 
 	private static class OpenHelper extends SQLiteOpenHelper {
 		public OpenHelper(Context c) {
-			super(c, "MotoScore.db", null, 2);
+			super(c, FILE_NAME, null, 2);
 		}
 
 		@Override
