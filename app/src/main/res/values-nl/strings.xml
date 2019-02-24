@@ -19,7 +19,7 @@
 	<string name="export_ride">Rit exporteren</string>
 	<string name="ride_exported_to">KML geëxporteerd naar %s</string>
 	<string name="error_ride_export_failed">Kan rit niet exporteren</string>
-    <string name="preferences">Instellingen</string>
+	<string name="preferences">Instellingen</string>
 	<string name="recognition">Sensoren</string>
 	<string name="use_media_button">Headsetknop gebruiken</string>
 	<string name="use_media_button_summary">Gebruik de knop op je headset om fouten te tellen</string>
