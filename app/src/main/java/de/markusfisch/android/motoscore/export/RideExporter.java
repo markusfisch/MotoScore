@@ -41,7 +41,9 @@ public class RideExporter {
 					.getExternalStorageDirectory()
 					.getAbsolutePath() + "/MotoScore");
 
-			dir.mkdirs();
+			if (!dir.mkdirs()) {
+				return;
+			}
 
 			File file = new File(dir, name);
 			FileOutputStream out = null;
@@ -49,14 +51,15 @@ public class RideExporter {
 			try {
 				out = new FileOutputStream(file);
 
-				String s = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				StringBuilder sb = new StringBuilder();
+				sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 						"<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n" +
 						"<Placemark>\n" +
 						"<name>Ride</name>\n" +
 						"<description>Ride way points.</description>\n" +
 						"<LineString>\n" +
 						"<tessellate>1</tessellate>\n" +
-						"<coordinates>";
+						"<coordinates>");
 				int latIdx = cursor.getColumnIndex(
 						Database.WAYPOINTS_LATITUDE);
 				int lngIdx = cursor.getColumnIndex(
@@ -65,16 +68,15 @@ public class RideExporter {
 				do {
 					double lat = cursor.getDouble(latIdx);
 					double lng = cursor.getDouble(lngIdx);
-					s += lng + "," + lat + ",0\n";
+					sb.append(lng).append(",").append(lat).append(",0\n");
 				} while (cursor.moveToNext());
 
-				s += "</coordinates>\n" +
+				sb.append("</coordinates>\n" +
 						"</LineString>\n" +
 						"</Placemark>\n" +
-						"</kml>\n";
+						"</kml>\n");
 
-				byte bytes[] = s.getBytes("utf-8");
-				out.write(bytes, 0, bytes.length);
+				out.write(sb.toString().getBytes("utf-8"));
 				exportedFile = file.getAbsolutePath();
 			} finally {
 				if (out != null) {
@@ -114,8 +116,8 @@ public class RideExporter {
 			if (rideIds.length != 1) {
 				return null;
 			}
-			return MotoScoreApp.db.queryRideDate(
-					(id = rideIds[0].longValue()));
+			id = rideIds[0];
+			return MotoScoreApp.db.queryRideDate(id);
 		}
 
 		@Override
@@ -144,8 +146,7 @@ public class RideExporter {
 			if (rideIds.length != 1) {
 				return null;
 			}
-			return MotoScoreApp.db.queryWaypoints(
-					rideIds[0].longValue());
+			return MotoScoreApp.db.queryWaypoints(rideIds[0]);
 		}
 
 		@Override
