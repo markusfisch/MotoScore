@@ -44,8 +44,6 @@ import java.text.SimpleDateFormat;
 
 public class MainActivity extends AppCompatActivity {
 	private static final int REQUEST_PERMISSIONS = 1;
-	private static final SimpleDateFormat timeFormat = new SimpleDateFormat(
-			"HH:mm:ss", Locale.getDefault());
 
 	private final RideExporter.ExportListener exportListener =
 			new RideExporter.ExportListener() {
@@ -353,6 +351,10 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private static String getRideTime(Date start, Date stop) {
+		// create a new object because Locale.getDefault() may have
+		// changed while the app is running
+		SimpleDateFormat timeFormat = new SimpleDateFormat(
+				"HH:mm:ss", Locale.getDefault());
 		return timeFormat.format(start) + " - " + timeFormat.format(stop);
 	}
 
