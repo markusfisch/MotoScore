@@ -8,10 +8,9 @@
 	<string name="channel_description">Route vastleggen</string>
 	<string name="rides">Ritten</string>
 	<string name="ride">Rit</string>
-	<string name="start">Starten</string>
 	<string name="no_waypoints">Deze rit bevat geen wegmarkeringen.</string>
 	<string name="recording">Vastleggen</string>
-	<string name="awaiting_gps_fix">Bezig met wachten op GPS-fix...</string>
+	<string name="awaiting_gps_fix">Bezig met wachten op GPS-fix</string>
 	<string name="km">km</string>
 	<string name="km_h">km/u</string>
 	<string name="more">Meer tonen</string>

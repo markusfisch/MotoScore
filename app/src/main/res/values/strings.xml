@@ -8,7 +8,6 @@
 	<string name="channel_description">Record route</string>
 	<string name="rides">Rides</string>
 	<string name="ride">Ride</string>
-	<string name="start">Start</string>
 	<string name="no_waypoints">This ride has no waypoints.</string>
 	<string name="recording">Recording</string>
 	<string name="awaiting_gps_fix">Awaiting GPS fix</string>
