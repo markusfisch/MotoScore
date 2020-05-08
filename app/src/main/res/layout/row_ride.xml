@@ -26,6 +26,7 @@
 		<TextView
 			android:id="@+id/mistakes"
 			android:drawableLeft="@drawable/ic_mistakes"
+			android:drawableStart="@drawable/ic_mistakes"
 			android:drawablePadding="4dp"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -35,6 +36,7 @@
 		<TextView
 			android:id="@+id/distance"
 			android:drawableLeft="@drawable/ic_distance"
+			android:drawableStart="@drawable/ic_distance"
 			android:drawablePadding="4dp"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -44,6 +46,7 @@
 		<TextView
 			android:id="@+id/duration"
 			android:drawableLeft="@drawable/ic_duration"
+			android:drawableStart="@drawable/ic_duration"
 			android:drawablePadding="4dp"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -53,6 +56,7 @@
 		<TextView
 			android:id="@+id/average"
 			android:drawableLeft="@drawable/ic_average"
+			android:drawableStart="@drawable/ic_average"
 			android:drawablePadding="4dp"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
