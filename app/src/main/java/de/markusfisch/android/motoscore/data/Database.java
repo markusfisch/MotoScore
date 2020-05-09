@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.AsyncTask;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -49,29 +48,15 @@ public class Database {
 
 	private SQLiteDatabase db = null;
 
-	// the parent instance of this AsyncTask will never be
-	// garbage collected anyway
-	@SuppressLint("StaticFieldLeak")
-	public void openAsync(final Context context) {
-		final OpenHelper helper = new OpenHelper(context);
-		new AsyncTask<Void, Void, Boolean>() {
-			@Override
-			protected Boolean doInBackground(Void... nothings) {
-				try {
-					return (db = helper.getWritableDatabase()) != null;
-				} catch (SQLException e) {
-					return false;
-				}
-			}
-
-			@Override
-			protected void onPostExecute(Boolean success) {
-				if (!success) {
-					Toast.makeText(context, R.string.error_database,
-							Toast.LENGTH_LONG).show();
-				}
-			}
-		}.execute();
+	public boolean open(Context context) {
+		try {
+			db = new OpenHelper(context).getWritableDatabase();
+			return true;
+		} catch (SQLException e) {
+			Toast.makeText(context, R.string.error_database,
+					Toast.LENGTH_LONG).show();
+			return false;
+		}
 	}
 
 	public boolean isOpen() {

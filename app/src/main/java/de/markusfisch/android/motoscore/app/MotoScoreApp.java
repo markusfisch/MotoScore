@@ -12,7 +12,7 @@ public class MotoScoreApp extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		db.openAsync(this);
+		db.open(this);
 		preferences.init(this);
 	}
 }
