@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 					View view,
 					int position,
 					long id) {
-				new QueryNumberOfWaypoints().execute(id);
+				queryNumberOfWaypointsAsync(id);
 			}
 		});
 
@@ -357,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
 			updateTime();
 			updateMistakes();
 		}
-		new QueryTotalAndRides().execute();
+		queryTotalAndRidesAsync();
 	}
 
 	private void showProgress() {
@@ -377,111 +377,111 @@ public class MainActivity extends AppCompatActivity {
 	// and it's perfectly okay to delay garbage collection of the
 	// parent instance until this task has ended
 	@SuppressLint("StaticFieldLeak")
-	private class QueryTotalAndRides extends AsyncTask<Void, Void, Integer> {
-		@Override
-		protected Integer doInBackground(Void... nothing) {
-			showProgress();
-			return MotoScoreApp.db.queryNumberOfRides();
-		}
-
-		@Override
-		protected void onPostExecute(Integer count) {
-			hideProgress();
-			if (count == null) {
-				return;
+	private void queryTotalAndRidesAsync() {
+		new AsyncTask<Void, Void, Integer>() {
+			@Override
+			protected Integer doInBackground(Void... nothing) {
+				showProgress();
+				return MotoScoreApp.db.queryNumberOfRides();
 			}
-			totalRides = count;
-			new QueryRides().execute();
-		}
+
+			@Override
+			protected void onPostExecute(Integer count) {
+				hideProgress();
+				if (count == null) {
+					return;
+				}
+				totalRides = count;
+				queryRidesAsync();
+			}
+		}.execute();
 	}
 
 	// this AsyncTask is running for a short and finite time only
 	// and it's perfectly okay to delay garbage collection of the
 	// parent instance until this task has ended
 	@SuppressLint("StaticFieldLeak")
-	private class QueryRides extends AsyncTask<Void, Void, Cursor> {
-		@Override
-		protected Cursor doInBackground(Void... nothing) {
-			showProgress();
-			return MotoScoreApp.db.queryRides(listLength,
-					MotoScoreApp.preferences.score());
-		}
-
-		@SuppressLint("InflateParams")
-		@Override
-		protected void onPostExecute(Cursor cursor) {
-			hideProgress();
-			if (cursor == null) {
-				return;
+	private void queryRidesAsync() {
+		new AsyncTask<Void, Void, Cursor>() {
+			@Override
+			protected Cursor doInBackground(Void... nothing) {
+				showProgress();
+				return MotoScoreApp.db.queryRides(listLength,
+						MotoScoreApp.preferences.score());
 			}
-			if (adapter == null) {
-				showMoreView = MainActivity.this.getLayoutInflater().inflate(
-						R.layout.show_more,
-						null);
-				showMoreView.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						listLength += 100;
-						update();
-					}
-				});
 
-				// it's required to call addFooterView()
-				// BEFORE setting the adapter (fixed in KitKat)
-				listView.addFooterView(showMoreView);
-
-				adapter = new RideAdapter(MainActivity.this, cursor);
-				listView.setAdapter(adapter);
-
-				if (totalRides < listLength) {
-					listView.removeFooterView(showMoreView);
+			@SuppressLint("InflateParams")
+			@Override
+			protected void onPostExecute(Cursor cursor) {
+				hideProgress();
+				if (cursor == null) {
+					return;
 				}
-			} else {
+				updateAdapter(cursor);
+			}
+		}.execute();
+	}
+
+	private void updateAdapter(Cursor cursor) {
+		if (adapter == null) {
+			showMoreView = MainActivity.this.getLayoutInflater().inflate(
+					R.layout.show_more,
+					null);
+			showMoreView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					listLength += 100;
+					update();
+				}
+			});
+
+			// it's required to call addFooterView()
+			// BEFORE setting the adapter (fixed in KitKat)
+			listView.addFooterView(showMoreView);
+
+			adapter = new RideAdapter(MainActivity.this, cursor);
+			listView.setAdapter(adapter);
+
+			if (totalRides < listLength) {
 				listView.removeFooterView(showMoreView);
-				adapter.changeCursor(cursor);
-
-				if (totalRides > listLength) {
-					listView.addFooterView(showMoreView);
-				}
 			}
+		} else {
+			listView.removeFooterView(showMoreView);
+			adapter.changeCursor(cursor);
 
-			graphView.setCursor(cursor);
+			if (totalRides > listLength) {
+				listView.addFooterView(showMoreView);
+			}
 		}
+
+		graphView.setCursor(cursor);
 	}
 
 	// this AsyncTask is running for a short and finite time only
 	// and it's perfectly okay to delay garbage collection of the
 	// parent instance until this task has ended
 	@SuppressLint("StaticFieldLeak")
-	private class QueryNumberOfWaypoints
-			extends AsyncTask<Long, Void, Integer> {
-		private long rideId;
+	private void queryNumberOfWaypointsAsync(final long rideId) {
+		new AsyncTask<Void, Void, Integer>() {
+			@Override
+			protected Integer doInBackground(Void... nothings) {
+				showProgress();
+				return MotoScoreApp.db.queryWaypointsCount(rideId);
+			}
 
-		@Override
-		protected Integer doInBackground(Long... rideIds) {
-			showProgress();
-			if (rideIds.length != 1) {
-				return null;
+			@Override
+			protected void onPostExecute(Integer count) {
+				hideProgress();
+				if (count == null || count < 1) {
+					Toast.makeText(MainActivity.this, R.string.no_waypoints,
+							Toast.LENGTH_LONG).show();
+				} else {
+					Intent intent = new Intent(MainActivity.this,
+							RideViewActivity.class);
+					intent.putExtra(Database.RIDES_ID, rideId);
+					startActivity(intent);
+				}
 			}
-			rideId = rideIds[0];
-			return MotoScoreApp.db.queryWaypointsCount(rideId);
-		}
-
-		@Override
-		protected void onPostExecute(Integer count) {
-			hideProgress();
-			if (count == null || rideId < 1) {
-				return;
-			}
-			if (count < 1) {
-				Toast.makeText(MainActivity.this, R.string.no_waypoints,
-						Toast.LENGTH_LONG).show();
-			} else {
-				Intent intent = new Intent(MainActivity.this,
-						RideViewActivity.class);
-				intent.putExtra(Database.RIDES_ID, rideId);
-				startActivity(intent);
-			}
-		}
+		}.execute();
 	}
 }
