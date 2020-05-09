@@ -22,7 +22,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 public class RideViewActivity extends AppCompatActivity {
 	private GoogleMap map;
-	private long rideId;
 
 	@Override
 	protected void onCreate(Bundle state) {
@@ -45,17 +44,32 @@ public class RideViewActivity extends AppCompatActivity {
 		map = ((SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
 
+		long rideId;
 		Intent intent = getIntent();
 		if (intent == null || (rideId = intent.getLongExtra(
 				Database.RIDES_ID, 0)) < 1) {
 			return;
 		}
 
-		addRide();
+		addRideAsync(rideId);
 	}
 
-	private void addRide() {
-		new QueryWaypoints().execute(rideId);
+	// this AsyncTask is running for a short and finite time only
+	// and it's perfectly okay to delay garbage collection of the
+	// parent instance until this task has ended
+	@SuppressLint("StaticFieldLeak")
+	private void addRideAsync(final long rideId) {
+		new AsyncTask<Void, Void, Cursor>() {
+			@Override
+			protected Cursor doInBackground(Void... nothings) {
+				return MotoScoreApp.db.queryWaypoints(rideId);
+			}
+
+			@Override
+			protected void onPostExecute(Cursor cursor) {
+				addRide(cursor);
+			}
+		}.execute();
 	}
 
 	private void addRide(Cursor cursor) {
@@ -109,29 +123,5 @@ public class RideViewActivity extends AppCompatActivity {
 				Math.max(240, mapView.getMeasuredWidth()),
 				Math.max(240, mapView.getMeasuredHeight()),
 				16));
-	}
-
-	// this AsyncTask is running for a short and finite time only
-	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended
-	@SuppressLint("StaticFieldLeak")
-	private class QueryWaypoints extends AsyncTask<Long, Void, Cursor> {
-		@Override
-		protected Cursor doInBackground(Long... rideIds) {
-			if (rideIds.length != 1) {
-				return null;
-			}
-			return MotoScoreApp.db.queryWaypoints(
-					rideIds[0].longValue());
-		}
-
-		@Override
-		protected void onProgressUpdate(Void... nothing) {
-		}
-
-		@Override
-		protected void onPostExecute(Cursor cursor) {
-			addRide(cursor);
-		}
 	}
 }

@@ -17,6 +17,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -53,15 +54,15 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 		@Override
-		public void onExportFinished(String file) {
+		public void onExportFinished(String fileName) {
 			hideProgress();
 			String message;
-			if (file == null) {
+			if (fileName == null) {
 				message = getString(R.string.error_ride_export_failed);
 			} else {
 				message = String.format(Locale.getDefault(),
 						getString(R.string.ride_exported_to),
-						file);
+						fileName);
 			}
 			Toast.makeText(MainActivity.this, message,
 					Toast.LENGTH_LONG).show();
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 		graphView = (GraphView) findViewById(R.id.stats);
 		listView = (ListView) findViewById(R.id.rides);
 		progressCircle = (LinearLayout) findViewById(R.id.progress);
-		counterView = (View) findViewById(R.id.counter);
+		counterView = findViewById(R.id.counter);
 		dateTextView = (TextView) findViewById(R.id.date);
 		distanceTextView = (TextView) findViewById(R.id.distance);
 		mistakesTextView = (TextView) findViewById(R.id.mistakes);
@@ -250,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
 		switch (item.getItemId()) {
 			case R.id.export_ride:
-				new RideExporter(info.id, exportListener);
+				RideExporter.exportAsync(this, info.id, exportListener);
 				return true;
 			case R.id.remove_ride:
 				MotoScoreApp.db.removeRide(info.id);
@@ -262,44 +263,32 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void requestPermissions() {
-		requestPermissions(
-				this,
-				new String[]{
-						android.Manifest.permission.ACCESS_FINE_LOCATION,
-						android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-				},
-				new Runnable[]{
-						null,
-						null
-				},
-				REQUEST_PERMISSIONS);
+		ArrayList<String> permissions = new ArrayList<>();
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+			permissions.add(android.Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+		}
+		permissions.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
+		permissions.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+		requestPermissions(this, permissions, REQUEST_PERMISSIONS);
 	}
 
 	private static void requestPermissions(
 			Activity activity,
-			String permissions[],
-			Runnable runnables[],
+			List<String> permissions,
 			int requestCode) {
 		List<String> missing = new ArrayList<>();
-		int i = 0;
 		for (String permission : permissions) {
-			Runnable runnable = i < runnables.length ? runnables[i] : null;
-			++i;
 			if (ContextCompat.checkSelfPermission(activity, permission) !=
 					PackageManager.PERMISSION_GRANTED) {
 				missing.add(permission);
-			} else if (runnable != null) {
-				runnable.run();
 			}
 		}
-
 		if (missing.size() < 1) {
 			return;
 		}
-
 		ActivityCompat.requestPermissions(
 				activity,
-				missing.toArray(new String[missing.size()]),
+				missing.toArray(new String[0]),
 				requestCode);
 	}
 
@@ -401,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
 			if (count == null) {
 				return;
 			}
-			totalRides = count.intValue();
+			totalRides = count;
 			new QueryRides().execute();
 		}
 	}
@@ -418,6 +407,7 @@ public class MainActivity extends AppCompatActivity {
 					MotoScoreApp.preferences.score());
 		}
 
+		@SuppressLint("InflateParams")
 		@Override
 		protected void onPostExecute(Cursor cursor) {
 			hideProgress();
@@ -473,7 +463,7 @@ public class MainActivity extends AppCompatActivity {
 			if (rideIds.length != 1) {
 				return null;
 			}
-			rideId = rideIds[0].longValue();
+			rideId = rideIds[0];
 			return MotoScoreApp.db.queryWaypointsCount(rideId);
 		}
 
@@ -483,7 +473,7 @@ public class MainActivity extends AppCompatActivity {
 			if (count == null || rideId < 1) {
 				return;
 			}
-			if (count.intValue() < 1) {
+			if (count < 1) {
 				Toast.makeText(MainActivity.this, R.string.no_waypoints,
 						Toast.LENGTH_LONG).show();
 			} else {
