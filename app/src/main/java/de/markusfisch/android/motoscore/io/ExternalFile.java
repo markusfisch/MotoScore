@@ -36,11 +36,14 @@ public class ExternalFile {
 			Uri uri = resolver.insert(
 					MediaStore.Downloads.EXTERNAL_CONTENT_URI,
 					cv);
-			if (uri != null) {
-				return resolver.openOutputStream(uri);
-			} else {
-				return null;
+			if (uri == null) {
+				throw new IOException();
 			}
+			OutputStream out = resolver.openOutputStream(uri);
+			if (out == null) {
+				throw new IOException();
+			}
+			return out;
 		}
 	}
 }

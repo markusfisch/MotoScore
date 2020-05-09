@@ -1,13 +1,5 @@
 package de.markusfisch.android.motoscore.activity;
 
-import de.markusfisch.android.motoscore.adapter.RideAdapter;
-import de.markusfisch.android.motoscore.app.MotoScoreApp;
-import de.markusfisch.android.motoscore.data.Database;
-import de.markusfisch.android.motoscore.export.RideExporter;
-import de.markusfisch.android.motoscore.service.MotoScoreService;
-import de.markusfisch.android.motoscore.widget.GraphView;
-import de.markusfisch.android.motoscore.R;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -28,59 +20,67 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.text.SimpleDateFormat;
+
+import de.markusfisch.android.motoscore.R;
+import de.markusfisch.android.motoscore.adapter.RideAdapter;
+import de.markusfisch.android.motoscore.app.MotoScoreApp;
+import de.markusfisch.android.motoscore.data.Database;
+import de.markusfisch.android.motoscore.export.RideExporter;
+import de.markusfisch.android.motoscore.service.MotoScoreService;
+import de.markusfisch.android.motoscore.widget.GraphView;
 
 public class MainActivity extends AppCompatActivity {
 	private static final int REQUEST_PERMISSIONS = 1;
 
 	private final RideExporter.ExportListener exportListener =
 			new RideExporter.ExportListener() {
-		@Override
-		public void onExportStarted() {
-			showProgress();
-		}
+				@Override
+				public void onExportStarted() {
+					showProgress();
+				}
 
-		@Override
-		public void onExportFinished(String fileName) {
-			hideProgress();
-			String message;
-			if (fileName == null) {
-				message = getString(R.string.error_ride_export_failed);
-			} else {
-				message = String.format(Locale.getDefault(),
-						getString(R.string.ride_exported_to),
-						fileName);
-			}
-			Toast.makeText(MainActivity.this, message,
-					Toast.LENGTH_LONG).show();
-		}
-	};
+				@Override
+				public void onExportFinished(String fileName) {
+					hideProgress();
+					String message;
+					if (fileName == null) {
+						message = getString(R.string.error_ride_export_failed);
+					} else {
+						message = String.format(Locale.getDefault(),
+								getString(R.string.ride_exported_to),
+								fileName);
+					}
+					Toast.makeText(MainActivity.this, message,
+							Toast.LENGTH_LONG).show();
+				}
+			};
 	private final MotoScoreService.ServiceListener serviceListener =
 			new MotoScoreService.ServiceListener() {
-		@Override
-		public void onMistakeUpdate() {
-			updateMistakes();
-		}
+				@Override
+				public void onMistakeUpdate() {
+					updateMistakes();
+				}
 
-		@Override
-		public void onDataUpdate() {
-			setState();
-			update();
-		}
-	};
+				@Override
+				public void onDataUpdate() {
+					setState();
+					update();
+				}
+			};
 	private final ServiceConnection connection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName className,
@@ -410,7 +410,6 @@ public class MainActivity extends AppCompatActivity {
 						MotoScoreApp.preferences.score());
 			}
 
-			@SuppressLint("InflateParams")
 			@Override
 			protected void onPostExecute(Cursor cursor) {
 				hideProgress();
@@ -422,6 +421,7 @@ public class MainActivity extends AppCompatActivity {
 		}.execute();
 	}
 
+	@SuppressLint("InflateParams")
 	private void updateAdapter(Cursor cursor) {
 		if (adapter == null) {
 			showMoreView = MainActivity.this.getLayoutInflater().inflate(

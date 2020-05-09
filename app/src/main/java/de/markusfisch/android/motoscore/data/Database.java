@@ -1,8 +1,5 @@
 package de.markusfisch.android.motoscore.data;
 
-import de.markusfisch.android.motoscore.R;
-
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,6 +11,8 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import de.markusfisch.android.motoscore.R;
 
 public class Database {
 	public static final String FILE_NAME = "MotoScore.db";

@@ -1,9 +1,5 @@
 package de.markusfisch.android.motoscore.activity;
 
-import de.markusfisch.android.motoscore.app.MotoScoreApp;
-import de.markusfisch.android.motoscore.data.Database;
-import de.markusfisch.android.motoscore.R;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,6 +15,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import de.markusfisch.android.motoscore.R;
+import de.markusfisch.android.motoscore.app.MotoScoreApp;
+import de.markusfisch.android.motoscore.data.Database;
 
 public class RideViewActivity extends AppCompatActivity {
 	private GoogleMap map;
@@ -94,22 +94,19 @@ public class RideViewActivity extends AppCompatActivity {
 		map.addPolyline(po);
 
 		final View mapView = findViewById(R.id.map);
-
-		if (mapView == null) {
-			return;
-		} else if (mapView.getMeasuredWidth() > 0 &&
+		if (mapView.getMeasuredWidth() > 0 &&
 				mapView.getMeasuredHeight() > 0) {
 			moveCamera(mapView, builder.build());
 		} else {
 			mapView.getViewTreeObserver().addOnGlobalLayoutListener(
 					new ViewTreeObserver.OnGlobalLayoutListener() {
-				@Override
-				public void onGlobalLayout() {
-					mapView.getViewTreeObserver()
-							.removeGlobalOnLayoutListener(this);
-					moveCamera(mapView, builder.build());
-				}
-			});
+						@Override
+						public void onGlobalLayout() {
+							mapView.getViewTreeObserver()
+									.removeGlobalOnLayoutListener(this);
+							moveCamera(mapView, builder.build());
+						}
+					});
 		}
 	}
 

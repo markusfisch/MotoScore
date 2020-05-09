@@ -1,8 +1,5 @@
 package de.markusfisch.android.motoscore.notification;
 
-import de.markusfisch.android.motoscore.activity.MainActivity;
-import de.markusfisch.android.motoscore.R;
-
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -14,6 +11,9 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+
+import de.markusfisch.android.motoscore.R;
+import de.markusfisch.android.motoscore.activity.MainActivity;
 
 public class Notifications {
 	public final Recording recording;
@@ -82,6 +82,9 @@ public class Notifications {
 	private static void createChannel(Context context) {
 		NotificationManager nm = (NotificationManager)
 				context.getSystemService(Context.NOTIFICATION_SERVICE);
+		if (nm == null) {
+			return;
+		}
 		NotificationChannel channel = nm.getNotificationChannel(
 				CHANNEL_RECORDING);
 		if (channel == null) {
@@ -111,14 +114,6 @@ public class Notifications {
 
 		public Notification getNotification() {
 			return notification;
-		}
-
-		public void show() {
-			notificationManager.notify(id, notification);
-		}
-
-		public void hide() {
-			notificationManager.cancel(id);
 		}
 	}
 }

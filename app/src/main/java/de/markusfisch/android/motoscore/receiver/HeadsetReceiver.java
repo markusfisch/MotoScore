@@ -1,16 +1,16 @@
 package de.markusfisch.android.motoscore.receiver;
 
-import de.markusfisch.android.motoscore.service.MotoScoreService;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import de.markusfisch.android.motoscore.service.MotoScoreService;
 
 public class HeadsetReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-		if (action.equals(Intent.ACTION_HEADSET_PLUG)) {
+		if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
 			sendState(context, intent.getIntExtra("state", 0));
 		}
 	}

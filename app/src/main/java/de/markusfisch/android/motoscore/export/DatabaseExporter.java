@@ -25,12 +25,12 @@ public class DatabaseExporter {
 		}
 		String fileName = String.format("motoscore-backup-%s.db",
 				new SimpleDateFormat("yyyy-MM-dd",
-				Locale.getDefault()).format(new Date()));
+						Locale.getDefault()).format(new Date()));
 		OutputStream out = null;
 		FileInputStream in = null;
 		try {
 			out = ExternalFile.openExternalOutputStream(context, fileName,
-				"application/vnd.sqlite3");
+					"application/vnd.sqlite3");
 			in = new FileInputStream(current);
 			byte[] buffer = new byte[4096];
 			int len;

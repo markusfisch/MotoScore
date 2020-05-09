@@ -1,8 +1,5 @@
 package de.markusfisch.android.motoscore.widget;
 
-import de.markusfisch.android.motoscore.data.Database;
-import de.markusfisch.android.motoscore.R;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Canvas;
@@ -14,16 +11,18 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import de.markusfisch.android.motoscore.R;
+import de.markusfisch.android.motoscore.data.Database;
+
 public class GraphView extends View {
 	public ListView listView = null;
 
 	private final Paint linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	private final Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-	private final ArrayList<Float> sample = new ArrayList<Float>();
+	private final ArrayList<Float> sample = new ArrayList<>();
 
-	private float lineWidth = 4;
 	private float dotRadius = 10;
-	private float vertices[];
+	private float[] vertices;
 	private int samples = 0;
 	private float max = 0;
 	private int itemHeight = 0;
@@ -108,7 +107,7 @@ public class GraphView extends View {
 				vertices[v++] = lastY;
 			}
 
-			x = xf * sample.get(n).floatValue();
+			x = xf * sample.get(n);
 
 			canvas.drawCircle(x, y, dotRadius, fillPaint);
 
@@ -134,7 +133,7 @@ public class GraphView extends View {
 		dotRadius *= dp;
 
 		linePaint.setStyle(Paint.Style.STROKE);
-		linePaint.setStrokeWidth(lineWidth * dp);
+		linePaint.setStrokeWidth(4 * dp);
 		linePaint.setColor(color);
 
 		fillPaint.setStyle(Paint.Style.FILL);

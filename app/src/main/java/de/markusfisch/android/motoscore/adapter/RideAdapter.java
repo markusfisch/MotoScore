@@ -1,8 +1,5 @@
 package de.markusfisch.android.motoscore.adapter;
 
-import de.markusfisch.android.motoscore.data.Database;
-import de.markusfisch.android.motoscore.R;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
@@ -12,6 +9,9 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import java.util.Locale;
+
+import de.markusfisch.android.motoscore.R;
+import de.markusfisch.android.motoscore.data.Database;
 
 public class RideAdapter extends CursorAdapter {
 	private final int dateIndex;

@@ -15,6 +15,7 @@ import de.markusfisch.android.motoscore.io.ExternalFile;
 public class RideExporter {
 	public interface ExportListener {
 		void onExportStarted();
+
 		void onExportFinished(String fileName);
 	}
 

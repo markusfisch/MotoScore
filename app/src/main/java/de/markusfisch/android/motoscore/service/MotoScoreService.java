@@ -1,11 +1,5 @@
 package de.markusfisch.android.motoscore.service;
 
-import de.markusfisch.android.motoscore.app.MotoScoreApp;
-import de.markusfisch.android.motoscore.notification.Notifications;
-import de.markusfisch.android.motoscore.receiver.HeadsetReceiver;
-import de.markusfisch.android.motoscore.receiver.RemoteControlReceiver;
-import de.markusfisch.android.motoscore.R;
-
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,9 +17,16 @@ import android.widget.Toast;
 
 import java.util.Date;
 
+import de.markusfisch.android.motoscore.R;
+import de.markusfisch.android.motoscore.app.MotoScoreApp;
+import de.markusfisch.android.motoscore.notification.Notifications;
+import de.markusfisch.android.motoscore.receiver.HeadsetReceiver;
+import de.markusfisch.android.motoscore.receiver.RemoteControlReceiver;
+
 public class MotoScoreService extends Service {
 	public interface ServiceListener {
 		void onMistakeUpdate();
+
 		void onDataUpdate();
 	}
 
@@ -106,7 +107,7 @@ public class MotoScoreService extends Service {
 					handleActionCommand(intent);
 					break;
 				case COMMAND_CONFIGURATION:
-					handleConfigurationCommand(intent);
+					handleConfigurationCommand();
 					break;
 			}
 		}
@@ -286,7 +287,7 @@ public class MotoScoreService extends Service {
 		}
 	}
 
-	private void handleConfigurationCommand(Intent intent) {
+	private void handleConfigurationCommand() {
 		if (!isRecording()) {
 			return;
 		}
@@ -299,13 +300,13 @@ public class MotoScoreService extends Service {
 	}
 
 	private Location getLastKnownLocation() throws SecurityException {
-		Location locations[] = {
-			locationManager.getLastKnownLocation(
-					LocationManager.GPS_PROVIDER),
-			locationManager.getLastKnownLocation(
-					LocationManager.NETWORK_PROVIDER),
-			locationManager.getLastKnownLocation(
-					LocationManager.PASSIVE_PROVIDER)
+		Location[] locations = {
+				locationManager.getLastKnownLocation(
+						LocationManager.GPS_PROVIDER),
+				locationManager.getLastKnownLocation(
+						LocationManager.NETWORK_PROVIDER),
+				locationManager.getLastKnownLocation(
+						LocationManager.PASSIVE_PROVIDER)
 		};
 		long youngestTime = 0;
 		Location youngest = null;
