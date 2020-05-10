@@ -1,9 +1,5 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<de.markusfisch.android.motoscore.widget.GraphView
-		android:id="@+id/stats"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"/>
-	<ListView
+	<de.markusfisch.android.motoscore.widget.RideListView
 		android:id="@+id/rides"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

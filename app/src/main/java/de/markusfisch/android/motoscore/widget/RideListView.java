@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import de.markusfisch.android.motoscore.R;
 import de.markusfisch.android.motoscore.data.Database;
 
-public class GraphView extends View {
-	public ListView listView = null;
-
+public class RideListView extends ListView {
 	private final Paint linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	private final Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	private final ArrayList<Float> sample = new ArrayList<>();
@@ -27,17 +25,17 @@ public class GraphView extends View {
 	private float max = 0;
 	private int itemHeight = 0;
 
-	public GraphView(Context context) {
+	public RideListView(Context context) {
 		super(context);
-		init();
+		init(context);
 	}
 
-	public GraphView(Context context, AttributeSet attrs) {
+	public RideListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
+		init(context);
 	}
 
-	public void setCursor(Cursor cursor) {
+	public void updateGraph(Cursor cursor) {
 		invalidate();
 
 		if (cursor == null) {
@@ -54,11 +52,9 @@ public class GraphView extends View {
 		int idx = cursor.getColumnIndex(Database.RIDES_SCORE);
 		do {
 			float n = cursor.getFloat(idx);
-
 			if (n > max) {
 				max = n + n * .5f;
 			}
-
 			sample.add(n);
 			++samples;
 		} while (cursor.moveToNext());
@@ -72,11 +68,11 @@ public class GraphView extends View {
 	protected void onDraw(Canvas canvas) {
 		canvas.drawColor(0x00000000);
 
-		if (listView == null || samples < 1) {
+		if (samples < 1) {
 			return;
 		}
 
-		View firstChild = listView.getChildAt(0);
+		View firstChild = getChildAt(0);
 		if (firstChild == null) {
 			return;
 		}
@@ -86,11 +82,10 @@ public class GraphView extends View {
 		float xf = w / max;
 
 		if (itemHeight == 0) {
-			itemHeight = firstChild.getMeasuredHeight() +
-					listView.getDividerHeight();
+			itemHeight = firstChild.getMeasuredHeight() + getDividerHeight();
 		}
 
-		int first = listView.getFirstVisiblePosition();
+		int first = getFirstVisiblePosition();
 		int total = itemHeight * samples;
 		float x = -1;
 		float y = total - ((first * itemHeight) - firstChild.getTop());
@@ -123,10 +118,10 @@ public class GraphView extends View {
 		}
 
 		canvas.restoreToCount(layer);
+		super.onDraw(canvas);
 	}
 
-	private void init() {
-		Context context = getContext();
+	private void init(Context context) {
 		float dp = context.getResources().getDisplayMetrics().density;
 		int color = ContextCompat.getColor(context, R.color.stats);
 

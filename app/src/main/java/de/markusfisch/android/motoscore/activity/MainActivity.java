@@ -25,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +40,7 @@ import de.markusfisch.android.motoscore.app.MotoScoreApp;
 import de.markusfisch.android.motoscore.data.Database;
 import de.markusfisch.android.motoscore.export.RideExporter;
 import de.markusfisch.android.motoscore.service.MotoScoreService;
-import de.markusfisch.android.motoscore.widget.GraphView;
+import de.markusfisch.android.motoscore.widget.RideListView;
 
 public class MainActivity extends AppCompatActivity {
 	private static final int REQUEST_PERMISSIONS = 1;
@@ -119,8 +118,7 @@ public class MainActivity extends AppCompatActivity {
 	private boolean serviceBound = false;
 	private MotoScoreService service = null;
 	private RideAdapter adapter = null;
-	private GraphView graphView;
-	private ListView listView;
+	private RideListView listView;
 	private LinearLayout progressCircle;
 	private View counterView;
 	private TextView dateTextView;
@@ -139,8 +137,7 @@ public class MainActivity extends AppCompatActivity {
 		requestPermissions();
 
 		fab = (FloatingActionButton) findViewById(R.id.start);
-		graphView = (GraphView) findViewById(R.id.stats);
-		listView = (ListView) findViewById(R.id.rides);
+		listView = (RideListView) findViewById(R.id.rides);
 		progressCircle = (LinearLayout) findViewById(R.id.progress);
 		counterView = findViewById(R.id.counter);
 		dateTextView = (TextView) findViewById(R.id.date);
@@ -176,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 		registerForContextMenu(listView);
-		graphView.listView = listView;
 	}
 
 	@Override
@@ -453,8 +449,7 @@ public class MainActivity extends AppCompatActivity {
 				listView.addFooterView(showMoreView);
 			}
 		}
-
-		graphView.setCursor(cursor);
+		listView.updateGraph(cursor);
 	}
 
 	// this AsyncTask is running for a short and finite time only
