@@ -2,12 +2,15 @@ package de.markusfisch.android.motoscore.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.database.Cursor;
+import android.database.DatabaseErrorHandler;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -47,6 +50,30 @@ public class Database {
 
 	private SQLiteDatabase db = null;
 
+	public boolean importDatabase(Context context, String fileName) {
+		SQLiteDatabase edb = null;
+		try {
+			edb = new ImportHelper(new ExternalDatabaseContext(context),
+					fileName).getReadableDatabase();
+			db.beginTransaction();
+			if (addRidesTable(db, edb)) {
+				db.setTransactionSuccessful();
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			return false;
+		} finally {
+			if (db.inTransaction()) {
+				db.endTransaction();
+			}
+			if (edb != null) {
+				edb.close();
+			}
+		}
+	}
+
 	public boolean open(Context context) {
 		try {
 			db = new OpenHelper(context).getWritableDatabase();
@@ -67,8 +94,8 @@ public class Database {
 				"SELECT " +
 						" strftime( '%Y%m%d%H%M%S', " + RIDES_START + " )" +
 						" FROM " + RIDES +
-						" WHERE " + RIDES_ID + " = " + id,
-				null);
+						" WHERE " + RIDES_ID + " = ?",
+				new String[]{String.valueOf(id)});
 
 		if (cursor == null) {
 			return null;
@@ -148,8 +175,8 @@ public class Database {
 						" FROM " + RIDES +
 						" WHERE " + RIDES_STOP + " IS NOT NULL" +
 						" ORDER BY " + RIDES_START + " DESC" +
-						" LIMIT " + limit,
-				null);
+						" LIMIT ?",
+				new String[]{String.valueOf(limit)});
 	}
 
 	public long insertRide(Date start) {
@@ -166,13 +193,18 @@ public class Database {
 	}
 
 	public void removeRide(long id) {
-		db.delete(WAYPOINTS, WAYPOINTS_RIDE + "=" + id, null);
-		db.delete(RIDES, RIDES_ID + "=" + id, null);
+		String[] values = new String[]{String.valueOf(id)};
+		db.delete(WAYPOINTS, WAYPOINTS_RIDE + "= ?", values);
+		db.delete(RIDES, RIDES_ID + "= ?", values);
 	}
 
 	private static long insertRide(SQLiteDatabase db, Date start) {
+		return insertRide(db, dateToString(start));
+	}
+
+	private static long insertRide(SQLiteDatabase db, String start) {
 		ContentValues cv = new ContentValues();
-		cv.put(RIDES_START, dateToString(start));
+		cv.put(RIDES_START, start);
 		cv.put(RIDES_MISTAKES, 0);
 		cv.put(RIDES_DISTANCE, 0f);
 		return db.insert(RIDES, null, cv);
@@ -185,12 +217,24 @@ public class Database {
 			int mistakes,
 			float distance,
 			float averageSpeed) {
+		return updateRide(db, rideId, dateToString(stop), mistakes, distance,
+				averageSpeed);
+	}
+
+	private static long updateRide(
+			SQLiteDatabase db,
+			long rideId,
+			String stop,
+			int mistakes,
+			float distance,
+			float averageSpeed) {
 		ContentValues cv = new ContentValues();
-		cv.put(RIDES_STOP, dateToString(stop));
+		cv.put(RIDES_STOP, stop);
 		cv.put(RIDES_MISTAKES, mistakes);
 		cv.put(RIDES_DISTANCE, distance);
 		cv.put(RIDES_AVERAGE, averageSpeed);
-		return db.update(RIDES, cv, RIDES_ID + "=" + rideId, null);
+		return db.update(RIDES, cv, RIDES_ID + "= ?",
+				new String[]{String.valueOf(rideId)});
 	}
 
 	public Cursor queryWaypoints(long rideId) {
@@ -205,17 +249,17 @@ public class Database {
 						WAYPOINTS_BEARING + "," +
 						WAYPOINTS_SPEED +
 						" FROM " + WAYPOINTS +
-						" WHERE " + WAYPOINTS_RIDE + " = " + rideId +
+						" WHERE " + WAYPOINTS_RIDE + " = ?" +
 						" ORDER BY " + WAYPOINTS_TIME,
-				null);
+				new String[]{String.valueOf(rideId)});
 	}
 
 	public int queryWaypointsCount(long rideId) {
 		Cursor cursor = db.rawQuery(
 				"SELECT COUNT(*)" +
 						" FROM " + WAYPOINTS +
-						" WHERE " + WAYPOINTS_RIDE + " = " + rideId,
-				null);
+						" WHERE " + WAYPOINTS_RIDE + " = ?",
+				new String[]{String.valueOf(rideId)});
 
 		if (cursor == null) {
 			return -1;
@@ -307,8 +351,8 @@ public class Database {
 	}
 
 	private static class OpenHelper extends SQLiteOpenHelper {
-		public OpenHelper(Context c) {
-			super(c, FILE_NAME, null, 2);
+		private OpenHelper(Context context) {
+			super(context, FILE_NAME, null, 2);
 		}
 
 		@Override
@@ -349,20 +393,155 @@ public class Database {
 				SQLiteDatabase db,
 				int oldVersion,
 				int newVersion) {
-			if (newVersion == 1) {
-				onCreate(db);
-				return;
-			}
-
 			if (oldVersion < 2) {
-				updateToVersion2(db);
+				addRidesAverageColumn(db);
 			}
 		}
 
-		private void updateToVersion2(SQLiteDatabase db) {
+		private void addRidesAverageColumn(SQLiteDatabase db) {
 			db.execSQL("ALTER TABLE " + RIDES +
 					" ADD COLUMN " + RIDES_AVERAGE + " FLOAT");
 			recalculateAverages(db);
+		}
+	}
+
+	private static boolean addRidesTable(
+			SQLiteDatabase dst,
+			SQLiteDatabase src) {
+		Cursor cursor = src.rawQuery(
+				"SELECT *" +
+						" FROM " + RIDES +
+						" ORDER BY " + RIDES_ID,
+				null);
+		if (cursor == null) {
+			return false;
+		}
+		int startIndex = cursor.getColumnIndex(RIDES_START);
+		int stopIndex = cursor.getColumnIndex(RIDES_STOP);
+		int mistakesIndex = cursor.getColumnIndex(RIDES_MISTAKES);
+		int distanceIndex = cursor.getColumnIndex(RIDES_DISTANCE);
+		int averageIndex = cursor.getColumnIndex(RIDES_AVERAGE);
+		boolean success = true;
+		if (cursor.moveToFirst()) {
+			do {
+				long rideId = insertRide(dst, cursor.getString(startIndex));
+				if (rideId < 1) {
+					success = false;
+					break;
+				}
+				updateRide(dst,
+						rideId,
+						cursor.getString(stopIndex),
+						cursor.getInt(mistakesIndex),
+						cursor.getFloat(distanceIndex),
+						averageIndex < 0 ? 0f : cursor.getFloat(averageIndex));
+				if (!addWaypointsTable(dst, src, rideId)) {
+					success = false;
+					break;
+				}
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		if (success && averageIndex < 0) {
+			recalculateAverages(dst);
+		}
+		return success;
+	}
+
+	private static boolean addWaypointsTable(
+			SQLiteDatabase dst,
+			SQLiteDatabase src,
+			long rideId) {
+		Cursor cursor = src.rawQuery(
+				"SELECT *" +
+						" FROM " + WAYPOINTS +
+						" WHERE " + WAYPOINTS_RIDE + " = ?" +
+						" ORDER BY " + WAYPOINTS_ID,
+				new String[]{String.valueOf(rideId)});
+		if (cursor == null) {
+			return false;
+		}
+		int lngIndex = cursor.getColumnIndex(WAYPOINTS_LONGITUDE);
+		int latIndex = cursor.getColumnIndex(WAYPOINTS_LATITUDE);
+		int timeIndex = cursor.getColumnIndex(WAYPOINTS_TIME);
+		int accuracyIndex = cursor.getColumnIndex(WAYPOINTS_ACCURACY);
+		int altitudeIndex = cursor.getColumnIndex(WAYPOINTS_ALTITUDE);
+		int bearingIndex = cursor.getColumnIndex(WAYPOINTS_BEARING);
+		int speedIndex = cursor.getColumnIndex(WAYPOINTS_SPEED);
+		boolean success = true;
+		if (cursor.moveToFirst()) {
+			do {
+				if (insertWaypoint(dst, rideId,
+						cursor.getLong(timeIndex),
+						cursor.getDouble(latIndex),
+						cursor.getDouble(lngIndex),
+						cursor.getFloat(accuracyIndex),
+						cursor.getDouble(altitudeIndex),
+						cursor.getFloat(bearingIndex),
+						cursor.getFloat(speedIndex)) < 1L) {
+					success = false;
+					break;
+				}
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return success;
+	}
+
+	private static class ImportHelper extends SQLiteOpenHelper {
+		private ImportHelper(Context context, String path) {
+			super(context, path, null, 1);
+		}
+
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+			// do nothing
+		}
+
+		@Override
+		public void onDowngrade(
+				SQLiteDatabase db,
+				int oldVersion,
+				int newVersion) {
+			// do nothing, but without that method we cannot open
+			// different versions
+		}
+
+		@Override
+		public void onUpgrade(
+				SQLiteDatabase db,
+				int oldVersion,
+				int newVersion) {
+			// do nothing, but without that method we cannot open
+			// different versions
+		}
+	}
+
+	// somehow it's required to use this ContextWrapper to access the
+	// tables in an external database; without this, the database will
+	// only contain the table "android_metadata"
+	public static class ExternalDatabaseContext extends ContextWrapper {
+		public ExternalDatabaseContext(Context base) {
+			super(base);
+		}
+
+		@Override
+		public File getDatabasePath(String name) {
+			return new File(getFilesDir(), name);
+		}
+
+		@Override
+		public SQLiteDatabase openOrCreateDatabase(String name, int mode,
+				SQLiteDatabase.CursorFactory factory,
+				DatabaseErrorHandler errorHandler) {
+			return openOrCreateDatabase(name, mode, factory);
+		}
+
+		@Override
+		public SQLiteDatabase openOrCreateDatabase(String name, int mode,
+				SQLiteDatabase.CursorFactory factory) {
+			return SQLiteDatabase.openOrCreateDatabase(
+					getDatabasePath(name), null);
 		}
 	}
 }

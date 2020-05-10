@@ -13,7 +13,6 @@ public class Preferences {
 	private static final String SECONDS_BETWEEN_UPDATES = "seconds_between_updates";
 	private static final String METERS_BETWEEN_UPDATES = "meters_between_updates";
 	private static final String MINIMUM_ACCURACY = "minimum_accuracy";
-	public static final String EXPORT_DATABASE = "export_db";
 
 	private SharedPreferences preferences;
 

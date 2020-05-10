@@ -36,9 +36,12 @@
 	<string name="meters_between_updates_summary">Minimum distance between location updates</string>
 	<string name="minimum_accuracy">Minimum accuracy</string>
 	<string name="minimum_accuracy_summary">Minimum accuracy of location, in meters</string>
-	<string name="export">Export</string>
+	<string name="import_export">Import &amp; Export</string>
 	<string name="export_db">Export database</string>
 	<string name="export_db_summary">Export SQLite database to SD card</string>
 	<string name="successfully_exported">Successfully exported</string>
+	<string name="import_db">Import database</string>
+	<string name="import_db_summary">Import SQLite database from SD card</string>
+	<string name="successfully_imported">Successfully imported</string>
 	<string name="no_rides">No rides available</string>
 </resources>

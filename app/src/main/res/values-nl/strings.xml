@@ -36,9 +36,12 @@
 	<string name="meters_between_updates_summary">Minimale afstand tussen locatie-updates</string>
 	<string name="minimum_accuracy">Minimale nauwkeurigheid</string>
 	<string name="minimum_accuracy_summary">Minimale locatienauwkeurigheid, in meters</string>
-	<string name="export">Exporteren</string>
+	<string name="import_export">Exporteren</string>
 	<string name="export_db">Databank exporteren</string>
 	<string name="export_db_summary">Exporteer de SQLite-databank naar de SD-kaart</string>
 	<string name="successfully_exported">Geëxporteerd</string>
+	<string name="import_db">Import database</string>
+	<string name="import_db_summary">Import SQLite database from SD card</string>
+	<string name="successfully_imported">Successfully imported</string>
 	<string name="no_rides">Geen ritten beschikbaar</string>
 </resources>
