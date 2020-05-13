@@ -424,14 +424,19 @@ public class Database {
 		boolean success = true;
 		if (cursor.moveToFirst()) {
 			do {
-				long rideId = insertRide(dst, cursor.getString(startIndex));
+				String startDate = cursor.getString(startIndex);
+				String stopDate = cursor.getString(stopIndex);
+				if (rideExists(dst, startDate, stopDate)) {
+					continue;
+				}
+				long rideId = insertRide(dst, startDate);
 				if (rideId < 1) {
 					success = false;
 					break;
 				}
 				updateRide(dst,
 						rideId,
-						cursor.getString(stopIndex),
+						stopDate,
 						cursor.getInt(mistakesIndex),
 						cursor.getFloat(distanceIndex),
 						averageIndex < 0 ? 0f : cursor.getFloat(averageIndex));
@@ -446,6 +451,24 @@ public class Database {
 			recalculateAverages(dst);
 		}
 		return success;
+	}
+
+	private static boolean rideExists(
+			SQLiteDatabase db,
+			String startDate,
+			String stopDate) {
+		Cursor cursor = db.rawQuery(
+				"SELECT " + RIDES_ID +
+						" FROM " + RIDES +
+						" WHERE " + RIDES_START + " = ?" +
+						" AND " + RIDES_STOP + " = ?",
+				new String[]{startDate, stopDate});
+		if (cursor == null) {
+			return false;
+		}
+		boolean exists = cursor.moveToFirst() && cursor.getCount() > 0;
+		cursor.close();
+		return exists;
 	}
 
 	private static boolean addWaypointsTable(
