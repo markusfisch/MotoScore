@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 	private MotoScoreService service = null;
 	private RideAdapter adapter = null;
 	private RideListView listView;
+	private Parcelable listViewState;
 	private LinearLayout progressCircle;
 	private View counterView;
 	private TextView dateTextView;
@@ -188,6 +190,12 @@ public class MainActivity extends AppCompatActivity {
 	protected void onResume() {
 		super.onResume();
 		update();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		listViewState = listView.onSaveInstanceState();
 	}
 
 	@Override
@@ -451,6 +459,11 @@ public class MainActivity extends AppCompatActivity {
 
 			if (totalRides < listLength) {
 				listView.removeFooterView(showMoreView);
+			}
+
+			if (listViewState != null) {
+				listView.onRestoreInstanceState(listViewState);
+				listViewState = null;
 			}
 		} else {
 			listView.removeFooterView(showMoreView);
