@@ -45,41 +45,39 @@ import de.markusfisch.android.motoscore.widget.RideListView;
 public class MainActivity extends AppCompatActivity {
 	private static final int REQUEST_PERMISSIONS = 1;
 
-	private final RideExporter.ExportListener exportListener =
-			new RideExporter.ExportListener() {
-				@Override
-				public void onExportStarted() {
-					showProgress();
-				}
+	private final RideExporter.ExportListener exportListener = new RideExporter.ExportListener() {
+		@Override
+		public void onExportStarted() {
+			showProgress();
+		}
 
-				@Override
-				public void onExportFinished(String fileName) {
-					hideProgress();
-					String message;
-					if (fileName == null) {
-						message = getString(R.string.error_ride_export_failed);
-					} else {
-						message = String.format(Locale.getDefault(),
-								getString(R.string.ride_exported_to),
-								fileName);
-					}
-					Toast.makeText(MainActivity.this, message,
-							Toast.LENGTH_LONG).show();
-				}
-			};
-	private final MotoScoreService.ServiceListener serviceListener =
-			new MotoScoreService.ServiceListener() {
-				@Override
-				public void onMistakeUpdate() {
-					updateMistakes();
-				}
+		@Override
+		public void onExportFinished(String fileName) {
+			hideProgress();
+			String message;
+			if (fileName == null) {
+				message = getString(R.string.error_ride_export_failed);
+			} else {
+				message = String.format(Locale.getDefault(),
+						getString(R.string.ride_exported_to),
+						fileName);
+			}
+			Toast.makeText(MainActivity.this, message,
+					Toast.LENGTH_LONG).show();
+		}
+	};
+	private final MotoScoreService.ServiceListener serviceListener = new MotoScoreService.ServiceListener() {
+		@Override
+		public void onMistakeUpdate() {
+			updateMistakes();
+		}
 
-				@Override
-				public void onDataUpdate() {
-					setState();
-					update();
-				}
-			};
+		@Override
+		public void onDataUpdate() {
+			setState();
+			update();
+		}
+	};
 	private final ServiceConnection connection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName className,
@@ -97,8 +95,9 @@ public class MainActivity extends AppCompatActivity {
 
 		@Override
 		public void onServiceDisconnected(ComponentName className) {
-			service.listener = null;
-			service = null;
+			// onServiceDisconnected() gets called when the service
+			// is killed only!
+			disconnectFromService();
 		}
 	};
 	private final Runnable updateRunnable = new Runnable() {
@@ -188,6 +187,12 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		update();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
 
 		// bind the service to be notified of new countings
 		// while visible
@@ -199,17 +204,23 @@ public class MainActivity extends AppCompatActivity {
 			Toast.makeText(this, R.string.error_service,
 					Toast.LENGTH_LONG).show();
 		}
-
-		update();
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
+	protected void onStop() {
+		super.onStop();
 
 		if (serviceBound) {
 			unbindService(connection);
 			serviceBound = false;
+			disconnectFromService();
+		}
+	}
+
+	private void disconnectFromService() {
+		if (service != null) {
+			service.listener = null;
+			service = null;
 		}
 	}
 
