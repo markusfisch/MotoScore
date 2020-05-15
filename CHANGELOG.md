@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.6.0
+* Add Dutch translation
+* Use Scoped storage on Android Q
+* Import database from SD card
+* Improve rendering of background graph
+* Optimize vector drawables
+
 ## 1.5.0
 * Move export database action into settings
 
