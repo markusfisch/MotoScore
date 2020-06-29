@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 	private RideAdapter adapter = null;
 	private RideListView listView;
 	private Parcelable listViewState;
-	private LinearLayout progressCircle;
+	private View progressCircle;
 	private View counterView;
 	private TextView dateTextView;
 	private TextView distanceTextView;
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
 		fab = (FloatingActionButton) findViewById(R.id.start);
 		listView = (RideListView) findViewById(R.id.rides);
-		progressCircle = (LinearLayout) findViewById(R.id.progress);
+		progressCircle = findViewById(R.id.progress);
 		counterView = findViewById(R.id.counter);
 		dateTextView = (TextView) findViewById(R.id.date);
 		distanceTextView = (TextView) findViewById(R.id.distance);

@@ -11,31 +11,28 @@
 		android:listSelector="@drawable/row_ride_selector"
 		android:divider="@color/divider"
 		android:dividerHeight="1px"/>
-	<LinearLayout
+	<RelativeLayout
 		android:id="@+id/no_rides"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:gravity="center"
-		android:orientation="vertical"
 		android:visibility="gone">
 		<ImageView
-			android:layout_width="match_parent"
+			android:layout_centerInParent="true"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:padding="8dp"
+			android:padding="32dp"
 			android:contentDescription="@string/no_rides"
-			android:scaleType="center"
 			android:src="@drawable/ic_no_rides"/>
-	</LinearLayout>
-	<LinearLayout
+	</RelativeLayout>
+	<RelativeLayout
 		android:id="@+id/progress"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:gravity="center"
-		android:orientation="vertical"
 		android:visibility="gone">
 		<ProgressBar
 			style="?android:attr/progressBarStyleLarge"
+			android:layout_centerInParent="true"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
-	</LinearLayout>
+	</RelativeLayout>
 </FrameLayout>
