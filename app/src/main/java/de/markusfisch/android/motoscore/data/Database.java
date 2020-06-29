@@ -426,7 +426,8 @@ public class Database {
 			do {
 				String startDate = cursor.getString(startIndex);
 				String stopDate = cursor.getString(stopIndex);
-				if (rideExists(dst, startDate, stopDate)) {
+				if (startDate == null || stopDate == null ||
+						rideExists(dst, startDate, stopDate)) {
 					continue;
 				}
 				long rideId = insertRide(dst, startDate);
