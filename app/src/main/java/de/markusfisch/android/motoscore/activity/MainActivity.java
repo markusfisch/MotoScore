@@ -25,7 +25,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +38,7 @@ import de.markusfisch.android.motoscore.R;
 import de.markusfisch.android.motoscore.adapter.RideAdapter;
 import de.markusfisch.android.motoscore.app.MotoScoreApp;
 import de.markusfisch.android.motoscore.data.Database;
-import de.markusfisch.android.motoscore.export.RideExporter;
+import de.markusfisch.android.motoscore.io.RideExporter;
 import de.markusfisch.android.motoscore.service.MotoScoreService;
 import de.markusfisch.android.motoscore.widget.RideListView;
 

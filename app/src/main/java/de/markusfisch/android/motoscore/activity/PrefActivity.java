@@ -16,7 +16,7 @@ import java.io.OutputStream;
 
 import de.markusfisch.android.motoscore.R;
 import de.markusfisch.android.motoscore.app.MotoScoreApp;
-import de.markusfisch.android.motoscore.export.DatabaseExporter;
+import de.markusfisch.android.motoscore.io.DatabaseExporter;
 import de.markusfisch.android.motoscore.preference.Preferences;
 import de.markusfisch.android.motoscore.service.MotoScoreService;
 
