@@ -11,19 +11,14 @@
 		android:listSelector="@drawable/row_ride_selector"
 		android:divider="@color/divider"
 		android:dividerHeight="1px"/>
-	<RelativeLayout
+	<ImageView
 		android:id="@+id/no_rides"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:visibility="gone">
-		<ImageView
-			android:layout_centerInParent="true"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:padding="32dp"
-			android:contentDescription="@string/no_rides"
-			android:src="@drawable/ic_no_rides"/>
-	</RelativeLayout>
+		android:padding="64dp"
+		android:contentDescription="@string/no_rides"
+		android:src="@drawable/ic_no_rides"
+		android:visibility="gone"/>
 	<RelativeLayout
 		android:id="@+id/progress"
 		android:layout_width="match_parent"
