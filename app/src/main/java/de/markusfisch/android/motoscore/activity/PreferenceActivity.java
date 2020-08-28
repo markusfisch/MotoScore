@@ -14,7 +14,7 @@ import de.markusfisch.android.motoscore.io.DatabaseImporter;
 import de.markusfisch.android.motoscore.preference.Preferences;
 import de.markusfisch.android.motoscore.service.MotoScoreService;
 
-public class PrefActivity extends AppCompatPreferenceActivity {
+public class PreferenceActivity extends AppCompatPreferenceActivity {
 	private static final int PICK_FILE_RESULT_CODE = 1;
 
 	private final OnSharedPreferenceChangeListener listener =
@@ -53,7 +53,7 @@ public class PrefActivity extends AppCompatPreferenceActivity {
 				new Preference.OnPreferenceClickListener() {
 					@Override
 					public boolean onPreferenceClick(Preference preference) {
-						Context context = PrefActivity.this;
+						Context context = PreferenceActivity.this;
 						Toast.makeText(context,
 								DatabaseExporter.exportDatabase(context),
 								Toast.LENGTH_LONG).show();

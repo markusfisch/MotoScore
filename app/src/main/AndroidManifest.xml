@@ -72,7 +72,7 @@
 				android:value=".activity.MainActivity"/>
 		</activity>
 		<activity
-			android:name=".activity.PrefActivity"
+			android:name=".activity.PreferenceActivity"
 			android:label="@string/preferences"
 			android:theme="@style/PreferenceTheme"
 			android:exported="true">
