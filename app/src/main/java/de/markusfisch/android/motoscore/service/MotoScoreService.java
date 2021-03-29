@@ -177,7 +177,9 @@ public class MotoScoreService extends Service {
 					remoteControlReceiver);
 			remoteControlReceiver = null;
 		} else if (mediaSession != null) {
-			mediaSession.release();
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				mediaSession.release();
+			}
 			mediaSession = null;
 		}
 	}
