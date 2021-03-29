@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.6.1
+* Fix receiving media button events on Android O+
+* Fix padding around empty view image
+
 ## 1.6.0
 * Add Dutch translation
 * Use Scoped storage on Android Q
