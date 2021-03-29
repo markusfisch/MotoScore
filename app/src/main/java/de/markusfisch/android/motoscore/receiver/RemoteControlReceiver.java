@@ -8,19 +8,21 @@ import android.view.KeyEvent;
 import de.markusfisch.android.motoscore.service.MotoScoreService;
 
 public class RemoteControlReceiver extends BroadcastReceiver {
+	public static KeyEvent getKeyEvent(Intent intent) {
+		return Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())
+				? (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT)
+				: null;
+	}
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		String action = intent.getAction();
-		if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
-			KeyEvent event = intent.getParcelableExtra(
-					Intent.EXTRA_KEY_EVENT);
-			if (event != null) {
-				sendAction(context, event.getAction(), event.getEventTime());
-			}
+		KeyEvent event = getKeyEvent(intent);
+		if (event != null) {
+			sendAction(context, event.getAction(), event.getEventTime());
 		}
 	}
 
-	private void sendAction(Context context, int action, long time) {
+	private static void sendAction(Context context, int action, long time) {
 		Intent count = new Intent(context, MotoScoreService.class);
 		count.putExtra(MotoScoreService.COMMAND,
 				MotoScoreService.COMMAND_ACTION);

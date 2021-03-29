@@ -9,10 +9,14 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.session.MediaSession;
+import android.media.session.PlaybackState;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 import java.util.Date;
@@ -64,6 +68,7 @@ public class MotoScoreService extends Service {
 	private AudioManager audioManager;
 	private Vibrator vibrator;
 	private ComponentName remoteControlReceiver;
+	private MediaSession mediaSession;
 	private long buttonDown = 0;
 	private int minimumAccuracy = 100;
 	private float speeds = 0;
@@ -122,25 +127,59 @@ public class MotoScoreService extends Service {
 	public void registerMediaButton() {
 		unregisterMediaButton();
 
-		if (audioManager == null ||
-				!MotoScoreApp.preferences.useMediaButton()) {
+		if (!MotoScoreApp.preferences.useMediaButton()) {
 			return;
 		}
 
-		remoteControlReceiver = new ComponentName(getPackageName(),
-				RemoteControlReceiver.class.getName());
-		audioManager.registerMediaButtonEventReceiver(
-				remoteControlReceiver);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			if (audioManager != null) {
+				remoteControlReceiver = new ComponentName(getPackageName(),
+						RemoteControlReceiver.class.getName());
+				audioManager.registerMediaButtonEventReceiver(
+						remoteControlReceiver);
+			}
+		} else {
+			mediaSession = new MediaSession(this, "ride");
+			mediaSession.setCallback(new MediaSession.Callback() {
+				@Override
+				public boolean onMediaButtonEvent(Intent mediaButtonIntent) {
+					KeyEvent event = RemoteControlReceiver.getKeyEvent(
+							mediaButtonIntent);
+					if (event != null) {
+						handleActionCommand(event.getAction(),
+								event.getEventTime());
+					}
+					return super.onMediaButtonEvent(mediaButtonIntent);
+				}
+			});
+			mediaSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
+					MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+			mediaSession.setPlaybackState(new PlaybackState.Builder()
+					.setActions(
+							PlaybackState.ACTION_PLAY |
+							PlaybackState.ACTION_PLAY_PAUSE |
+							PlaybackState.ACTION_PAUSE |
+							PlaybackState.ACTION_SKIP_TO_NEXT |
+							PlaybackState.ACTION_SKIP_TO_PREVIOUS)
+					.setState(PlaybackState.STATE_STOPPED,
+							PlaybackState.PLAYBACK_POSITION_UNKNOWN, 0)
+					.build());
+			mediaSession.setActive(true);
+			// on Android O and better an app is required to play some
+			// sound in order to get media button events
+			playSound(this, R.raw.silent_sound);
+		}
 	}
 
 	public void unregisterMediaButton() {
-		if (remoteControlReceiver == null) {
-			return;
+		if (remoteControlReceiver != null) {
+			audioManager.unregisterMediaButtonEventReceiver(
+					remoteControlReceiver);
+			remoteControlReceiver = null;
+		} else if (mediaSession != null) {
+			mediaSession.release();
+			mediaSession = null;
 		}
-
-		audioManager.unregisterMediaButtonEventReceiver(
-				remoteControlReceiver);
-		remoteControlReceiver = null;
 	}
 
 	public boolean isRecording() {
@@ -259,9 +298,13 @@ public class MotoScoreService extends Service {
 	}
 
 	private void handleActionCommand(Intent intent) {
-		long time = intent.getLongExtra(TIME, 1);
-		switch (intent.getIntExtra(ACTION, -1)) {
-			case android.view.KeyEvent.ACTION_DOWN:
+		handleActionCommand(intent.getIntExtra(ACTION, -1),
+				intent.getLongExtra(TIME, 1));
+	}
+
+	private void handleActionCommand(int action, long time) {
+		switch (action) {
+			case KeyEvent.ACTION_DOWN:
 				// there may come multiple ACTION_DOWNs
 				// before there's a ACTION_UP but only
 				// the very first one is interesting
@@ -269,7 +312,7 @@ public class MotoScoreService extends Service {
 					buttonDown = time;
 				}
 				break;
-			case android.view.KeyEvent.ACTION_UP:
+			case KeyEvent.ACTION_UP:
 				if (time - buttonDown < 900) {
 					if (isRecording()) {
 						count();
@@ -411,5 +454,16 @@ public class MotoScoreService extends Service {
 		@Override
 		public void onProviderDisabled(String provider) {
 		}
+	}
+
+	private static void playSound(Context context, int resId) {
+		MediaPlayer mediaPlayer = MediaPlayer.create(context, resId);
+		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+			@Override
+			public void onCompletion(MediaPlayer mediaPlayer) {
+				mediaPlayer.release();
+			}
+		});
+		mediaPlayer.start();
 	}
 }
