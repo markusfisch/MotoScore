@@ -21,9 +21,7 @@ public class Notifications {
 	private static final int NOTIFY_RECORDING = 1;
 	private static final String CHANNEL_RECORDING = "Recording";
 
-	private final NotificationManager notificationManager;
-
-	public class Recording extends AbstractNotification {
+	public static class Recording extends AbstractNotification {
 		private Recording(Context context, int id) {
 			super(id);
 			Resources r = context.getResources();
@@ -38,8 +36,6 @@ public class Notifications {
 	}
 
 	public Notifications(Context context) {
-		notificationManager = (NotificationManager)
-				context.getSystemService(Context.NOTIFICATION_SERVICE);
 		recording = new Recording(context, NOTIFY_RECORDING);
 	}
 
@@ -103,7 +99,7 @@ public class Notifications {
 		}
 	}
 
-	private abstract class AbstractNotification {
+	private static abstract class AbstractNotification {
 		protected Notification notification;
 
 		private final int id;
