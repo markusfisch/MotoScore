@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
@@ -142,7 +143,7 @@ public class MotoScoreService extends Service {
 			mediaSession = new MediaSession(this, "ride");
 			mediaSession.setCallback(new MediaSession.Callback() {
 				@Override
-				public boolean onMediaButtonEvent(Intent mediaButtonIntent) {
+				public boolean onMediaButtonEvent(@NonNull Intent mediaButtonIntent) {
 					KeyEvent event = RemoteControlReceiver.getKeyEvent(
 							mediaButtonIntent);
 					if (event != null) {
@@ -157,10 +158,10 @@ public class MotoScoreService extends Service {
 			mediaSession.setPlaybackState(new PlaybackState.Builder()
 					.setActions(
 							PlaybackState.ACTION_PLAY |
-							PlaybackState.ACTION_PLAY_PAUSE |
-							PlaybackState.ACTION_PAUSE |
-							PlaybackState.ACTION_SKIP_TO_NEXT |
-							PlaybackState.ACTION_SKIP_TO_PREVIOUS)
+									PlaybackState.ACTION_PLAY_PAUSE |
+									PlaybackState.ACTION_PAUSE |
+									PlaybackState.ACTION_SKIP_TO_NEXT |
+									PlaybackState.ACTION_SKIP_TO_PREVIOUS)
 					.setState(PlaybackState.STATE_STOPPED,
 							PlaybackState.PLAYBACK_POSITION_UNKNOWN, 0)
 					.build());
@@ -438,7 +439,7 @@ public class MotoScoreService extends Service {
 
 	private class LocationRecorder implements LocationListener {
 		@Override
-		public void onLocationChanged(Location location) {
+		public void onLocationChanged(@NonNull Location location) {
 			record(location);
 		}
 
@@ -450,11 +451,11 @@ public class MotoScoreService extends Service {
 		}
 
 		@Override
-		public void onProviderEnabled(String provider) {
+		public void onProviderEnabled(@NonNull String provider) {
 		}
 
 		@Override
-		public void onProviderDisabled(String provider) {
+		public void onProviderDisabled(@NonNull String provider) {
 		}
 	}
 
