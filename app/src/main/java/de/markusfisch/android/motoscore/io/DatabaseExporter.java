@@ -13,7 +13,6 @@ import java.util.Locale;
 
 import de.markusfisch.android.motoscore.R;
 import de.markusfisch.android.motoscore.data.Database;
-import de.markusfisch.android.motoscore.io.ExternalFile;
 
 public class DatabaseExporter {
 	public static int exportDatabase(Context context) {
