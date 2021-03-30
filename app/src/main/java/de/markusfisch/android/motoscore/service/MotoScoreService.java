@@ -208,6 +208,7 @@ public class MotoScoreService extends Service {
 			record(getLastKnownLocation());
 		} catch (SecurityException e) {
 			// user has denied access to location updates
+			cancelRide();
 			return;
 		}
 
@@ -222,6 +223,7 @@ public class MotoScoreService extends Service {
 						locationRecorder);
 			} catch (SecurityException e) {
 				// user has denied access to location updates
+				cancelRide();
 				return;
 			}
 		}
@@ -231,6 +233,14 @@ public class MotoScoreService extends Service {
 		if (listener != null) {
 			listener.onDataUpdate();
 		}
+	}
+
+	private void cancelRide() {
+		MotoScoreApp.db.removeRide(rideId);
+		rideId = 0;
+		Toast.makeText(getApplicationContext(),
+				R.string.error_missing_permissions,
+				Toast.LENGTH_LONG).show();
 	}
 
 	public void stop() {
