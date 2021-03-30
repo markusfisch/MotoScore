@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.6.2
+* Add a prominent disclosure for background tracking
+
 ## 1.6.1
 * Fix receiving media button events on Android O+
 * Fix padding around empty view image
