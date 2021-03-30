@@ -10,6 +10,8 @@ android {
 
 		versionCode 16
 		versionName '1.6.1'
+
+		vectorDrawables.useSupportLibrary true
 	}
 
 	signingConfigs {

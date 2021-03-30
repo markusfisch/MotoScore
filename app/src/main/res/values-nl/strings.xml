@@ -4,6 +4,7 @@
 	<string name="error_data_source">Gegevensbron niet beschikbaar</string>
 	<string name="error_cant_find_db">Kan databank niet vinden</string>
 	<string name="error_storage_not_writeable">Kan databank niet wegschrijven</string>
+	<string name="error_insufficient_permissions">Insufficient permissions</string>
 	<string name="channel_name">Vastleggen</string>
 	<string name="channel_description">Route vastleggen</string>
 	<string name="rides">Ritten</string>
@@ -14,6 +15,7 @@
 	<string name="km">km</string>
 	<string name="km_h">km/u</string>
 	<string name="more">Meer tonen</string>
+	<string name="start_ride">Start ride</string>
 	<string name="remove_ride">Rit verwijderen</string>
 	<string name="export_ride">Rit exporteren</string>
 	<string name="ride_exported_to">KML geëxporteerd naar %s</string>
@@ -44,4 +46,6 @@
 	<string name="import_db_summary">Import SQLite database from SD card</string>
 	<string name="successfully_imported">Successfully imported</string>
 	<string name="no_rides">Geen ritten beschikbaar</string>
+	<string name="background_disclosure">Location Data Disclosure</string>
+	<string name="background_disclosure_info">This app collects location data to enable recording of your route, while recording your route, even when the app is closed or not in use.</string>
 </resources>

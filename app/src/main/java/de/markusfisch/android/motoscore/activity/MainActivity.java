@@ -1,9 +1,12 @@
 package de.markusfisch.android.motoscore.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -14,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -130,11 +134,36 @@ public class MainActivity extends AppCompatActivity {
 	private int listLength = MotoScoreApp.preferences.numberOfRides();
 
 	@Override
+	public void onRequestPermissionsResult(
+			int requestCode,
+			@NonNull String[] permissions,
+			@NonNull int[] grantResults) {
+		if (requestCode != REQUEST_PERMISSIONS || grantResults.length < 1) {
+			return;
+		}
+
+		for (int i = 0, len = Math.min(
+				permissions.length,
+				grantResults.length); i < len; ++i) {
+			String permission = permissions[i];
+			int result = grantResults[i];
+			if (Manifest.permission.ACCESS_FINE_LOCATION.equals(permission) &&
+					result == PackageManager.PERMISSION_GRANTED &&
+					requestBackgroundPermissions()) {
+				startStop();
+			}
+			if (Manifest.permission.ACCESS_BACKGROUND_LOCATION.equals(permission) &&
+					result == PackageManager.PERMISSION_GRANTED) {
+				startStop();
+			}
+		}
+	}
+
+	@Override
 	protected void onCreate(Bundle state) {
 		super.onCreate(state);
 
 		setContentView(R.layout.activity_main);
-		requestPermissions();
 
 		fab = (FloatingActionButton) findViewById(R.id.start);
 		listView = (RideListView) findViewById(R.id.rides);
@@ -147,9 +176,12 @@ public class MainActivity extends AppCompatActivity {
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startStop();
+				if (requestLocationPermissions()) {
+					startStop();
+				}
 			}
 		});
+
 
 		counterView.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -168,11 +200,19 @@ public class MainActivity extends AppCompatActivity {
 					View view,
 					int position,
 					long id) {
-				queryNumberOfWaypointsAsync(id);
+				if (requestMapPermissions()) {
+					queryNumberOfWaypointsAsync(id);
+				}
 			}
 		});
 
 		registerForContextMenu(listView);
+
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P &&
+				!MotoScoreApp.preferences.disclosureShown()) {
+			showDisclosureDialog();
+			MotoScoreApp.preferences.setDisclosureShown();
+		}
 	}
 
 	@Override
@@ -240,10 +280,9 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.preferences:
-				startActivity(new Intent(this, PreferenceActivity.class));
-				return true;
+		if (item.getItemId() == R.id.preferences) {
+			startActivity(new Intent(this, PreferenceActivity.class));
+			return true;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -263,50 +302,28 @@ public class MainActivity extends AppCompatActivity {
 		AdapterView.AdapterContextMenuInfo info =
 				(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-		switch (item.getItemId()) {
-			case R.id.export_ride:
-				RideExporter.exportAsync(this, info.id, exportListener);
-				return true;
-			case R.id.remove_ride:
-				MotoScoreApp.db.removeRide(info.id);
-				update();
-				return true;
+		int itemId = item.getItemId();
+		if (itemId == R.id.export_ride) {
+			RideExporter.exportAsync(this, info.id, exportListener);
+			return true;
+		} else if (itemId == R.id.remove_ride) {
+			MotoScoreApp.db.removeRide(info.id);
+			update();
+			return true;
 		}
 
 		return false;
 	}
 
-	private void requestPermissions() {
-		ArrayList<String> permissions = new ArrayList<>();
-		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-			permissions.add(android.Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-		}
-		permissions.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
-		permissions.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-		requestPermissions(this, permissions, REQUEST_PERMISSIONS);
+	private void showDisclosureDialog() {
+		new AlertDialog.Builder(this)
+				.setTitle(R.string.background_disclosure)
+				.setMessage(R.string.background_disclosure_info)
+				.setPositiveButton(android.R.string.ok, null)
+				.show();
 	}
 
-	private static void requestPermissions(
-			Activity activity,
-			List<String> permissions,
-			int requestCode) {
-		List<String> missing = new ArrayList<>();
-		for (String permission : permissions) {
-			if (ContextCompat.checkSelfPermission(activity, permission) !=
-					PackageManager.PERMISSION_GRANTED) {
-				missing.add(permission);
-			}
-		}
-		if (missing.size() < 1) {
-			return;
-		}
-		ActivityCompat.requestPermissions(
-				activity,
-				missing.toArray(new String[0]),
-				requestCode);
-	}
-
-	public void startStop() {
+	private void startStop() {
 		if (service == null) {
 			return;
 		}
@@ -328,6 +345,53 @@ public class MainActivity extends AppCompatActivity {
 		fab.setImageResource(isRecording ?
 				R.drawable.ic_action_stop :
 				R.drawable.ic_action_start);
+	}
+
+	private boolean requestLocationPermissions() {
+		ArrayList<String> permissions = new ArrayList<>();
+		permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+		permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+		return requestPermissions(this, permissions);
+	}
+
+	private boolean requestBackgroundPermissions() {
+		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+			return true;
+		}
+		ArrayList<String> permissions = new ArrayList<>();
+		permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+		return requestPermissions(this, permissions);
+	}
+
+	private boolean requestMapPermissions() {
+		// WRITE_EXTERNAL_STORAGE is only required for Google Maps
+		// below Marshmallow
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+			ArrayList<String> permissions = new ArrayList<>();
+			permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+			return requestPermissions(this, permissions);
+		}
+		return true;
+	}
+
+	private static boolean requestPermissions(
+			Activity activity,
+			List<String> permissions) {
+		List<String> missing = new ArrayList<>();
+		for (String permission : permissions) {
+			if (ContextCompat.checkSelfPermission(activity, permission) !=
+					PackageManager.PERMISSION_GRANTED) {
+				missing.add(permission);
+			}
+		}
+		if (missing.size() < 1) {
+			return true;
+		}
+		ActivityCompat.requestPermissions(
+				activity,
+				missing.toArray(new String[0]),
+				REQUEST_PERMISSIONS);
+		return false;
 	}
 
 	private void updateMistakes() {

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 public class Preferences {
 	public static final String SHARED_PREFERENCES_NAME = "MotoScoreSettings";
 
+	private static final String DISCLOSURE_SHOWN = "disclosure_shown";
 	private static final String USE_MEDIA_BUTTON = "use_media_button";
 	private static final String HAPTIC_FEEDBACK = "haptic_feedback";
 	private static final String SCORE = "score";
@@ -50,6 +51,16 @@ public class Preferences {
 		return Integer.parseInt(preferences.getString(
 				NUMBER_OF_RIDES,
 				"100"));
+	}
+
+	public boolean disclosureShown() {
+		return preferences.getBoolean(DISCLOSURE_SHOWN, false);
+	}
+
+	public void setDisclosureShown() {
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean(DISCLOSURE_SHOWN, true);
+		editor.apply();
 	}
 
 	public boolean useMediaButton() {

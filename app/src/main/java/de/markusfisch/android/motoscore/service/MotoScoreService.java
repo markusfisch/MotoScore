@@ -239,7 +239,7 @@ public class MotoScoreService extends Service {
 		MotoScoreApp.db.removeRide(rideId);
 		rideId = 0;
 		Toast.makeText(getApplicationContext(),
-				R.string.error_missing_permissions,
+				R.string.error_insufficient_permissions,
 				Toast.LENGTH_LONG).show();
 	}
 

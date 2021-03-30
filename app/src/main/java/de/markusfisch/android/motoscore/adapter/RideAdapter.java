@@ -66,7 +66,7 @@ public class RideAdapter extends CursorAdapter {
 
 	void setData(ViewHolder holder, Cursor cursor) {
 		String date = cursor.getString(dateIndex);
-		int distance = (int) Math.round(
+		int distance = Math.round(
 				cursor.getFloat(distanceIndex) / 1000f);
 		float average = cursor.getFloat(averageIndex) * 3.6f;
 		int mistakes = cursor.getInt(mistakesIndex);

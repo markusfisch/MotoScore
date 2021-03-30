@@ -4,6 +4,7 @@
 	<string name="error_data_source">Data source unavailable</string>
 	<string name="error_cant_find_db">Cannot find database</string>
 	<string name="error_storage_not_writeable">Cannot write database</string>
+	<string name="error_insufficient_permissions">Insufficient permissions</string>
 	<string name="channel_name">Recording</string>
 	<string name="channel_description">Record route</string>
 	<string name="rides">Rides</string>
@@ -14,6 +15,7 @@
 	<string name="km">km</string>
 	<string name="km_h">km/h</string>
 	<string name="more">Show more</string>
+	<string name="start_ride">Start ride</string>
 	<string name="remove_ride">Remove ride</string>
 	<string name="export_ride">Export ride</string>
 	<string name="ride_exported_to">KML exported to %s</string>
@@ -44,4 +46,6 @@
 	<string name="import_db_summary">Import SQLite database from SD card</string>
 	<string name="successfully_imported">Successfully imported</string>
 	<string name="no_rides">No rides available</string>
+	<string name="background_disclosure">Location Data Disclosure</string>
+	<string name="background_disclosure_info">This app collects location data to enable recording of your route, while recording your route, even when the app is closed or not in use.</string>
 </resources>
