@@ -207,12 +207,6 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 		registerForContextMenu(listView);
-
-		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P &&
-				!MotoScoreApp.preferences.disclosureShown()) {
-			showDisclosureDialog();
-			MotoScoreApp.preferences.setDisclosureShown();
-		}
 	}
 
 	@Override
@@ -315,14 +309,6 @@ public class MainActivity extends AppCompatActivity {
 		return false;
 	}
 
-	private void showDisclosureDialog() {
-		new AlertDialog.Builder(this)
-				.setTitle(R.string.background_disclosure)
-				.setMessage(R.string.background_disclosure_info)
-				.setPositiveButton(android.R.string.ok, null)
-				.show();
-	}
-
 	private void startStop() {
 		if (service == null) {
 			return;
@@ -348,6 +334,10 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private boolean requestLocationPermissions() {
+		if (!MotoScoreApp.preferences.disclosureShown()) {
+			showDisclosureDialog();
+			return false;
+		}
 		ArrayList<String> permissions = new ArrayList<>();
 		permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
 		permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -361,6 +351,22 @@ public class MainActivity extends AppCompatActivity {
 		ArrayList<String> permissions = new ArrayList<>();
 		permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
 		return requestPermissions(this, permissions);
+	}
+
+	private void showDisclosureDialog() {
+		new AlertDialog.Builder(this)
+				.setTitle(R.string.background_disclosure)
+				.setMessage(R.string.background_disclosure_info)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								MotoScoreApp.preferences.setDisclosureShown();
+								requestLocationPermissions();
+							}
+						})
+				.show();
 	}
 
 	private boolean requestMapPermissions() {
