@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.6.3
+* Show disclosure pop-up immediately before asking for location permission
+
 ## 1.6.2
 * Add a prominent disclosure for background tracking
 
