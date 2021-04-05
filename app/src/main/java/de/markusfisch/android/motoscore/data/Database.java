@@ -416,6 +416,7 @@ public class Database {
 		if (cursor == null) {
 			return false;
 		}
+		int idIndex = cursor.getColumnIndex(RIDES_ID);
 		int startIndex = cursor.getColumnIndex(RIDES_START);
 		int stopIndex = cursor.getColumnIndex(RIDES_STOP);
 		int mistakesIndex = cursor.getColumnIndex(RIDES_MISTAKES);
@@ -441,7 +442,8 @@ public class Database {
 						cursor.getInt(mistakesIndex),
 						cursor.getFloat(distanceIndex),
 						averageIndex < 0 ? 0f : cursor.getFloat(averageIndex));
-				if (!addWaypointsTable(dst, src, rideId)) {
+				if (!addWaypointsTable(dst, src, rideId,
+						cursor.getLong(idIndex))) {
 					success = false;
 					break;
 				}
@@ -475,13 +477,14 @@ public class Database {
 	private static boolean addWaypointsTable(
 			SQLiteDatabase dst,
 			SQLiteDatabase src,
-			long rideId) {
+			long dstRideId,
+			long srdRideId) {
 		Cursor cursor = src.rawQuery(
 				"SELECT *" +
 						" FROM " + WAYPOINTS +
 						" WHERE " + WAYPOINTS_RIDE + " = ?" +
 						" ORDER BY " + WAYPOINTS_ID,
-				new String[]{String.valueOf(rideId)});
+				new String[]{String.valueOf(srdRideId)});
 		if (cursor == null) {
 			return false;
 		}
@@ -492,10 +495,10 @@ public class Database {
 		int altitudeIndex = cursor.getColumnIndex(WAYPOINTS_ALTITUDE);
 		int bearingIndex = cursor.getColumnIndex(WAYPOINTS_BEARING);
 		int speedIndex = cursor.getColumnIndex(WAYPOINTS_SPEED);
-		boolean success = true;
-		if (cursor.moveToFirst()) {
+		boolean success = cursor.moveToFirst();
+		if (success) {
 			do {
-				if (insertWaypoint(dst, rideId,
+				if (insertWaypoint(dst, dstRideId,
 						cursor.getLong(timeIndex),
 						cursor.getDouble(latIndex),
 						cursor.getDouble(lngIndex),
