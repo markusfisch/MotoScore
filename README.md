@@ -1,11 +1,12 @@
 # Moto Score
 
-Tally counter for motorcyclists to record mistakes (i.e. everything you
-wouldn't do again that way).
+Tally counter for motorcyclists to record tours and mistakes (i.e. everything
+you wouldn't do again like this).
 
 <a href="https://play.google.com/store/apps/details?id=de.markusfisch.android.motoscore"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="80"/></a>
 
-The prototype of this app was done and presented at [Hack The Ride][2].
+The prototype of this app was written and presented at "Hack The Ride,"
+a hackathon held by BMW Motorrad in Barcelona in 2014.
 
 ## How to use
 
@@ -58,5 +59,4 @@ more updates you request, the more battery you're using.
 Moto Score is open source and licensed under the [MIT license][3].
 
 [1]:http://www.amazon.com/The-Upper-Half-Motorcycle-Machine/dp/1884313752
-[2]:http://www.hacktheride.org
 [3]:http://www.opensource.org/licenses/mit-license.php
