@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.6.4
+* Fix importing database
+
 ## 1.6.3
 * Show disclosure pop-up immediately before asking for location permission
 
