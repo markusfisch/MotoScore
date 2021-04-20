@@ -8,13 +8,18 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import de.markusfisch.android.motoscore.R;
 import de.markusfisch.android.motoscore.data.Database;
 
 public class RideAdapter extends CursorAdapter {
-	private final int dateIndex;
+	private final int startDateIndex;
+	private final int stopDateIndex;
 	private final int distanceIndex;
 	private final int averageIndex;
 	private final int mistakesIndex;
@@ -28,7 +33,8 @@ public class RideAdapter extends CursorAdapter {
 	public RideAdapter(Context context, Cursor cursor, int scoreType) {
 		super(context, cursor, false);
 
-		dateIndex = cursor.getColumnIndex(Database.RIDES_DATE_AND_TIME);
+		startDateIndex = cursor.getColumnIndex(Database.RIDES_START);
+		stopDateIndex = cursor.getColumnIndex(Database.RIDES_STOP);
 		distanceIndex = cursor.getColumnIndex(Database.RIDES_DISTANCE);
 		averageIndex = cursor.getColumnIndex(Database.RIDES_AVERAGE);
 		mistakesIndex = cursor.getColumnIndex(Database.RIDES_MISTAKES);
@@ -71,8 +77,9 @@ public class RideAdapter extends CursorAdapter {
 		return holder;
 	}
 
-	void setData(ViewHolder holder, Cursor cursor) {
-		String date = cursor.getString(dateIndex);
+	private void setData(ViewHolder holder, Cursor cursor) {
+		String startDate = cursor.getString(startDateIndex);
+		String stopDate = cursor.getString(stopDateIndex);
 		int distance = Math.round(
 				cursor.getFloat(distanceIndex) / 1000f);
 		float average = cursor.getFloat(averageIndex) * 3.6f;
@@ -81,7 +88,8 @@ public class RideAdapter extends CursorAdapter {
 		long minutes = Math.round((duration % 1d) * 60d) % 60;
 		float score = cursor.getFloat(scoreIndex);
 
-		holder.date.setText(date);
+		holder.date.setText(String.format("%s - %s",
+				formatDateTime(startDate), formatTime(stopDate)));
 		holder.mistakes.setText(getMistakesText(mistakes));
 		holder.distance.setText(getDistanceText(distance));
 		holder.duration.setText(getDurationText(duration, minutes));
@@ -123,6 +131,29 @@ public class RideAdapter extends CursorAdapter {
 				return getAverageText(Math.round(score));
 		}
 	}
+
+	private static String formatDateTime(String rfcDate) {
+		Date date = parseRfcDate(rfcDate);
+		return date == null
+				? rfcDate
+				: DateFormat.getDateTimeInstance(DateFormat.LONG,
+						DateFormat.SHORT).format(date);
+	}
+
+	private static String formatTime(String rfcDate) {
+		Date date = parseRfcDate(rfcDate);
+		return date == null
+				? rfcDate
+				: DateFormat.getTimeInstance(DateFormat.SHORT).format(date);
+	}
+
+	private static Date parseRfcDate(String rfcDate) {
+		try {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+					Locale.US).parse(rfcDate);
+		} catch (ParseException e) {
+			return null;
+		}
 	}
 
 	private static final class ViewHolder {
