@@ -20,10 +20,12 @@ import de.markusfisch.android.motoscore.R;
 public class Database {
 	public static final String FILE_NAME = "MotoScore.db";
 
-	public static final int SCORE_MISTAKES_DISTANCE = 1;
-	public static final int SCORE_DISTANCE_MISTAKES = 2;
-	public static final int SCORE_MISTAKES = 3;
-	public static final int SCORE_DISTANCE = 4;
+	public static final int SCORE_TYPE_MISTAKES_PER_KM = 1;
+	public static final int SCORE_TYPE_MISTAKES_PER_HOUR = 2;
+	public static final int SCORE_TYPE_MISTAKES_TOTAL = 3;
+	public static final int SCORE_TYPE_DISTANCE_IN_KM = 4;
+	public static final int SCORE_TYPE_DURATION_IN_HOURS = 5;
+	public static final int SCORE_TYPE_AVERAGE_SPEED = 6;
 
 	public static final String RIDES = "rides";
 	public static final String RIDES_ID = "_id";
@@ -31,10 +33,8 @@ public class Database {
 	public static final String RIDES_STOP = "stop";
 	public static final String RIDES_MISTAKES = "mistakes";
 	public static final String RIDES_DISTANCE = "distance";
-	public static final String RIDES_DURATION = "duration";
 	public static final String RIDES_AVERAGE = "average";
-
-	public static final String RIDES_DATE_AND_TIME = "date_and_time";
+	public static final String RIDES_DURATION = "duration";
 	public static final String RIDES_SCORE = "score";
 
 	public static final String WAYPOINTS = "waypoints";
@@ -129,31 +129,32 @@ public class Database {
 		return n;
 	}
 
-	public Cursor queryRides(int limit, int score) {
+	public Cursor queryRides(int limit, int scoreType) {
 		String scoreExpression;
 
-		switch (score) {
+		switch (scoreType) {
 			default:
-			case 1:
+			case SCORE_TYPE_MISTAKES_PER_KM:
 				scoreExpression = "cast(" + RIDES_MISTAKES + " as float) / " +
 						"max(" + RIDES_DISTANCE + " / 1000, 1)";
 				break;
-			case 2:
+			case SCORE_TYPE_MISTAKES_PER_HOUR:
 				scoreExpression = "cast(" + RIDES_MISTAKES + " as float) / " +
 						"round((julianday(" + RIDES_STOP + ") - julianday(" +
 						RIDES_START + ")) * 1440)";
 				break;
-			case 3:
+			case SCORE_TYPE_MISTAKES_TOTAL:
 				scoreExpression = RIDES_MISTAKES;
 				break;
-			case 4:
-				scoreExpression = RIDES_DISTANCE;
+			case SCORE_TYPE_DISTANCE_IN_KM:
+				scoreExpression = "round(cast(" + RIDES_DISTANCE +
+						" as float) / 1000)";
 				break;
-			case 5:
+			case SCORE_TYPE_DURATION_IN_HOURS:
 				scoreExpression = "(julianday(" + RIDES_STOP +
 						") - julianday(" + RIDES_START + ")) * 24";
 				break;
-			case 6:
+			case SCORE_TYPE_AVERAGE_SPEED:
 				scoreExpression = RIDES_AVERAGE + " * 3.6";
 				break;
 		}
@@ -162,13 +163,10 @@ public class Database {
 				"SELECT " +
 						RIDES_ID + "," +
 						RIDES_START + "," +
+						RIDES_STOP + "," +
 						RIDES_MISTAKES + "," +
 						RIDES_DISTANCE + "," +
 						RIDES_AVERAGE + "," +
-						"strftime('%Y-%m-%d %H:%M', " +
-						RIDES_START + ") || " +
-						"strftime(' - %H:%M'," +
-						RIDES_STOP + ") AS " + RIDES_DATE_AND_TIME + "," +
 						"julianday(" + RIDES_STOP + ") - julianday(" +
 						RIDES_START + ") AS " + RIDES_DURATION + "," +
 						scoreExpression + " AS " + RIDES_SCORE +

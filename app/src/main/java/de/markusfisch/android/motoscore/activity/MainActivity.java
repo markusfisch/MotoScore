@@ -486,12 +486,12 @@ public class MainActivity extends AppCompatActivity {
 	// parent instance until this task has ended
 	@SuppressLint("StaticFieldLeak")
 	private void queryRidesAsync() {
+		final int scoreType = MotoScoreApp.preferences.score();
 		new AsyncTask<Void, Void, Cursor>() {
 			@Override
 			protected Cursor doInBackground(Void... nothing) {
 				showProgress();
-				return MotoScoreApp.db.queryRides(listLength,
-						MotoScoreApp.preferences.score());
+				return MotoScoreApp.db.queryRides(listLength, scoreType);
 			}
 
 			@Override
@@ -500,13 +500,13 @@ public class MainActivity extends AppCompatActivity {
 				if (cursor == null) {
 					return;
 				}
-				updateAdapter(cursor);
+				updateAdapter(cursor, scoreType);
 			}
 		}.execute();
 	}
 
 	@SuppressLint("InflateParams")
-	private void updateAdapter(Cursor cursor) {
+	private void updateAdapter(Cursor cursor, int scoreType) {
 		if (adapter == null) {
 			showMoreView = MainActivity.this.getLayoutInflater().inflate(
 					R.layout.show_more,
@@ -523,7 +523,7 @@ public class MainActivity extends AppCompatActivity {
 			// BEFORE setting the adapter (fixed in KitKat)
 			listView.addFooterView(showMoreView);
 
-			adapter = new RideAdapter(MainActivity.this, cursor);
+			adapter = new RideAdapter(MainActivity.this, cursor, scoreType);
 			listView.setAdapter(adapter);
 
 			if (totalRides < listLength) {
@@ -536,6 +536,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		} else {
 			listView.removeFooterView(showMoreView);
+			adapter.setScoreType(scoreType);
 			adapter.changeCursor(cursor);
 
 			if (totalRides > listLength) {

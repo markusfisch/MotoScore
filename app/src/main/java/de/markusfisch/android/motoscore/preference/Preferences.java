@@ -18,38 +18,31 @@ public class Preferences {
 	private SharedPreferences preferences;
 
 	public void init(Context context) {
-		preferences = context.getSharedPreferences(
-				SHARED_PREFERENCES_NAME,
+		preferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
 				0);
 	}
 
 	public int secondsBetweenUpdates() {
-		return Integer.parseInt(preferences.getString(
-				SECONDS_BETWEEN_UPDATES,
+		return Integer.parseInt(preferences.getString(SECONDS_BETWEEN_UPDATES,
 				"30"));
 	}
 
 	public int metersBetweenUpdates() {
-		return Integer.parseInt(preferences.getString(
-				METERS_BETWEEN_UPDATES,
+		return Integer.parseInt(preferences.getString(METERS_BETWEEN_UPDATES,
 				"20"));
 	}
 
 	public int minimumAccuracy() {
-		return Integer.parseInt(preferences.getString(
-				MINIMUM_ACCURACY,
+		return Integer.parseInt(preferences.getString(MINIMUM_ACCURACY,
 				"100"));
 	}
 
 	public int score() {
-		return Integer.parseInt(preferences.getString(
-				SCORE,
-				"1"));
+		return Integer.parseInt(preferences.getString(SCORE, "1"));
 	}
 
 	public int numberOfRides() {
-		return Integer.parseInt(preferences.getString(
-				NUMBER_OF_RIDES,
+		return Integer.parseInt(preferences.getString(NUMBER_OF_RIDES,
 				"100"));
 	}
 

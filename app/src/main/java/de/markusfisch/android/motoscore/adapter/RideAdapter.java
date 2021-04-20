@@ -23,7 +23,9 @@ public class RideAdapter extends CursorAdapter {
 	private final String km;
 	private final String kmH;
 
-	public RideAdapter(Context context, Cursor cursor) {
+	private int scoreType;
+
+	public RideAdapter(Context context, Cursor cursor, int scoreType) {
 		super(context, cursor, false);
 
 		dateIndex = cursor.getColumnIndex(Database.RIDES_DATE_AND_TIME);
@@ -32,9 +34,14 @@ public class RideAdapter extends CursorAdapter {
 		mistakesIndex = cursor.getColumnIndex(Database.RIDES_MISTAKES);
 		durationIndex = cursor.getColumnIndex(Database.RIDES_DURATION);
 		scoreIndex = cursor.getColumnIndex(Database.RIDES_SCORE);
+		this.scoreType = scoreType;
 
 		km = context.getString(R.string.km);
 		kmH = context.getString(R.string.km_h);
+	}
+
+	public void setScoreType(int scoreType) {
+		this.scoreType = scoreType;
 	}
 
 	@Override
@@ -49,9 +56,9 @@ public class RideAdapter extends CursorAdapter {
 		setData(holder, cursor);
 	}
 
-	ViewHolder getViewHolder(View view) {
-		ViewHolder holder;
-		if ((holder = (ViewHolder) view.getTag()) == null) {
+	private ViewHolder getViewHolder(View view) {
+		ViewHolder holder = (ViewHolder) view.getTag();
+		if (holder == null) {
 			holder = new ViewHolder();
 			holder.date = view.findViewById(R.id.date);
 			holder.mistakes = view.findViewById(R.id.mistakes);
@@ -75,16 +82,47 @@ public class RideAdapter extends CursorAdapter {
 		float score = cursor.getFloat(scoreIndex);
 
 		holder.date.setText(date);
-		holder.mistakes.setText(String.format(Locale.getDefault(),
-				"%d", mistakes));
-		holder.distance.setText(String.format(Locale.getDefault(),
-				"%d %s", distance, km));
-		holder.duration.setText(String.format(Locale.getDefault(),
-				"%02d:%02d", (int) Math.floor(duration), minutes));
-		holder.average.setText(String.format(Locale.getDefault(),
-				"%d %s", Math.round(average), kmH));
-		holder.score.setText(String.format(Locale.getDefault(),
-				"%.2f", score));
+		holder.mistakes.setText(getMistakesText(mistakes));
+		holder.distance.setText(getDistanceText(distance));
+		holder.duration.setText(getDurationText(duration, minutes));
+		holder.average.setText(getAverageText(average));
+		holder.score.setText(getScoreText(score, minutes));
+	}
+
+	private static String getMistakesText(int mistakes) {
+		return String.format(Locale.getDefault(), "%d", mistakes);
+	}
+
+	private String getDistanceText(int distance) {
+		return String.format(Locale.getDefault(), "%d %s", distance, km);
+	}
+
+	private static String getDurationText(double duration, long minutes) {
+		return String.format(Locale.getDefault(),
+				"%02d:%02d", (int) Math.floor(duration), minutes);
+	}
+
+	private String getAverageText(float average) {
+		return String.format(Locale.getDefault(), "%d %s",
+				Math.round(average), kmH);
+	}
+
+	private String getScoreText(double score, long minutes) {
+		switch (scoreType) {
+			default:
+			case Database.SCORE_TYPE_MISTAKES_PER_KM:
+			case Database.SCORE_TYPE_MISTAKES_PER_HOUR:
+				return String.format(Locale.getDefault(), "%.2f", score);
+			case Database.SCORE_TYPE_MISTAKES_TOTAL:
+				return getMistakesText((int) Math.round(score));
+			case Database.SCORE_TYPE_DISTANCE_IN_KM:
+				return getDistanceText((int) Math.round(score));
+			case Database.SCORE_TYPE_DURATION_IN_HOURS:
+				return getDurationText(score, minutes);
+			case Database.SCORE_TYPE_AVERAGE_SPEED:
+				return getAverageText(Math.round(score));
+		}
+	}
 	}
 
 	private static final class ViewHolder {
