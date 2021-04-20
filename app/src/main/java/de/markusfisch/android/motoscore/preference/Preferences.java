@@ -10,7 +10,6 @@ public class Preferences {
 	private static final String USE_MEDIA_BUTTON = "use_media_button";
 	private static final String HAPTIC_FEEDBACK = "haptic_feedback";
 	private static final String SCORE = "score";
-	private static final String NUMBER_OF_RIDES = "number_of_rides";
 	private static final String SECONDS_BETWEEN_UPDATES = "seconds_between_updates";
 	private static final String METERS_BETWEEN_UPDATES = "meters_between_updates";
 	private static final String MINIMUM_ACCURACY = "minimum_accuracy";
@@ -39,11 +38,6 @@ public class Preferences {
 
 	public int score() {
 		return Integer.parseInt(preferences.getString(SCORE, "1"));
-	}
-
-	public int numberOfRides() {
-		return Integer.parseInt(preferences.getString(NUMBER_OF_RIDES,
-				"100"));
 	}
 
 	public boolean disclosureShown() {

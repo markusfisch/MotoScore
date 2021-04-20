@@ -14,7 +14,6 @@
 	<string name="awaiting_gps_fix">Bezig met wachten op GPS-fix</string>
 	<string name="km">km</string>
 	<string name="km_h">km/u</string>
-	<string name="more">Meer tonen</string>
 	<string name="start_ride">Start ride</string>
 	<string name="remove_ride">Rit verwijderen</string>
 	<string name="export_ride">Rit exporteren</string>
@@ -29,8 +28,6 @@
 	<string name="display">Weergave</string>
 	<string name="score">Grafiekwaarde</string>
 	<string name="score_summary">Geef een grafiekwaarde op</string>
-	<string name="number_of_rides">Aantal ritten</string>
-	<string name="number_of_rides_summary">Het maximaal aantal te tonen ritten</string>
 	<string name="tracking">Bijhouden</string>
 	<string name="seconds_between_updates">Aantal seconden tussen updates</string>
 	<string name="seconds_between_updates_summary">De minimale tussenpoos tussen locatie-updates</string>

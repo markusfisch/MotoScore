@@ -9,7 +9,7 @@
 	android:layout_marginRight="24dp"
 	android:clickable="true"
 	android:focusable="true"
-	android:contentDescription="@string/"
+	android:contentDescription="@string/start_ride"
 	app:layout_constraintBottom_toBottomOf="parent"
 	app:layout_constraintEnd_toEndOf="parent"
 	app:srcCompat="@drawable/ic_action_start"/>

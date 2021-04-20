@@ -109,27 +109,7 @@ public class Database {
 		return date;
 	}
 
-	public int queryNumberOfRides() {
-		Cursor cursor = db.rawQuery(
-				"SELECT " +
-						" COUNT(*)" +
-						" FROM " + RIDES +
-						" WHERE " + RIDES_STOP + " IS NOT NULL",
-				null);
-
-		if (cursor == null) {
-			return -1;
-		} else if (!cursor.moveToFirst()) {
-			cursor.close();
-			return -1;
-		}
-
-		int n = cursor.getInt(0);
-		cursor.close();
-		return n;
-	}
-
-	public Cursor queryRides(int limit, int scoreType) {
+	public Cursor queryRides(int scoreType) {
 		String scoreExpression;
 
 		switch (scoreType) {
@@ -172,9 +152,8 @@ public class Database {
 						scoreExpression + " AS " + RIDES_SCORE +
 						" FROM " + RIDES +
 						" WHERE " + RIDES_STOP + " IS NOT NULL" +
-						" ORDER BY " + RIDES_START + " DESC" +
-						" LIMIT ?",
-				new String[]{String.valueOf(limit)});
+						" ORDER BY " + RIDES_START + " DESC",
+				null);
 	}
 
 	public long insertRide(Date start) {

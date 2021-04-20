@@ -14,7 +14,6 @@
 	<string name="awaiting_gps_fix">Awaiting GPS fix</string>
 	<string name="km">km</string>
 	<string name="km_h">km/h</string>
-	<string name="more">Show more</string>
 	<string name="start_ride">Start ride</string>
 	<string name="remove_ride">Remove ride</string>
 	<string name="export_ride">Export ride</string>
@@ -29,8 +28,6 @@
 	<string name="display">Display</string>
 	<string name="score">Graph value</string>
 	<string name="score_summary">Define graph value</string>
-	<string name="number_of_rides">Rides</string>
-	<string name="number_of_rides_summary">Maximum number of rides to list</string>
 	<string name="tracking">Tracking</string>
 	<string name="seconds_between_updates">Seconds between updates</string>
 	<string name="seconds_between_updates_summary">Minimum time interval between location updates</string>

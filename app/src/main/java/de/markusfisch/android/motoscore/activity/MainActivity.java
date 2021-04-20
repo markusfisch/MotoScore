@@ -128,10 +128,7 @@ public class MainActivity extends AppCompatActivity {
 	private TextView dateTextView;
 	private TextView distanceTextView;
 	private TextView mistakesTextView;
-	private View showMoreView;
 	private FloatingActionButton fab;
-	private int totalRides = 0;
-	private int listLength = MotoScoreApp.preferences.numberOfRides();
 
 	@Override
 	public void onRequestPermissionsResult(
@@ -441,16 +438,11 @@ public class MainActivity extends AppCompatActivity {
 			updateTime();
 			updateMistakes();
 		}
-		queryTotalAndRidesAsync();
+		queryRidesAsync();
 	}
 
 	private void showProgress() {
-		progressCircle.post(new Runnable() {
-			@Override
-			public void run() {
-				progressCircle.setVisibility(View.VISIBLE);
-			}
-		});
+		progressCircle.setVisibility(View.VISIBLE);
 	}
 
 	private void hideProgress() {
@@ -461,37 +453,13 @@ public class MainActivity extends AppCompatActivity {
 	// and it's perfectly okay to delay garbage collection of the
 	// parent instance until this task has ended
 	@SuppressLint("StaticFieldLeak")
-	private void queryTotalAndRidesAsync() {
-		new AsyncTask<Void, Void, Integer>() {
-			@Override
-			protected Integer doInBackground(Void... nothing) {
-				showProgress();
-				return MotoScoreApp.db.queryNumberOfRides();
-			}
-
-			@Override
-			protected void onPostExecute(Integer count) {
-				hideProgress();
-				if (count == null) {
-					return;
-				}
-				totalRides = count;
-				queryRidesAsync();
-			}
-		}.execute();
-	}
-
-	// this AsyncTask is running for a short and finite time only
-	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended
-	@SuppressLint("StaticFieldLeak")
 	private void queryRidesAsync() {
+		showProgress();
 		final int scoreType = MotoScoreApp.preferences.score();
 		new AsyncTask<Void, Void, Cursor>() {
 			@Override
 			protected Cursor doInBackground(Void... nothing) {
-				showProgress();
-				return MotoScoreApp.db.queryRides(listLength, scoreType);
+				return MotoScoreApp.db.queryRides(scoreType);
 			}
 
 			@Override
@@ -508,40 +476,16 @@ public class MainActivity extends AppCompatActivity {
 	@SuppressLint("InflateParams")
 	private void updateAdapter(Cursor cursor, int scoreType) {
 		if (adapter == null) {
-			showMoreView = MainActivity.this.getLayoutInflater().inflate(
-					R.layout.show_more,
-					null);
-			showMoreView.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					listLength += 100;
-					update();
-				}
-			});
-
-			// it's required to call addFooterView()
-			// BEFORE setting the adapter (fixed in KitKat)
-			listView.addFooterView(showMoreView);
-
 			adapter = new RideAdapter(MainActivity.this, cursor, scoreType);
 			listView.setAdapter(adapter);
-
-			if (totalRides < listLength) {
-				listView.removeFooterView(showMoreView);
-			}
 
 			if (listViewState != null) {
 				listView.onRestoreInstanceState(listViewState);
 				listViewState = null;
 			}
 		} else {
-			listView.removeFooterView(showMoreView);
 			adapter.setScoreType(scoreType);
 			adapter.changeCursor(cursor);
-
-			if (totalRides > listLength) {
-				listView.addFooterView(showMoreView);
-			}
 		}
 		listView.updateGraph(cursor);
 	}
@@ -551,10 +495,10 @@ public class MainActivity extends AppCompatActivity {
 	// parent instance until this task has ended
 	@SuppressLint("StaticFieldLeak")
 	private void queryNumberOfWaypointsAsync(final long rideId) {
+		showProgress();
 		new AsyncTask<Void, Void, Integer>() {
 			@Override
 			protected Integer doInBackground(Void... nothings) {
-				showProgress();
 				return MotoScoreApp.db.queryWaypointsCount(rideId);
 			}
 
