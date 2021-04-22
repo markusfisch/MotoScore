@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.6.5
+* Format date and time according to locale
+* Remove list limit and always show all rides
+* Fix formatting of graph value
+
 ## 1.6.4
 * Fix importing database
 
