@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.6.6
+* Fix layout when recording
+
 ## 1.6.5
 * Format date and time according to locale
 * Remove list limit and always show all rides
