@@ -1,6 +1,12 @@
-<merge
+<!-- This FrameLayout CANNOT be replaced my a <merge/> tag or the counter
+layout will be on top of it rather before/above it. -->
+<FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:ignore="MergeRootFrame"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
 	<de.markusfisch.android.motoscore.widget.RideListView
 		android:id="@+id/rides"
 		android:layout_width="match_parent"
@@ -29,4 +35,4 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
 	</RelativeLayout>
-</merge>
+</FrameLayout>
