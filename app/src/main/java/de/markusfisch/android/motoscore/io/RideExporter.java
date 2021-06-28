@@ -27,9 +27,9 @@ public class RideExporter {
 		exportRideAndWayPointsAsync(context, id, listener);
 	}
 
-	// this AsyncTask is running for a short and finite time only
+	// This AsyncTask is running for a short and finite time only
 	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended
+	// parent instance until this task has ended.
 	@SuppressLint("StaticFieldLeak")
 	private static void exportRideAndWayPointsAsync(
 			final Context context,
@@ -53,9 +53,9 @@ public class RideExporter {
 		}.execute();
 	}
 
-	// this AsyncTask is running for a short and finite time only
+	// This AsyncTask is running for a short and finite time only
 	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended
+	// parent instance until this task has ended.
 	@SuppressLint("StaticFieldLeak")
 	private static void queryWaypointsAsync(
 			final Context context,
@@ -134,7 +134,7 @@ public class RideExporter {
 					out.close();
 				}
 			} catch (IOException e) {
-				// ignore, can't do anything about it
+				// Ignore, can't do anything about it.
 			}
 			cursor.close();
 		}

@@ -41,7 +41,7 @@ public class RideListView extends ListView {
 		if (cursor == null) {
 			return;
 		} else if (!cursor.moveToFirst()) {
-			// cursor is closed by adapter
+			// Cursor is closed by adapter.
 			return;
 		}
 

@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
 			service = ((MotoScoreService.Binder) binder).getService();
 			service.listener = serviceListener;
 
-			// (re-)register media button because another app
-			// may have registered itself in the meantime
+			// (Re-)Register media button because another app
+			// may have registered itself in the meantime.
 			service.registerMediaButton();
 
 			setState();
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 
-		// close cursor
+		// Close cursor.
 		if (adapter != null) {
 			adapter.changeCursor(null);
 		}
@@ -232,8 +232,8 @@ public class MainActivity extends AppCompatActivity {
 	protected void onStart() {
 		super.onStart();
 
-		// bind the service to be notified of new countings
-		// while visible
+		// Bind the service to be notified of new countings
+		// while visible.
 		serviceBound = bindService(
 				new Intent(this, MotoScoreService.class),
 				connection,
@@ -368,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private boolean requestMapPermissions() {
 		// WRITE_EXTERNAL_STORAGE is only required for Google Maps
-		// below Marshmallow
+		// below Marshmallow.
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
 			ArrayList<String> permissions = new ArrayList<>();
 			permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -421,8 +421,8 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private static String getRideTime(Date start, Date stop) {
-		// create a new object because Locale.getDefault() may have
-		// changed while the app is running
+		// Create a new object because Locale.getDefault() may have
+		// changed while the app is running.
 		SimpleDateFormat timeFormat = new SimpleDateFormat(
 				"HH:mm:ss", Locale.getDefault());
 		return timeFormat.format(start) + " - " + timeFormat.format(stop);
@@ -449,9 +449,9 @@ public class MainActivity extends AppCompatActivity {
 		progressCircle.setVisibility(View.GONE);
 	}
 
-	// this AsyncTask is running for a short and finite time only
+	// This AsyncTask is running for a short and finite time only
 	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended
+	// parent instance until this task has ended.
 	@SuppressLint("StaticFieldLeak")
 	private void queryRidesAsync() {
 		showProgress();
@@ -490,9 +490,9 @@ public class MainActivity extends AppCompatActivity {
 		listView.updateGraph(cursor);
 	}
 
-	// this AsyncTask is running for a short and finite time only
+	// This AsyncTask is running for a short and finite time only
 	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended
+	// parent instance until this task has ended.
 	@SuppressLint("StaticFieldLeak")
 	private void queryNumberOfWaypointsAsync(final long rideId) {
 		showProgress();

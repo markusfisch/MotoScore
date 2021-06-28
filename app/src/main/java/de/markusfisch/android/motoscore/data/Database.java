@@ -361,8 +361,8 @@ public class Database {
 				SQLiteDatabase db,
 				int oldVersion,
 				int newVersion) {
-			// do nothing, but without that method, a downgrade
-			// would cause an exception
+			// Do nothing, but without that method, a downgrade
+			// would cause an exception.
 		}
 
 		@Override
@@ -499,7 +499,7 @@ public class Database {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			// do nothing
+			// Do nothing.
 		}
 
 		@Override
@@ -507,8 +507,8 @@ public class Database {
 				SQLiteDatabase db,
 				int oldVersion,
 				int newVersion) {
-			// do nothing, but without that method we cannot open
-			// different versions
+			// Do nothing, but without that method we cannot open
+			// different versions.
 		}
 
 		@Override
@@ -516,14 +516,14 @@ public class Database {
 				SQLiteDatabase db,
 				int oldVersion,
 				int newVersion) {
-			// do nothing, but without that method we cannot open
-			// different versions
+			// Do nothing, but without that method we cannot open
+			// different versions.
 		}
 	}
 
-	// somehow it's required to use this ContextWrapper to access the
+	// Somehow it's required to use this ContextWrapper to access the
 	// tables in an external database; without this, the database will
-	// only contain the table "android_metadata"
+	// only contain the table "android_metadata".
 	public static class ExternalDatabaseContext extends ContextWrapper {
 		public ExternalDatabaseContext(Context base) {
 			super(base);

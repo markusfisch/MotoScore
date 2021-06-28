@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import de.markusfisch.android.motoscore.app.MotoScoreApp;
-import de.markusfisch.android.motoscore.io.DatabaseImporter;
 
 public class DatabaseImporter {
 	public static boolean importDatabase(Context context, Uri uri) {
@@ -45,7 +44,7 @@ public class DatabaseImporter {
 					out.close();
 				}
 			} catch (IOException e) {
-				// ignore, can't do anything about it
+				// Ignore, can't do anything about it.
 			}
 		}
 		boolean success = MotoScoreApp.db.importDatabase(context, fileName);

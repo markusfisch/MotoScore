@@ -87,8 +87,8 @@ public class MotoScoreService extends Service {
 		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-		// register media button to be able to start as soon
-		// as the button is pressed
+		// Register media button to be able to start as soon
+		// as the button is pressed.
 		registerMediaButton();
 	}
 
@@ -166,8 +166,8 @@ public class MotoScoreService extends Service {
 							PlaybackState.PLAYBACK_POSITION_UNKNOWN, 0)
 					.build());
 			mediaSession.setActive(true);
-			// on Android O and better an app is required to play some
-			// sound in order to get media button events
+			// On Android O and better an app is required to play some
+			// sound in order to get media button events.
 			playSound(this, R.raw.silent_sound);
 		}
 	}
@@ -207,7 +207,7 @@ public class MotoScoreService extends Service {
 		try {
 			record(getLastKnownLocation());
 		} catch (SecurityException e) {
-			// user has denied access to location updates
+			// User has denied access to location updates.
 			cancelRide();
 			return;
 		}
@@ -222,7 +222,7 @@ public class MotoScoreService extends Service {
 						MotoScoreApp.preferences.metersBetweenUpdates(),
 						locationRecorder);
 			} catch (SecurityException e) {
-				// user has denied access to location updates
+				// User has denied access to location updates.
 				cancelRide();
 				return;
 			}
@@ -318,9 +318,9 @@ public class MotoScoreService extends Service {
 	private void handleActionCommand(int action, long time) {
 		switch (action) {
 			case KeyEvent.ACTION_DOWN:
-				// there may come multiple ACTION_DOWNs
+				// There may come multiple ACTION_DOWNs
 				// before there's a ACTION_UP but only
-				// the very first one is interesting
+				// the very first one is interesting.
 				if (buttonDown == 0) {
 					buttonDown = time;
 				}
@@ -382,11 +382,11 @@ public class MotoScoreService extends Service {
 			}
 		}
 
-		// use location only if
+		// Use location only if
 		if (youngest != null &&
-				// it's not older than 10 minutes
+				// it's not older than 10 minutes and
 				java.lang.System.currentTimeMillis() - youngestTime < 600000 &&
-				// its accuracy is lower than MINIMUM_ACCURACY meters
+				// its accuracy is lower than MINIMUM_ACCURACY meters.
 				youngest.getAccuracy() < minimumAccuracy) {
 			return youngest;
 		}

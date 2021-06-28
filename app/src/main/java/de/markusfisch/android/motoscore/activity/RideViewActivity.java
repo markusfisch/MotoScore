@@ -54,9 +54,9 @@ public class RideViewActivity extends AppCompatActivity {
 		addRideAsync(rideId);
 	}
 
-	// this AsyncTask is running for a short and finite time only
+	// This AsyncTask is running for a short and finite time only
 	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended
+	// parent instance until this task has ended.
 	@SuppressLint("StaticFieldLeak")
 	private void addRideAsync(final long rideId) {
 		new AsyncTask<Void, Void, Cursor>() {
@@ -113,10 +113,9 @@ public class RideViewActivity extends AppCompatActivity {
 	private void moveCamera(View mapView, LatLngBounds bounds) {
 		map.moveCamera(CameraUpdateFactory.newLatLngBounds(
 				bounds,
-				// if width or height is 0, which should
-				// never happen here, CameraUpdateFactory
-				// throws a IllegalStateException nobody
-				// wants
+				// If width or height is 0, which should never happen here,
+				// CameraUpdateFactory throws an IllegalStateException
+				// nobody wants.
 				Math.max(240, mapView.getMeasuredWidth()),
 				Math.max(240, mapView.getMeasuredHeight()),
 				16));

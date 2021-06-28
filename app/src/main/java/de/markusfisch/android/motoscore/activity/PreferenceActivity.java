@@ -49,36 +49,33 @@ public class PreferenceActivity extends AppCompatPreferenceActivity {
 				Preferences.SHARED_PREFERENCES_NAME);
 		addPreferencesFromResource(R.xml.preferences);
 
-		findPreference("export_db").setOnPreferenceClickListener(
-				new Preference.OnPreferenceClickListener() {
-					@Override
-					public boolean onPreferenceClick(Preference preference) {
-						Context context = PreferenceActivity.this;
-						Toast.makeText(context,
-								DatabaseExporter.exportDatabase(context),
-								Toast.LENGTH_LONG).show();
-						return true;
-					}
-				});
+		findPreference("export_db").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Context context = PreferenceActivity.this;
+				Toast.makeText(context,
+						DatabaseExporter.exportDatabase(context),
+						Toast.LENGTH_LONG).show();
+				return true;
+			}
+		});
 
-		findPreference("import_db").setOnPreferenceClickListener(
-				new Preference.OnPreferenceClickListener() {
-					@Override
-					public boolean onPreferenceClick(Preference preference) {
-						Intent chooseFile = new Intent(
-								Intent.ACTION_GET_CONTENT);
-						// in theory, it should be "application/x-sqlite3"
-						// or the newer "application/vnd.sqlite3" but
-						// only "application/octet-stream" works
-						chooseFile.setType("application/octet-stream");
-						startActivityForResult(
-								Intent.createChooser(
-										chooseFile,
-										getString(R.string.import_db)),
-								PICK_FILE_RESULT_CODE);
-						return true;
-					}
-				});
+		findPreference("import_db").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+				// In theory, it should be "application/x-sqlite3"
+				// or the newer "application/vnd.sqlite3" but
+				// only "application/octet-stream" works.
+				chooseFile.setType("application/octet-stream");
+				startActivityForResult(
+						Intent.createChooser(
+								chooseFile,
+								getString(R.string.import_db)),
+						PICK_FILE_RESULT_CODE);
+				return true;
+			}
+		});
 	}
 
 	@Override
