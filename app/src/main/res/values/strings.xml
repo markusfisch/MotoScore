@@ -38,7 +38,7 @@
 	<string name="import_export">Import &amp; Export</string>
 	<string name="export_db">Export database</string>
 	<string name="export_db_summary">Export SQLite database to SD card</string>
-	<string name="successfully_exported">Successfully exported</string>
+	<string name="successfully_exported">Exported to Downloads</string>
 	<string name="import_db">Import database</string>
 	<string name="import_db_summary">Import SQLite database from SD card</string>
 	<string name="successfully_imported">Successfully imported</string>
