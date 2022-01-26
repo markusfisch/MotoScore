@@ -14,7 +14,8 @@
 	<!-- Google Maps -->
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+		android:maxSdkVersion="28"/>
 	<uses-permission android:name="de.markusfisch.android.motoscore.permission.MAPS_RECEIVE"/>
 	<uses-feature android:glEsVersion="0x00020000" android:required="true"/>
 	<application
