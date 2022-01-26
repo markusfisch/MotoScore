@@ -45,14 +45,20 @@ public class Notifications {
 			String title,
 			String text,
 			Intent intent) {
+		PendingIntent pendingIntent = PendingIntent.getActivity(
+				context,
+				0,
+				intent,
+				Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+						? PendingIntent.FLAG_IMMUTABLE
+						: 0);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 			return new NotificationCompat.Builder(context)
 					.setOngoing(true)
 					.setSmallIcon(icon)
 					.setContentTitle(title)
 					.setContentText(text)
-					.setContentIntent(PendingIntent.getActivity(
-							context, 0, intent, 0))
+					.setContentIntent(pendingIntent)
 					.build();
 		} else {
 			createChannel(context);
@@ -61,8 +67,7 @@ public class Notifications {
 					.setSmallIcon(icon)
 					.setContentTitle(title)
 					.setContentText(text)
-					.setContentIntent(PendingIntent.getActivity(
-							context, 0, intent, 0))
+					.setContentIntent(pendingIntent)
 					.build();
 		}
 	}
