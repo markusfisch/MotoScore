@@ -54,23 +54,11 @@
 		<activity
 			android:name=".activity.MainActivity"
 			android:label="@string/rides"
-			android:launchMode="singleTop"
-			android:exported="true">
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW"/>
-				<category android:name="android.intent.category.DEFAULT"/>
-				<category android:name="android.intent.category.BROWSABLE"/>
-				<data
-					android:host="www.markusfisch.de"
-					android:pathPrefix="/MotoScore"
-					android:scheme="http"/>
-			</intent-filter>
-		</activity>
+			android:launchMode="singleTop"/>
 		<activity
 			android:name=".activity.RideViewActivity"
 			android:label="@string/ride"
-			android:parentActivityName=".activity.MainActivity"
-			android:exported="false">
+			android:parentActivityName=".activity.MainActivity">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value=".activity.MainActivity"/>
@@ -78,9 +66,7 @@
 		<activity
 			android:name=".activity.PreferenceActivity"
 			android:label="@string/preferences"
-			android:theme="@style/PreferenceTheme"
-			android:exported="false">
-		</activity>
+			android:theme="@style/PreferenceTheme"/>
 		<meta-data
 			android:name="com.google.android.gms.version"
 			android:value="@integer/google_play_services_version"/>
