@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.6.7
+* Add a monochome launcher icon
+* Remove WRITE_EXTERNAL_STORAGE for and above SDK 28
+* Update Dutch translation
+
 ## 1.6.6
 * Fix layout when recording
 
