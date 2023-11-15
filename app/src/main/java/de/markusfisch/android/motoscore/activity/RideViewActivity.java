@@ -41,17 +41,21 @@ public class RideViewActivity extends AppCompatActivity {
 			return;
 		}
 
-		map = ((SupportMapFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.map)).getMap();
-
-		long rideId;
+		final long rideId;
 		Intent intent = getIntent();
-		if (intent == null || (rideId = intent.getLongExtra(
-				Database.RIDES_ID, 0)) < 1) {
-			return;
+		if (intent != null) {
+			rideId = intent.getLongExtra(Database.RIDES_ID, 0);
+		} else {
+			rideId = 0;
 		}
 
-		addRideAsync(rideId);
+		((SupportMapFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.map)).getMapAsync(googleMap -> {
+			map = googleMap;
+			if (rideId > 0) {
+				addRideAsync(rideId);
+			}
+		});
 	}
 
 	// This AsyncTask is running for a short and finite time only
