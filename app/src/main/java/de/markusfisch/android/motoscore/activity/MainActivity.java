@@ -11,11 +11,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executors;
 
 import de.markusfisch.android.motoscore.R;
 import de.markusfisch.android.motoscore.adapter.RideAdapter;
@@ -455,28 +456,20 @@ public class MainActivity extends AppCompatActivity {
 		progressCircle.setVisibility(View.GONE);
 	}
 
-	// This AsyncTask is running for a short and finite time only
-	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended.
-	@SuppressLint("StaticFieldLeak")
 	private void queryRidesAsync() {
 		showProgress();
 		final int scoreType = MotoScoreApp.preferences.score();
-		new AsyncTask<Void, Void, Cursor>() {
-			@Override
-			protected Cursor doInBackground(Void... nothing) {
-				return MotoScoreApp.db.queryRides(scoreType);
-			}
-
-			@Override
-			protected void onPostExecute(Cursor cursor) {
+		Handler handler = new Handler(Looper.getMainLooper());
+		Executors.newSingleThreadExecutor().execute(() -> {
+			Cursor cursor = MotoScoreApp.db.queryRides(scoreType);
+			handler.post(() -> {
 				hideProgress();
 				if (cursor == null) {
 					return;
 				}
 				updateAdapter(cursor, scoreType);
-			}
-		}.execute();
+			});
+		});
 	}
 
 	@SuppressLint("InflateParams")
@@ -496,22 +489,14 @@ public class MainActivity extends AppCompatActivity {
 		listView.updateGraph(cursor);
 	}
 
-	// This AsyncTask is running for a short and finite time only
-	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended.
-	@SuppressLint("StaticFieldLeak")
 	private void queryNumberOfWaypointsAsync(final long rideId) {
 		showProgress();
-		new AsyncTask<Void, Void, Integer>() {
-			@Override
-			protected Integer doInBackground(Void... nothings) {
-				return MotoScoreApp.db.queryWaypointsCount(rideId);
-			}
-
-			@Override
-			protected void onPostExecute(Integer count) {
+		Handler handler = new Handler(Looper.getMainLooper());
+		Executors.newSingleThreadExecutor().execute(() -> {
+			int count = MotoScoreApp.db.queryWaypointsCount(rideId);
+			handler.post(() -> {
 				hideProgress();
-				if (count == null || count < 1) {
+				if (count < 1) {
 					Toast.makeText(MainActivity.this, R.string.no_waypoints,
 							Toast.LENGTH_LONG).show();
 				} else {
@@ -520,7 +505,7 @@ public class MainActivity extends AppCompatActivity {
 					intent.putExtra(Database.RIDES_ID, rideId);
 					startActivity(intent);
 				}
-			}
-		}.execute();
+			});
+		});
 	}
 }

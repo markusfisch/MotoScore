@@ -1,12 +1,13 @@
 package de.markusfisch.android.motoscore.io;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.Executors;
 
 import de.markusfisch.android.motoscore.app.MotoScoreApp;
 import de.markusfisch.android.motoscore.data.Database;
@@ -26,53 +27,37 @@ public class RideExporter {
 		exportRideAndWayPointsAsync(context, id, listener);
 	}
 
-	// This AsyncTask is running for a short and finite time only
-	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended.
-	@SuppressLint("StaticFieldLeak")
 	private static void exportRideAndWayPointsAsync(
 			final Context context,
 			final long id,
 			final ExportListener listener) {
-		new AsyncTask<Void, Void, String>() {
-			@Override
-			protected String doInBackground(Void... nothings) {
-				return MotoScoreApp.db.queryRideDate(id);
-			}
-
-			@Override
-			protected void onPostExecute(String date) {
+		Handler handler = new Handler(Looper.getMainLooper());
+		Executors.newSingleThreadExecutor().execute(() -> {
+			String date = MotoScoreApp.db.queryRideDate(id);
+			handler.post(() -> {
 				if (date == null) {
 					finishExport(listener, null);
 					return;
 				}
 				queryWaypointsAsync(context, id, "ride-" + date + ".kml",
 						listener);
-			}
-		}.execute();
+			});
+		});
 	}
 
-	// This AsyncTask is running for a short and finite time only
-	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended.
-	@SuppressLint("StaticFieldLeak")
 	private static void queryWaypointsAsync(
 			final Context context,
 			final long id,
 			final String fileName,
 			final ExportListener listener) {
-		new AsyncTask<Void, Void, Cursor>() {
-			@Override
-			protected Cursor doInBackground(Void... nothings) {
-				return MotoScoreApp.db.queryWaypoints(id);
-			}
-
-			@Override
-			protected void onPostExecute(Cursor cursor) {
+		Handler handler = new Handler(Looper.getMainLooper());
+		Executors.newSingleThreadExecutor().execute(() -> {
+			Cursor cursor = MotoScoreApp.db.queryWaypoints(id);
+			handler.post(() -> {
 				finishExport(listener,
 						export(context, cursor, fileName) ? fileName : null);
-			}
-		}.execute();
+			});
+		});
 	}
 
 	private static void finishExport(

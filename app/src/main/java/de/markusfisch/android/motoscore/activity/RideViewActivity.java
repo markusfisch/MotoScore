@@ -1,10 +1,10 @@
 package de.markusfisch.android.motoscore.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -16,6 +16,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.concurrent.Executors;
 
 import de.markusfisch.android.motoscore.R;
 import de.markusfisch.android.motoscore.app.MotoScoreApp;
@@ -63,22 +65,14 @@ public class RideViewActivity extends AppCompatActivity {
 		});
 	}
 
-	// This AsyncTask is running for a short and finite time only
-	// and it's perfectly okay to delay garbage collection of the
-	// parent instance until this task has ended.
-	@SuppressLint("StaticFieldLeak")
 	private void addRideAsync(final long rideId) {
-		new AsyncTask<Void, Void, Cursor>() {
-			@Override
-			protected Cursor doInBackground(Void... nothings) {
-				return MotoScoreApp.db.queryWaypoints(rideId);
-			}
-
-			@Override
-			protected void onPostExecute(Cursor cursor) {
+		Handler handler = new Handler(Looper.getMainLooper());
+		Executors.newSingleThreadExecutor().execute(() -> {
+			Cursor cursor = MotoScoreApp.db.queryWaypoints(rideId);
+			handler.post(() -> {
 				addRide(cursor);
-			}
-		}.execute();
+			});
+		});
 	}
 
 	private void addRide(Cursor cursor) {
