@@ -10,7 +10,6 @@ import java.io.OutputStream;
 
 import de.markusfisch.android.motoscore.app.MotoScoreApp;
 import de.markusfisch.android.motoscore.data.Database;
-import de.markusfisch.android.motoscore.io.ExternalFile;
 
 public class RideExporter {
 	public interface ExportListener {

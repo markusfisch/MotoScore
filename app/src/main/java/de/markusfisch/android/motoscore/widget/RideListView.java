@@ -4,10 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
+
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 

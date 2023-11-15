@@ -137,7 +137,7 @@ public class RideAdapter extends CursorAdapter {
 		return date == null
 				? rfcDate
 				: DateFormat.getDateTimeInstance(DateFormat.LONG,
-						DateFormat.SHORT).format(date);
+				DateFormat.SHORT).format(date);
 	}
 
 	private static String formatTime(String rfcDate) {
