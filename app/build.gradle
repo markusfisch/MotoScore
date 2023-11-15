@@ -2,11 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
 	namespace 'de.markusfisch.android.motoscore'
-	compileSdkVersion sdk_version
+	compileSdk sdk_version
 
 	defaultConfig {
-		minSdkVersion 9
+		minSdkVersion 14
 		targetSdkVersion sdk_version
+
+		// Because of the Google libraries.
+		multiDexEnabled true
 
 		versionCode 22
 		versionName '1.6.7'
@@ -40,8 +43,8 @@ android {
 }
 
 dependencies {
-	implementation "com.android.support:appcompat-v7:$support_version"
-	implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-	implementation "com.android.support:design:$support_version"
+	implementation 'androidx.appcompat:appcompat:1.6.1'
+	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+	implementation 'com.google.android.material:material:1.10.0'
 	implementation 'com.google.android.gms:play-services-maps:10.0.0'
 }
