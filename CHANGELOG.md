@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.6.8
+* Fix monochrome icon
+
 ## 1.6.7
 * Add a monochome launcher icon
 * Remove WRITE_EXTERNAL_STORAGE for and above SDK 28
