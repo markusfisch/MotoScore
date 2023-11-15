@@ -22,7 +22,7 @@ layout will be on top of it rather before/above it. -->
 		android:layout_height="match_parent"
 		android:padding="64dp"
 		android:contentDescription="@string/no_rides"
-		app:srcCompat="@drawable/ic_no_rides"
+		app:srcCompat="@drawable/no_rides"
 		android:visibility="gone"/>
 	<RelativeLayout
 		android:id="@+id/progress"
