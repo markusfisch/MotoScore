@@ -205,6 +205,9 @@ public class MotoScoreService extends Service {
 			return;
 		}
 
+		minimumAccuracy = MotoScoreApp.preferences.minimumAccuracy();
+
+		// Check if we can get locations at all.
 		try {
 			record(getLastKnownLocation());
 		} catch (SecurityException e) {
@@ -213,20 +216,9 @@ public class MotoScoreService extends Service {
 			return;
 		}
 
-		minimumAccuracy = MotoScoreApp.preferences.minimumAccuracy();
-
-		if (locationManager != null) {
-			try {
-				locationManager.requestLocationUpdates(
-						LocationManager.GPS_PROVIDER,
-						MotoScoreApp.preferences.secondsBetweenUpdates(),
-						MotoScoreApp.preferences.metersBetweenUpdates(),
-						locationRecorder);
-			} catch (SecurityException e) {
-				// User has denied access to location updates.
-				cancelRide();
-				return;
-			}
+		if (locationManager != null && !requestLocationUpdates()) {
+			cancelRide();
+			return;
 		}
 
 		startForeground(1, notifications.recording.getNotification());
@@ -234,6 +226,29 @@ public class MotoScoreService extends Service {
 		if (listener != null) {
 			listener.onDataUpdate();
 		}
+	}
+
+	private boolean requestLocationUpdates() {
+		String[] providers = new String[] {
+			LocationManager.GPS_PROVIDER,
+			LocationManager.NETWORK_PROVIDER,
+			LocationManager.PASSIVE_PROVIDER
+		};
+		for (String provider : providers) {
+			try {
+				locationManager.requestLocationUpdates(
+						provider,
+						MotoScoreApp.preferences.secondsBetweenUpdates(),
+						MotoScoreApp.preferences.metersBetweenUpdates(),
+						locationRecorder);
+				return true;
+			} catch (IllegalArgumentException e) {
+				// Provider doesn't exist, try next.
+			} catch (SecurityException e) {
+				// Access denied, try next.
+			}
+		}
+		return false;
 	}
 
 	private void cancelRide() {
@@ -383,11 +398,11 @@ public class MotoScoreService extends Service {
 			}
 		}
 
-		// Use location only if
+		// Use location only if…
 		if (youngest != null &&
-				// it's not older than 10 minutes and
-				java.lang.System.currentTimeMillis() - youngestTime < 600000 &&
-				// its accuracy is lower than MINIMUM_ACCURACY meters.
+				// …it's not older than 10 minutes and…
+				System.currentTimeMillis() - youngestTime < 600000 &&
+				// …its accuracy is lower than minimumAccuracy meters.
 				youngest.getAccuracy() < minimumAccuracy) {
 			return youngest;
 		}
