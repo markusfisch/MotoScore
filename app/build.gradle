@@ -11,8 +11,8 @@ android {
 		// Because of the Google libraries.
 		multiDexEnabled true
 
-		versionCode 23
-		versionName '1.6.8'
+		versionCode 24
+		versionName '1.6.9'
 
 		vectorDrawables.useSupportLibrary true
 	}

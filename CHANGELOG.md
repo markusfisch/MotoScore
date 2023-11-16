@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.6.9
+* Use alternative location providers if GPS is unavailable
+
 ## 1.6.8
 * Fix monochrome icon
 
