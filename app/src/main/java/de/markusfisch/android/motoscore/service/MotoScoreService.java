@@ -133,44 +133,35 @@ public class MotoScoreService extends Service {
 			return;
 		}
 
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-			if (audioManager != null) {
-				remoteControlReceiver = new ComponentName(getPackageName(),
-						RemoteControlReceiver.class.getName());
-				audioManager.registerMediaButtonEventReceiver(
-						remoteControlReceiver);
-			}
-		} else {
-			mediaSession = new MediaSession(this, "ride");
-			mediaSession.setCallback(new MediaSession.Callback() {
-				@Override
-				public boolean onMediaButtonEvent(@NonNull Intent mediaButtonIntent) {
-					KeyEvent event = RemoteControlReceiver.getKeyEvent(
-							mediaButtonIntent);
-					if (event != null) {
-						handleActionCommand(event.getAction(),
-								event.getEventTime());
-					}
-					return super.onMediaButtonEvent(mediaButtonIntent);
+		mediaSession = new MediaSession(this, "ride");
+		mediaSession.setCallback(new MediaSession.Callback() {
+			@Override
+			public boolean onMediaButtonEvent(@NonNull Intent mediaButtonIntent) {
+				KeyEvent event = RemoteControlReceiver.getKeyEvent(
+						mediaButtonIntent);
+				if (event != null) {
+					handleActionCommand(event.getAction(),
+							event.getEventTime());
 				}
-			});
-			mediaSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
-					MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
-			mediaSession.setPlaybackState(new PlaybackState.Builder()
-					.setActions(
-							PlaybackState.ACTION_PLAY |
-									PlaybackState.ACTION_PLAY_PAUSE |
-									PlaybackState.ACTION_PAUSE |
-									PlaybackState.ACTION_SKIP_TO_NEXT |
-									PlaybackState.ACTION_SKIP_TO_PREVIOUS)
-					.setState(PlaybackState.STATE_STOPPED,
-							PlaybackState.PLAYBACK_POSITION_UNKNOWN, 0)
-					.build());
-			mediaSession.setActive(true);
-			// On Android O and better an app is required to play some
-			// sound in order to get media button events.
-			playSound(this, R.raw.silent_sound);
-		}
+				return super.onMediaButtonEvent(mediaButtonIntent);
+			}
+		});
+		mediaSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
+				MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+		mediaSession.setPlaybackState(new PlaybackState.Builder()
+				.setActions(
+						PlaybackState.ACTION_PLAY |
+								PlaybackState.ACTION_PLAY_PAUSE |
+								PlaybackState.ACTION_PAUSE |
+								PlaybackState.ACTION_SKIP_TO_NEXT |
+								PlaybackState.ACTION_SKIP_TO_PREVIOUS)
+				.setState(PlaybackState.STATE_STOPPED,
+						PlaybackState.PLAYBACK_POSITION_UNKNOWN, 0)
+				.build());
+		mediaSession.setActive(true);
+		// On Android O and better an app is required to play some
+		// sound in order to get media button events.
+		playSound(this, R.raw.silent_sound);
 	}
 
 	public void unregisterMediaButton() {
@@ -179,9 +170,7 @@ public class MotoScoreService extends Service {
 					remoteControlReceiver);
 			remoteControlReceiver = null;
 		} else if (mediaSession != null) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				mediaSession.release();
-			}
+			mediaSession.release();
 			mediaSession = null;
 		}
 	}
@@ -428,15 +417,9 @@ public class MotoScoreService extends Service {
 			} else if (lastLocation != null) {
 				double seconds;
 
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-					seconds = (location.getElapsedRealtimeNanos() -
-							lastLocation.getElapsedRealtimeNanos()) /
-							1000000000d;
-				} else {
-					seconds = (location.getTime() -
-							lastLocation.getTime()) /
-							1000d;
-				}
+				seconds = (location.getElapsedRealtimeNanos() -
+						lastLocation.getElapsedRealtimeNanos()) /
+						1000000000d;
 
 				speed = (float) (meters / seconds);
 			}
