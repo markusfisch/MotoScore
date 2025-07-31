@@ -5,7 +5,7 @@ android {
 	compileSdk sdk_version
 
 	defaultConfig {
-		minSdkVersion 14
+		minSdkVersion 21
 		targetSdkVersion sdk_version
 
 		// Because of the Google libraries.
@@ -46,7 +46,7 @@ dependencies {
 	implementation 'androidx.appcompat:appcompat:1.6.1'
 	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 	implementation 'com.google.android.material:material:1.10.0'
-	implementation 'com.google.android.gms:play-services-maps:17.0.1'
+	implementation 'com.google.android.gms:play-services-maps:19.0.0'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 }

@@ -106,7 +106,7 @@ public class RideViewActivity extends AppCompatActivity {
 						@Override
 						public void onGlobalLayout() {
 							mapView.getViewTreeObserver()
-									.removeGlobalOnLayoutListener(this);
+									.removeOnGlobalLayoutListener(this);
 							moveCamera(mapView, builder.build());
 						}
 					});
