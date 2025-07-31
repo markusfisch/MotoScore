@@ -2,12 +2,14 @@ package de.markusfisch.android.motoscore.activity;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,6 +33,15 @@ public class RideViewActivity extends AppCompatActivity {
 		super.onCreate(state);
 		setContentView(R.layout.activity_ride_view);
 		setUpMapIfNeeded();
+
+		// Make action bar transparent on SDK35+ as the system bars
+		// have no backgrounds there anymore too.
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+			ActionBar actionBar = getSupportActionBar();
+			if (actionBar != null) {
+				actionBar.setBackgroundDrawable(null);
+			}
+		}
 	}
 
 	@Override
