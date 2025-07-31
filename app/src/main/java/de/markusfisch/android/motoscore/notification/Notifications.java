@@ -80,7 +80,7 @@ public class Notifications {
 		return intent;
 	}
 
-	@TargetApi(Build.VERSION_CODES.O)
+	@androidx.annotation.RequiresApi(Build.VERSION_CODES.O)
 	private static void createChannel(Context context) {
 		NotificationManager nm = (NotificationManager)
 				context.getSystemService(Context.NOTIFICATION_SERVICE);
