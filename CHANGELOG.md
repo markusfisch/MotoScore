@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.6.10
+* Target Android 16
+
 ## 1.6.9
 * Use alternative location providers if GPS is unavailable
 
